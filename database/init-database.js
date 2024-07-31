@@ -6,12 +6,18 @@ const db = new sqlite3.Database('mydatabase.db');
 const fs = require('fs');
 const path = require('path');
 const logger = require("../tools/logger");
-const sql = fs.readFileSync(path.join(__dirname, 'database.js')).toString();
+const sqls = require("./database");
 
 async function initDatabase() {
-    db.serialize(() => {
-        db.run(sql);
-    });
+    try {
+        db.serialize(() => {
+            for (let sql of sqls) {
+                db.run(sql);
+            }
+        });
+    } catch (e) {
+        logger.error(`Error initializing database: ${e}`);
+    }
     logger.info('Database initialized');
 }
 
