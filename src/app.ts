@@ -5,6 +5,7 @@ import { banner } from './lib/banner';
 import { loadMonitor } from './loaders/loadMonitor';
 import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
+import { closeSequelize } from './models/db-config';
 
 const app = express();
 
@@ -37,6 +38,13 @@ process.on('uncaughtException', (error) => {
 // 捕获未处理的 Promise 拒绝
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// 关闭数据库连接
+process.on('SIGINT', async () => {
+    console.log('Received SIGINT.');
+    await closeSequelize();
+    process.exit();
 });
 
 app.listen(env.app.port, () => {

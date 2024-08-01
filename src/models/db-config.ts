@@ -1,5 +1,7 @@
-import { DataTypes, Model, Sequelize } from 'sequelize';
-import { env } from '../env';
+import { Sequelize } from 'sequelize';
+import { Logger } from '../lib/logger';
+
+const logger = new Logger(__filename);
 
 export const sequelize = new Sequelize({
     dialect: 'sqlite',
@@ -7,5 +9,7 @@ export const sequelize = new Sequelize({
 });
 
 export async function closeSequelize() {
+    logger.info('Closing sequelize connection');
     await sequelize.close();
+    logger.info('Sequelize connection closed');
 }
