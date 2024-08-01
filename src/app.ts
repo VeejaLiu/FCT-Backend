@@ -5,7 +5,6 @@ import { banner } from './lib/banner';
 import { loadMonitor } from './loaders/loadMonitor';
 import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
-import { executeTaskFromQueue } from './lib/queue/generate-queue';
 
 const app = express();
 
@@ -43,13 +42,3 @@ process.on('unhandledRejection', (reason, promise) => {
 app.listen(env.app.port, () => {
     banner(log);
 });
-
-/*
- * 启动executeTaskFromQueue()，每2秒执行一次
- */
-async function runTask() {
-    await executeTaskFromQueue();
-    setTimeout(runTask, 2000);
-}
-
-runTask();

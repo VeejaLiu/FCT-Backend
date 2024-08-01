@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../../models/db-config';
+import { sequelize } from '../db-config';
 
 export const PlayerModel = sequelize.define('', {
     firstName: {
