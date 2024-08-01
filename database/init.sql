@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS save
     created_at  INTEGER,
     updated_at  INTEGER
 );
-CREATE TABLE IF NOT EXISTS players_status
+CREATE TABLE IF NOT EXISTS player
 (
     id                      INTEGER PRIMARY KEY AUTOINCREMENT,
     save_id                 INTEGER,
@@ -70,6 +70,12 @@ CREATE TABLE IF NOT EXISTS players_status
     strength                INTEGER, -- 强壮
     aggression              INTEGER  -- 侵略性
 );
+
+create index IF NOT EXISTS idx_player_id
+    on player (player_id);
+
+create index IF NOT EXISTS idx_save_id
+    on player (save_id);
 
 CREATE TABLE IF NOT EXISTS player_status_history
 (
