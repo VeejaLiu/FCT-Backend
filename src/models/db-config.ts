@@ -6,6 +6,7 @@ const logger = new Logger(__filename);
 export const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: 'fifa-career.db',
+    logging: false,
 });
 
 export async function closeSequelize() {
