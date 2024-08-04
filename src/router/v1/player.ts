@@ -210,7 +210,7 @@ router.post('/bulk', async (req: any, res) => {
                 if (+queryRes[0].overallrating !== +overallrating || +queryRes[0].potential !== +potential) {
                     logger.info(
                         `[API_LOGS][/player/bulk] [i=${i}]` +
-                            `playerId=${playerId}, playerName=${playername}, ` +
+                            `[${playerId}][${playername}] ` +
                             `overallRating=${queryRes[0].overallrating}->${overallrating}, ` +
                             `potential=${queryRes[0].potential}->${potential}`,
                     );
