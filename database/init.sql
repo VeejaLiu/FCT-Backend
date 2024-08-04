@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS player
     id                      INTEGER PRIMARY KEY AUTOINCREMENT,
     save_id                 INTEGER,
     player_id               INTEGER,
+    player_name             TEXT,    -- 球员名字
     birthdate               INTEGER,
     overallrating           INTEGER, -- 总评, Overall Rating
     potential               INTEGER, -- 潜力, Potential
