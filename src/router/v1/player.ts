@@ -89,4 +89,81 @@ router.post('/:playerId', async (req: any, res) => {
     }
 });
 
+/**
+ * Create or update players in bulk
+ */
+router.post('/bulk', async (req: any, res) => {
+    try {
+        const players = req.body;
+
+        logger.info(`[API_LOGS][/player/bulk] players=${JSON.stringify(players)}`);
+
+        if (!players || players.length === 0) {
+            res.status(400).send('Bad Request');
+            return;
+        }
+
+        for (let player of players) {
+            const {
+                playerId,
+                date,
+                overallrating,
+                potential,
+                birthdate,
+                nationality,
+                height,
+                weight,
+                preferredfoot,
+                preferredposition1,
+                preferredposition2,
+                preferredposition3,
+                preferredposition4,
+                skillmoves,
+                weakfootabilitytypecode,
+                attackingworkrate,
+                defensiveworkrate,
+                // -- pace
+                acceleration,
+                sprintspeed,
+                // -- attacking
+                positioning,
+                finishing,
+                shotpower,
+                longshots,
+                volleys,
+                penalties,
+                // -- passing
+                vision,
+                crossing,
+                freekickaccuracy,
+                shortpassing,
+                longpassing,
+                curve,
+                agility,
+                balance,
+                reactions,
+                ballcontrol,
+                dribbling,
+                composure,
+                interceptions,
+                headingaccuracy,
+                defensiveawareness,
+                standingtackle,
+                slidingtackle,
+                jumping,
+                stamina,
+                strength,
+                aggression,
+            } = player;
+        }
+
+        res.send({
+            message: 'Created/Updated successfully',
+        });
+    } catch (e) {
+        logger.error(`[API_LOGS][/player/bulk] ${e}`);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 export default router;
