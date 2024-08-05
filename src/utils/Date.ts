@@ -1,4 +1,4 @@
-class DateUtils {
+export class DateUtils {
     year: number;
     month: number;
     day: number;

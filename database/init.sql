@@ -94,3 +94,6 @@ CREATE TABLE IF NOT EXISTS player_status_history
     overall      INTEGER,
     potential    INTEGER
 );
+
+alter table player
+    add age integer;

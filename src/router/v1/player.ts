@@ -2,6 +2,7 @@ import express from 'express';
 import { Logger } from '../../lib/logger';
 import { sequelize } from '../../models/db-config';
 import { QueryTypes } from 'sequelize';
+import { DateUtils } from '../../utils/Date';
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.get('', async (req: any, res) => {
                 playerName: player.player_name,
                 overallRating: player.overallrating,
                 potential: player.potential,
+                age: player.age,
                 birthdate: player.birthdate,
             });
         }
@@ -120,6 +122,7 @@ router.post('/bulk', async (req: any, res) => {
         if (!players || players.length === 0) {
             return;
         }
+        logger.info(`[API_LOGS][/player/bulk] currentDate=${players[0].currentDate}`);
 
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
@@ -191,7 +194,10 @@ router.post('/bulk', async (req: any, res) => {
 
             // convert currentDate to age, currentDate is in format 'yyyy-mm-dd'
             const [year, month, day] = currentDate.split('-');
-            const cDate = new DateUtils(year, month, day);
+            const cDate = new DateUtils(+year, +month, +day);
+            const gdays = cDate.toGregorianDays();
+            const bDays = gdays - birthdate;
+            const age = Math.floor(bDays / 365.25);
 
             // logger.info(
             //     `[API_LOGS][/player/bulk] [i=${i}]` +
@@ -214,7 +220,7 @@ router.post('/bulk', async (req: any, res) => {
                 const insertSQL = `
                     INSERT INTO player (
                                         player_id, player_name, overallrating, potential,
-                                        birthdate, nationality, height, weight,
+                                        birthdate, nationality, height, weight, age,
                                         preferredfoot,
                                         preferredposition1, preferredposition2,
                                         preferredposition3, preferredposition4,
@@ -227,7 +233,7 @@ router.post('/bulk', async (req: any, res) => {
                                         slidingtackle, jumping, stamina, strength, aggression,
                                         gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
                     VALUES (${playerID}, '${playerName}', ${overallrating}, ${potential},
-                            '${birthdate}', '${nationality}', ${height}, ${weight},
+                            '${birthdate}', '${nationality}', ${height}, ${weight}, ${age},
                             '${preferredfoot}',
                             ${preferredposition1}, ${preferredposition2},
                             ${preferredposition3}, ${preferredposition4},
@@ -264,6 +270,7 @@ router.post('/bulk', async (req: any, res) => {
                         nationality='${nationality}',
                         height=${height},
                         weight=${weight},
+                        age=${age},
                         preferredfoot='${preferredfoot}',
                         preferredposition1=${preferredposition1},
                         preferredposition2=${preferredposition2},
@@ -312,6 +319,8 @@ router.post('/bulk', async (req: any, res) => {
                 // logger.info(`[API_LOGS][/player/bulk] Updated player: playerID=${playerID}`);
             }
         }
+
+        logger.info(`[API_LOGS][/player/bulk] Done`);
     } catch (e) {
         logger.error(`[API_LOGS][/player/bulk] ${e}`);
         res.status(500).send('Internal Server Error');
