@@ -193,42 +193,43 @@ router.post('/bulk', async (req: any, res) => {
             );
             if (queryRes.length === 0) {
                 // insert
-                const result = await sequelize.query(
-                    `
-                        INSERT INTO player (player_id, player_name, overallrating, potential,
-                                            birthdate, nationality, height, weight,
-                                            preferredfoot,
-                                            preferredposition1, preferredposition2,
-                                            preferredposition3, preferredposition4,
-                                            skillmoves, weakfootabilitytypecode, attackingworkrate, defensiveworkrate,
-                                            acceleration, sprintspeed,
-                                            positioning, finishing, shotpower, longshots, volleys, penalties,
-                                            vision, crossing, freekickaccuracy, shortpassing, longpassing, curve,
-                                            agility, balance, reactions, ballcontrol, dribbling, composure,
-                                            interceptions, headingaccuracy, defensiveawareness, standingtackle,
-                                            slidingtackle, jumping, stamina, strength, aggression,
-                                            gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
-
-                        VALUES (${playerID}, '${playerName}', ${overallrating}, ${potential},
-                                '${birthdate}', '${nationality}', ${height}, ${weight},
-                                '${preferredfoot}',
-                                ${preferredposition1}, ${preferredposition2},
-                                ${preferredposition3}, ${preferredposition4},
-                                ${skillmoves}, ${weakfootabilitytypecode}, ${attackingworkrate}, ${defensiveworkrate},
-                                ${acceleration}, ${sprintspeed},
-                                ${positioning}, ${finishing}, ${shotpower}, ${longshots}, ${volleys}, ${penalties},
-                                ${vision}, ${crossing}, ${freekickaccuracy}, ${shortpassing}, ${longpassing}, ${curve},
-                                ${agility}, ${balance}, ${reactions}, ${ballcontrol}, ${dribbling}, ${composure},
-                                ${interceptions}, ${headingaccuracy}, ${defensiveawareness}, ${standingtackle},
-                                ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression},
-                                ${gkdiving}, ${gkhandling}, ${gkkicking}, ${gkpositioning}, ${gkreflexes}
-                               )`,
-                    { type: QueryTypes.INSERT },
-                );
+                const insertSQL = `
+                    INSERT INTO player (
+                                        player_id, player_name, overallrating, potential,
+                                        birthdate, nationality, height, weight,
+                                        preferredfoot,
+                                        preferredposition1, preferredposition2,
+                                        preferredposition3, preferredposition4,
+                                        skillmoves, weakfootabilitytypecode, attackingworkrate, defensiveworkrate,
+                                        acceleration, sprintspeed,
+                                        positioning, finishing, shotpower, longshots, volleys, penalties,
+                                        vision, crossing, freekickaccuracy, shortpassing, longpassing, curve,
+                                        agility, balance, reactions, ballcontrol, dribbling, composure,
+                                        interceptions, headingaccuracy, defensiveawareness, standingtackle,
+                                        slidingtackle, jumping, stamina, strength, aggression,
+                                        gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
+                    VALUES (${playerID}, '${playerName}', ${overallrating}, ${potential},
+                            '${birthdate}', '${nationality}', ${height}, ${weight},
+                            '${preferredfoot}',
+                            ${preferredposition1}, ${preferredposition2},
+                            ${preferredposition3}, ${preferredposition4},
+                            ${skillmoves}, ${weakfootabilitytypecode}, ${attackingworkrate}, ${defensiveworkrate},
+                            ${acceleration}, ${sprintspeed},
+                            ${positioning}, ${finishing}, ${shotpower}, ${longshots}, ${volleys}, ${penalties},
+                            ${vision}, ${crossing}, ${freekickaccuracy}, ${shortpassing}, ${longpassing}, ${curve},
+                            ${agility}, ${balance}, ${reactions}, ${ballcontrol}, ${dribbling}, ${composure},
+                            ${interceptions}, ${headingaccuracy}, ${defensiveawareness}, ${standingtackle},
+                            ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression},
+                            ${gkdiving}, ${gkhandling}, ${gkkicking}, ${gkpositioning}, ${gkreflexes}
+                           )`;
+                const result = await sequelize.query(insertSQL, { type: QueryTypes.INSERT });
                 // logger.info(`[API_LOGS][/player/bulk] Created new player: playerID=${playerID}`);
             } else {
                 // update
-                if (+queryRes[0].overallrating !== +overallrating || +queryRes[0].potential !== +potential) {
+                if (
+                    parseInt(queryRes[0].overallrating) !== parseInt(overallrating) ||
+                    parseInt(queryRes[0].potential) !== parseInt(potential)
+                ) {
                     logger.info(
                         `[API_LOGS][/player/bulk] [i=${i}]` +
                             `[${playerID}][${playerName}] ` +
@@ -236,62 +237,60 @@ router.post('/bulk', async (req: any, res) => {
                             `potential=${queryRes[0].potential}->${potential}`,
                     );
                 }
-                const result = await sequelize.query(
-                    `
-                        UPDATE player
-                        SET player_name='${playerName}',
-                            overallrating=${overallrating},
-                            potential=${potential},
-                            birthdate='${birthdate}',
-                            nationality='${nationality}',
-                            height=${height},
-                            weight=${weight},
-                            preferredfoot='${preferredfoot}',
-                            preferredposition1=${preferredposition1},
-                            preferredposition2=${preferredposition2},
-                            preferredposition3=${preferredposition3},
-                            preferredposition4=${preferredposition4},
-                            skillmoves=${skillmoves},
-                            weakfootabilitytypecode=${weakfootabilitytypecode},
-                            attackingworkrate=${attackingworkrate},
-                            defensiveworkrate=${defensiveworkrate},
-                            acceleration=${acceleration},
-                            sprintspeed=${sprintspeed},
-                            positioning=${positioning},
-                            finishing=${finishing},
-                            shotpower=${shotpower},
-                            longshots=${longshots},
-                            volleys=${volleys},
-                            penalties=${penalties},
-                            vision=${vision},
-                            crossing=${crossing},
-                            freekickaccuracy=${freekickaccuracy},
-                            shortpassing=${shortpassing},
-                            longpassing=${longpassing},
-                            curve=${curve},
-                            agility=${agility},
-                            balance=${balance},
-                            reactions=${reactions},
-                            ballcontrol=${ballcontrol},
-                            dribbling=${dribbling},
-                            composure=${composure},
-                            interceptions=${interceptions},
-                            headingaccuracy=${headingaccuracy},
-                            defensiveawareness=${defensiveawareness},
-                            standingtackle=${standingtackle},
-                            slidingtackle=${slidingtackle},
-                            jumping=${jumping},
-                            stamina=${stamina},
-                            strength=${strength},
-                            aggression=${aggression},
-                            gkdiving=${gkdiving},
-                            gkhandling=${gkhandling},
-                            gkkicking=${gkkicking},
-                            gkpositioning=${gkpositioning},
-                            gkreflexes=${gkreflexes}
-                        WHERE player_id = ${playerID}`,
-                    { type: QueryTypes.UPDATE },
-                );
+                const updateSQL = `
+                    UPDATE player
+                    SET player_name='${playerName}',
+                        overallrating=${overallrating},
+                        potential=${potential},
+                        birthdate='${birthdate}',
+                        nationality='${nationality}',
+                        height=${height},
+                        weight=${weight},
+                        preferredfoot='${preferredfoot}',
+                        preferredposition1=${preferredposition1},
+                        preferredposition2=${preferredposition2},
+                        preferredposition3=${preferredposition3},
+                        preferredposition4=${preferredposition4},
+                        skillmoves=${skillmoves},
+                        weakfootabilitytypecode=${weakfootabilitytypecode},
+                        attackingworkrate=${attackingworkrate},
+                        defensiveworkrate=${defensiveworkrate},
+                        acceleration=${acceleration},
+                        sprintspeed=${sprintspeed},
+                        positioning=${positioning},
+                        finishing=${finishing},
+                        shotpower=${shotpower},
+                        longshots=${longshots},
+                        volleys=${volleys},
+                        penalties=${penalties},
+                        vision=${vision},
+                        crossing=${crossing},
+                        freekickaccuracy=${freekickaccuracy},
+                        shortpassing=${shortpassing},
+                        longpassing=${longpassing},
+                        curve=${curve},
+                        agility=${agility},
+                        balance=${balance},
+                        reactions=${reactions},
+                        ballcontrol=${ballcontrol},
+                        dribbling=${dribbling},
+                        composure=${composure},
+                        interceptions=${interceptions},
+                        headingaccuracy=${headingaccuracy},
+                        defensiveawareness=${defensiveawareness},
+                        standingtackle=${standingtackle},
+                        slidingtackle=${slidingtackle},
+                        jumping=${jumping},
+                        stamina=${stamina},
+                        strength=${strength},
+                        aggression=${aggression},
+                        gkdiving=${gkdiving},
+                        gkhandling=${gkhandling},
+                        gkkicking=${gkkicking},
+                        gkpositioning=${gkpositioning},
+                        gkreflexes=${gkreflexes}
+                        WHERE player_id = ${playerID}`;
+                const result = await sequelize.query(updateSQL, { type: QueryTypes.UPDATE });
                 // logger.info(`[API_LOGS][/player/bulk] Updated player: playerID=${playerID}`);
             }
         }
