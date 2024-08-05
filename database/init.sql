@@ -70,6 +70,12 @@ CREATE TABLE IF NOT EXISTS player
     stamina                 INTEGER, -- 体力
     strength                INTEGER, -- 强壮
     aggression              INTEGER  -- 侵略性
+    -- Goalkeeping 守门
+    gkdiving                INTEGER, -- 扑救
+    gkhandling              INTEGER, -- 手控
+    gkkicking               INTEGER, -- 踢球
+    gkpositioning           INTEGER, -- 位置
+    gkreflexes              INTEGER  -- 反应
 );
 
 create index IF NOT EXISTS idx_player_id

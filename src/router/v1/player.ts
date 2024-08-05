@@ -111,15 +111,19 @@ router.post('/bulk', async (req: any, res) => {
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
             const {
+                // -- player
                 playerID,
                 playerName,
                 currentDate,
+                // overallrating,
                 overallrating,
                 potential,
+                // -- personal
                 birthdate,
                 nationality,
                 height,
                 weight,
+                // -- player details
                 preferredfoot,
                 preferredposition1,
                 preferredposition2,
@@ -146,21 +150,30 @@ router.post('/bulk', async (req: any, res) => {
                 shortpassing,
                 longpassing,
                 curve,
+                // -- dribbling
                 agility,
                 balance,
                 reactions,
                 ballcontrol,
                 dribbling,
                 composure,
+                // -- defending
                 interceptions,
                 headingaccuracy,
                 defensiveawareness,
                 standingtackle,
                 slidingtackle,
+                // -- physical
                 jumping,
                 stamina,
                 strength,
                 aggression,
+                // -- goalkeeping
+                gkdiving,
+                gkhandling,
+                gkkicking,
+                gkpositioning,
+                gkreflexes,
             } = player;
             // logger.info(
             //     `[API_LOGS][/player/bulk] [i=${i}]` +
@@ -193,7 +206,8 @@ router.post('/bulk', async (req: any, res) => {
                                             vision, crossing, freekickaccuracy, shortpassing, longpassing, curve,
                                             agility, balance, reactions, ballcontrol, dribbling, composure,
                                             interceptions, headingaccuracy, defensiveawareness, standingtackle,
-                                            slidingtackle, jumping, stamina, strength, aggression)
+                                            slidingtackle, jumping, stamina, strength, aggression,
+                                            gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
 
                         VALUES (${playerID}, '${playerName}', ${overallrating}, ${potential},
                                 '${birthdate}', '${nationality}', ${height}, ${weight},
@@ -206,7 +220,9 @@ router.post('/bulk', async (req: any, res) => {
                                 ${vision}, ${crossing}, ${freekickaccuracy}, ${shortpassing}, ${longpassing}, ${curve},
                                 ${agility}, ${balance}, ${reactions}, ${ballcontrol}, ${dribbling}, ${composure},
                                 ${interceptions}, ${headingaccuracy}, ${defensiveawareness}, ${standingtackle},
-                                ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression})`,
+                                ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression},
+                                ${gkdiving}, ${gkhandling}, ${gkkicking}, ${gkpositioning}, ${gkreflexes}
+                               )`,
                     { type: QueryTypes.INSERT },
                 );
                 // logger.info(`[API_LOGS][/player/bulk] Created new player: playerID=${playerID}`);
@@ -267,7 +283,12 @@ router.post('/bulk', async (req: any, res) => {
                             jumping=${jumping},
                             stamina=${stamina},
                             strength=${strength},
-                            aggression=${aggression}
+                            aggression=${aggression},
+                            gkdiving=${gkdiving},
+                            gkhandling=${gkhandling},
+                            gkkicking=${gkkicking},
+                            gkpositioning=${gkpositioning},
+                            gkreflexes=${gkreflexes}
                         WHERE player_id = ${playerID}`,
                     { type: QueryTypes.UPDATE },
                 );
