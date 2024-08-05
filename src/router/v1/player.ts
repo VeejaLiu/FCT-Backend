@@ -24,17 +24,17 @@ router.get('', async (req: any, res) => {
 /**
  * Create or update player
  */
-router.post('/single/:playerId', async (req: any, res) => {
+router.post('/single/:playerID', async (req: any, res) => {
     try {
-        const playerId = req.params.playerId;
+        const playerID = req.params.playerID;
         logger.info(`[API_LOGS][/player] req.body=${JSON.stringify(req.body)}`);
         const { saveUID, currentDate, overallrating, potential } = req.body;
 
         logger.info(
-            `[API_LOGS][/player] playerId=${playerId}, saveUID=${saveUID}, currentDate=${currentDate}, overallrating=${overallrating}, potential=${potential}`,
+            `[API_LOGS][/player] playerID=${playerID}, saveUID=${saveUID}, currentDate=${currentDate}, overallrating=${overallrating}, potential=${potential}`,
         );
 
-        if (!playerId || !overallrating || !potential) {
+        if (!playerID || !overallrating || !potential) {
             res.status(400).send('Bad Request');
             return;
         }
@@ -43,7 +43,7 @@ router.post('/single/:playerId', async (req: any, res) => {
         const queryRes: any[] = await sequelize.query(
             `SELECT *
              FROM player
-             WHERE player_id = ${playerId} limit 1`,
+             WHERE player_id = ${playerID} limit 1`,
             {
                 type: QueryTypes.SELECT,
             },
@@ -53,15 +53,15 @@ router.post('/single/:playerId', async (req: any, res) => {
             const result = await sequelize.query(
                 `INSERT INTO player (player_id, overallrating,
                                      potential)
-                 VALUES (${playerId}, ${overallrating},
+                 VALUES (${playerID}, ${overallrating},
                          ${potential})`,
                 { type: QueryTypes.INSERT },
             );
             logger.info(
-                `[API_LOGS][/player] Created new player: playerId=${playerId}, overallrating=${overallrating}, potential=${potential}`,
+                `[API_LOGS][/player] Created new player: playerID=${playerID}, overallrating=${overallrating}, potential=${potential}`,
             );
             return res.send({
-                playerId: playerId,
+                playerID: playerID,
                 message: 'Created successfully',
             });
         } else {
@@ -70,14 +70,19 @@ router.post('/single/:playerId', async (req: any, res) => {
                 `UPDATE player
                  SET overallrating=${overallrating},
                      potential=${potential}
-                 WHERE player_id = ${playerId}`,
+                 WHERE player_id = ${playerID}`,
                 { type: QueryTypes.UPDATE },
             );
-            logger.info(
-                `[API_LOGS][/player] Updated player: playerid=${playerId}, overallrating=${overallrating}->${queryRes[0].overallrating}, potential=${potential}->${queryRes[0].potential}`,
-            );
+            if (
+                parseInt(queryRes[0].overallrating) !== parseInt(overallrating) ||
+                parseInt(queryRes[0].potential) !== parseInt(potential)
+            ) {
+                logger.info(
+                    `[API_LOGS][/player] Updated player: playerID=${playerID}, overallrating=${queryRes[0].overallrating}->${overallrating}, potential=${queryRes[0].potential}->${potential}`,
+                );
+            }
             return res.send({
-                playerId: playerId,
+                playerID: playerID,
                 message: 'Updated successfully',
             });
         }
@@ -106,9 +111,9 @@ router.post('/bulk', async (req: any, res) => {
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
             const {
-                playerid: playerId,
-                playername,
-                date,
+                playerID,
+                playerName,
+                currentDate,
                 overallrating,
                 potential,
                 birthdate,
@@ -159,9 +164,9 @@ router.post('/bulk', async (req: any, res) => {
             } = player;
             // logger.info(
             //     `[API_LOGS][/player/bulk] [i=${i}]` +
-            //         `playerId=${playerId}, ` +
-            //         `playername=${playername}, ` +
-            //         `date=${date}, ` +
+            //         `playerID=${playerID}, ` +
+            //         `playerName=${playerName}, ` +
+            //         `currentDate=${currentDate}, ` +
             //         `overallrating=${overallrating}, ` +
             //         `potential=${potential}, ` +
             //         `birthdate=${birthdate}`,
@@ -170,7 +175,7 @@ router.post('/bulk', async (req: any, res) => {
             const queryRes: any[] = await sequelize.query(
                 `SELECT *
                  FROM player
-                 WHERE player_id = ${playerId} limit 1`,
+                 WHERE player_id = ${playerID} limit 1`,
                 { type: QueryTypes.SELECT },
             );
             if (queryRes.length === 0) {
@@ -190,7 +195,7 @@ router.post('/bulk', async (req: any, res) => {
                                             interceptions, headingaccuracy, defensiveawareness, standingtackle,
                                             slidingtackle, jumping, stamina, strength, aggression)
 
-                        VALUES (${playerId}, '${playername}', ${overallrating}, ${potential},
+                        VALUES (${playerID}, '${playerName}', ${overallrating}, ${potential},
                                 '${birthdate}', '${nationality}', ${height}, ${weight},
                                 '${preferredfoot}',
                                 ${preferredposition1}, ${preferredposition2},
@@ -204,13 +209,13 @@ router.post('/bulk', async (req: any, res) => {
                                 ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression})`,
                     { type: QueryTypes.INSERT },
                 );
-                // logger.info(`[API_LOGS][/player/bulk] Created new player: playerId=${playerId}`);
+                // logger.info(`[API_LOGS][/player/bulk] Created new player: playerID=${playerID}`);
             } else {
                 // update
                 if (+queryRes[0].overallrating !== +overallrating || +queryRes[0].potential !== +potential) {
                     logger.info(
                         `[API_LOGS][/player/bulk] [i=${i}]` +
-                            `[${playerId}][${playername}] ` +
+                            `[${playerID}][${playerName}] ` +
                             `overallRating=${queryRes[0].overallrating}->${overallrating}, ` +
                             `potential=${queryRes[0].potential}->${potential}`,
                     );
@@ -218,7 +223,7 @@ router.post('/bulk', async (req: any, res) => {
                 const result = await sequelize.query(
                     `
                         UPDATE player
-                        SET player_name='${playername}',
+                        SET player_name='${playerName}',
                             overallrating=${overallrating},
                             potential=${potential},
                             birthdate='${birthdate}',
@@ -263,10 +268,10 @@ router.post('/bulk', async (req: any, res) => {
                             stamina=${stamina},
                             strength=${strength},
                             aggression=${aggression}
-                        WHERE player_id = ${playerId}`,
+                        WHERE player_id = ${playerID}`,
                     { type: QueryTypes.UPDATE },
                 );
-                // logger.info(`[API_LOGS][/player/bulk] Updated player: playerId=${playerId}`);
+                // logger.info(`[API_LOGS][/player/bulk] Updated player: playerID=${playerID}`);
             }
         }
     } catch (e) {
