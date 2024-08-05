@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS player
     jumping                 INTEGER, -- 弹跳
     stamina                 INTEGER, -- 体力
     strength                INTEGER, -- 强壮
-    aggression              INTEGER  -- 侵略性
+    aggression              INTEGER,  -- 侵略性
     -- Goalkeeping 守门
     gkdiving                INTEGER, -- 扑救
     gkhandling              INTEGER, -- 手控
