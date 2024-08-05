@@ -12,8 +12,21 @@ const logger = new Logger(__filename);
  */
 router.get('', async (req: any, res) => {
     try {
-        const result = await sequelize.query('SELECT * FROM player', { type: QueryTypes.SELECT });
-        logger.info(`[API_LOGS][/player] ${JSON.stringify(result)}`);
+        const sqlRes: any[] = await sequelize.query('SELECT * FROM player', { type: QueryTypes.SELECT, raw: true });
+        logger.info(`[API_LOGS][/player] ${sqlRes.length} players found`);
+
+        const result = [];
+        for (let i = 0; i < sqlRes.length; i++) {
+            const player = sqlRes[i];
+            const birthdate = player.birthdate;
+            result.push({
+                playerID: player.player_id,
+                playerName: player.player_name,
+                overallRating: player.overallrating,
+                potential: player.potential,
+                birthdate: player.birthdate,
+            });
+        }
         res.send(result);
     } catch (e) {
         logger.error(`[API_LOGS][/player] ${e}`);
@@ -175,6 +188,11 @@ router.post('/bulk', async (req: any, res) => {
                 gkpositioning,
                 gkreflexes,
             } = player;
+
+            // convert currentDate to age, currentDate is in format 'yyyy-mm-dd'
+            const [year, month, day] = currentDate.split('-');
+            const cDate = new DateUtils(year, month, day);
+
             // logger.info(
             //     `[API_LOGS][/player/bulk] [i=${i}]` +
             //         `playerID=${playerID}, ` +
