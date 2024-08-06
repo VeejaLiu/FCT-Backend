@@ -315,6 +315,11 @@ router.post('/bulk', async (req: any, res) => {
                            )`;
                 const result = await sequelize.query(insertSQL, { type: QueryTypes.INSERT });
                 // logger.info(`[API_LOGS][/player/bulk] Created new player: playerID=${playerID}`);
+                const insertStatusSQL = `
+                    INSERT INTO player_status_history (player_id, in_game_date, overall, potential)
+                    VALUES (${playerID}, ${currentDate}, ${overallrating}, ${potential})
+                `;
+                const statusResult = await sequelize.query(insertStatusSQL, { type: QueryTypes.INSERT });
             } else {
                 // update
                 if (
@@ -384,6 +389,23 @@ router.post('/bulk', async (req: any, res) => {
                         WHERE player_id = ${playerID}`;
                 const result = await sequelize.query(updateSQL, { type: QueryTypes.UPDATE });
                 // logger.info(`[API_LOGS][/player/bulk] Updated player: playerID=${playerID}`);
+
+                // create table player_status_history
+                // (
+                //     id           INTEGER
+                //         primary key autoincrement,
+                //     save_id      INTEGER,
+                //     player_id    INTEGER,
+                //     in_game_date INTEGER,
+                //     birthdate    INTEGER,
+                //     overall      INTEGER,
+                //     potential    INTEGER
+                // );
+                const insertStatusSQL = `
+                    INSERT INTO player_status_history (player_id, in_game_date, overall, potential)
+                    VALUES (${playerID}, ${currentDate}, ${overallrating}, ${potential})
+                `;
+                const statusResult = await sequelize.query(insertStatusSQL, { type: QueryTypes.INSERT });
             }
         }
 

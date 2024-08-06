@@ -90,7 +90,6 @@ CREATE TABLE IF NOT EXISTS player_status_history
     save_id      INTEGER,
     player_id    INTEGER,
     in_game_date INTEGER,
-    birthdate    INTEGER,
     overall      INTEGER,
     potential    INTEGER
 );
