@@ -99,3 +99,8 @@ alter table player
 
 alter table player
     add is_archived integer default 0;
+
+create table db_version
+(
+    version integer
+);
