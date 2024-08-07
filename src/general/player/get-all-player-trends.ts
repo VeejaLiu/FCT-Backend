@@ -1,5 +1,6 @@
 import { Logger } from '../../lib/logger';
 import { doRawQuery } from '../../models';
+import { PLAYER_PRIMARY_POS_NAME, PLAYER_PRIMARY_POS_TYPE } from './get-all-players';
 
 const logger = new Logger(__filename);
 
@@ -12,16 +13,19 @@ interface PlayerTrend {
 interface PlayerTrendData {
     playerID: number;
     playerName: string;
+    preferredposition1: string;
+    positionType: string;
     trends: PlayerTrend[];
 }
 
 export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
     try {
         // query all players first
-        const sql1 = 'SELECT player_id, player_name FROM player WHERE is_archived = 0';
+        const sql1 = 'SELECT player_id, player_name, preferredposition1 FROM player WHERE is_archived = 0';
         const players: {
             player_id: number;
             player_name: string;
+            preferredposition1: number;
         }[] = await doRawQuery(sql1);
         logger.info(`[getAllPlayerTrends] ${players?.length} players found`);
         if (!players || players.length === 0) {
@@ -55,6 +59,8 @@ export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
             result.push({
                 playerID: player.player_id,
                 playerName: player.player_name,
+                positionType: PLAYER_PRIMARY_POS_TYPE[player.preferredposition1],
+                preferredposition1: PLAYER_PRIMARY_POS_NAME[player.preferredposition1],
                 trends: trends,
             });
         }

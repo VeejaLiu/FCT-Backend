@@ -4,7 +4,7 @@ import { Logger } from '../../lib/logger';
 
 const logger = new Logger(__filename);
 
-const PLAYER_PRIMARY_POS_NAME = {
+export const PLAYER_PRIMARY_POS_NAME = {
     0: 'GK',
     1: 'SW',
     2: 'RWB',
@@ -35,7 +35,7 @@ const PLAYER_PRIMARY_POS_NAME = {
     27: 'LW',
 };
 
-const PLAYER_PRIMARY_POS_TYPE = {
+export const PLAYER_PRIMARY_POS_TYPE = {
     0: 'GK',
     1: 'DEF',
     2: 'DEF',
