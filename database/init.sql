@@ -96,3 +96,6 @@ CREATE TABLE IF NOT EXISTS player_status_history
 
 alter table player
     add age integer;
+
+alter table player
+    add is_archived integer default 0;
