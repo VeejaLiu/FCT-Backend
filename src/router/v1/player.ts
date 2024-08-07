@@ -2,8 +2,8 @@ import express from 'express';
 import { Logger } from '../../lib/logger';
 import { sequelize } from '../../models/db-config';
 import { QueryTypes } from 'sequelize';
-import { DateUtils } from '../../utils/Date';
 import { bulkUpdatePlayer } from '../../general/bulk-update-player';
+import { doRawInsert, doRawQuery } from '../../models';
 
 const router = express.Router();
 
@@ -105,6 +105,21 @@ router.get('', async (req: any, res) => {
 });
 
 /**
+ * Get player count
+ */
+router.get('/count', async (req: any, res) => {
+    try {
+        const sqlRes: any[] = await doRawQuery(`SELECT COUNT(*) as c FROM player where is_archived = 0`);
+        const count = sqlRes[0].c;
+        logger.info(`[API_LOGS][/player/count] ${count} unarchived players found`);
+        res.send(count);
+    } catch (e) {
+        logger.error(`[API_LOGS][/player/count] ${e}`);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+/**
  * Create or update player
  */
 router.post('/single/:playerID', async (req: any, res) => {
@@ -123,22 +138,12 @@ router.post('/single/:playerID', async (req: any, res) => {
         }
 
         // query first
-        const queryRes: any[] = await sequelize.query(
-            `SELECT *
-             FROM player
-             WHERE player_id = ${playerID} limit 1`,
-            {
-                type: QueryTypes.SELECT,
-            },
-        );
+        const queryRes: any[] = await doRawQuery(`SELECT * FROM player WHERE player_id = ${playerID} limit 1`);
         if (queryRes.length === 0) {
             // insert
-            const result = await sequelize.query(
-                `INSERT INTO player (player_id, overallrating,
-                                     potential)
-                 VALUES (${playerID}, ${overallrating},
-                         ${potential})`,
-                { type: QueryTypes.INSERT },
+            const result = await doRawInsert(
+                `INSERT INTO player (player_id, overallrating, potential)
+                 VALUES (${playerID}, ${overallrating}, ${potential})`,
             );
             logger.info(
                 `[API_LOGS][/player] Created new player: playerID=${playerID}, overallrating=${overallrating}, potential=${potential}`,
@@ -149,12 +154,11 @@ router.post('/single/:playerID', async (req: any, res) => {
             });
         } else {
             // update
-            const result = await sequelize.query(
+            const result = await doRawQuery(
                 `UPDATE player
                  SET overallrating=${overallrating},
                      potential=${potential}
                  WHERE player_id = ${playerID}`,
-                { type: QueryTypes.UPDATE },
             );
             if (
                 parseInt(queryRes[0].overallrating) !== parseInt(overallrating) ||
