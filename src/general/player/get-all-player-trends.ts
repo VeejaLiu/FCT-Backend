@@ -41,7 +41,7 @@ export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
                 SELECT player_id, in_game_date, overallrating, potential
                 FROM player_status_history
                 WHERE player_id = ${player.player_id}
-                order by in_game_date desc
+                order by in_game_date
                 limit 20`;
             const playerTrends: {
                 player_id: number;
@@ -56,6 +56,9 @@ export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
                     potential: trend.potential,
                 };
             });
+            if (!trends || trends.length === 0) {
+                continue;
+            }
             result.push({
                 playerID: player.player_id,
                 playerName: player.player_name,
