@@ -4,7 +4,7 @@ import { QueryTypes } from 'sequelize';
 
 const logger = new Logger(__filename);
 
-export async function doRawQuery(query: string) {
+export async function doRawQuery(query: string): Promise<any> {
     try {
         const res = await sequelize.query(query, {
             type: QueryTypes.SELECT,
@@ -16,7 +16,7 @@ export async function doRawQuery(query: string) {
     }
 }
 
-export async function doRawUpdate(query: string) {
+export async function doRawUpdate(query: string): Promise<any> {
     try {
         const res = await sequelize.query(query, {
             type: QueryTypes.UPDATE,
@@ -28,7 +28,7 @@ export async function doRawUpdate(query: string) {
     }
 }
 
-export async function doRawInsert(query: string) {
+export async function doRawInsert(query: string): Promise<any> {
     try {
         const res = await sequelize.query(query, {
             type: QueryTypes.INSERT,

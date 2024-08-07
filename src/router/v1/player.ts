@@ -4,6 +4,7 @@ import { bulkUpdatePlayer } from '../../general/player/bulk-update-player';
 import { doRawInsert, doRawQuery } from '../../models';
 import { getAllPlayers } from '../../general/player/get-all-players';
 import { getPlayerCount } from '../../general/player/get-player-count';
+import { getAllPlayerTrends } from '../../general/player/get-all-player-trends';
 
 const router = express.Router();
 
@@ -23,6 +24,14 @@ router.get('', async (req: any, res) => {
 router.get('/count', async (req: any, res) => {
     const count = await getPlayerCount();
     res.send(count);
+});
+
+/**
+ * Get player trends
+ */
+router.get('/trends', async (req: any, res) => {
+    const result = await getAllPlayerTrends();
+    res.send(result);
 });
 
 /**
