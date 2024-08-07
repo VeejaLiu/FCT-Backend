@@ -88,4 +88,6 @@ export async function getAllPlayers() {
             position4: PLAYER_PRIMARY_POS_NAME[player.preferredposition4],
         });
     }
+
+    return result;
 }
