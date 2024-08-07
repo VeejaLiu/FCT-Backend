@@ -1,6 +1,6 @@
-import { DateUtils } from '../utils/Date';
-import { Logger } from '../lib/logger';
-import { doRawInsert, doRawQuery, doRawUpdate } from '../models';
+import { DateUtils } from '../../utils/Date';
+import { Logger } from '../../lib/logger';
+import { doRawInsert, doRawQuery, doRawUpdate } from '../../models';
 
 const logger = new Logger(__filename);
 

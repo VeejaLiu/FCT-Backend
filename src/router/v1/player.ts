@@ -2,7 +2,7 @@ import express from 'express';
 import { Logger } from '../../lib/logger';
 import { sequelize } from '../../models/db-config';
 import { QueryTypes } from 'sequelize';
-import { bulkUpdatePlayer } from '../../general/bulk-update-player';
+import { bulkUpdatePlayer } from '../../general/player/bulk-update-player';
 import { doRawInsert, doRawQuery } from '../../models';
 
 const router = express.Router();
