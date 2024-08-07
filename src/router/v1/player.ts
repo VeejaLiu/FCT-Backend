@@ -3,6 +3,7 @@ import { Logger } from '../../lib/logger';
 import { bulkUpdatePlayer } from '../../general/player/bulk-update-player';
 import { doRawInsert, doRawQuery } from '../../models';
 import { getAllPlayers } from '../../general/player/get-all-players';
+import { getPlayerCount } from '../../general/player/get-player-count';
 
 const router = express.Router();
 
@@ -12,28 +13,16 @@ const logger = new Logger(__filename);
  * Get all players
  */
 router.get('', async (req: any, res) => {
-    try {
-        const result = await getAllPlayers();
-        res.send(result);
-    } catch (e) {
-        logger.error(`[API_LOGS][/player] ${e}`);
-        res.status(500).send('Internal Server Error');
-    }
+    const result = await getAllPlayers();
+    res.send(result);
 });
 
 /**
  * Get player count
  */
 router.get('/count', async (req: any, res) => {
-    try {
-        const sqlRes: any[] = await doRawQuery(`SELECT COUNT(*) as c FROM player where is_archived = 0`);
-        const count = sqlRes[0].c;
-        logger.info(`[API_LOGS][/player/count] ${count} unarchived players found`);
-        res.send(count);
-    } catch (e) {
-        logger.error(`[API_LOGS][/player/count] ${e}`);
-        res.status(500).send('Internal Server Error');
-    }
+    const count = await getPlayerCount();
+    res.send(count);
 });
 
 /**
@@ -100,21 +89,10 @@ router.post('/single/:playerID', async (req: any, res) => {
  * Create or update players in bulk
  */
 router.post('/bulk', async (req: any, res) => {
-    try {
-        res.send({
-            message: 'Got the message',
-        });
-        const players = req.body;
-        logger.info(`[API_LOGS][/player/bulk] players.length=${players.length}`);
-        if (!players || players.length === 0) {
-            return;
-        }
-        await bulkUpdatePlayer(players);
-        logger.info(`[API_LOGS][/player/bulk] Done`);
-    } catch (e) {
-        logger.error(`[API_LOGS][/player/bulk] ${e}`);
-        res.status(500).send('Internal Server Error');
-    }
+    res.send({
+        message: 'Got the message',
+    });
+    await bulkUpdatePlayer(req.body);
 });
 
 export default router;
