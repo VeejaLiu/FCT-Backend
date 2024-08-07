@@ -6,47 +6,60 @@ import { loadMonitor } from './loaders/loadMonitor';
 import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
 import { closeSequelize } from './models/db-config';
+import { databaseUpgrade } from './models/database-upgrade';
 
-const app = express();
+async function Main() {
+    // init database
+    await databaseUpgrade().catch((e) => {
+        console.error('Database upgrade failed:', e);
+        process.exit();
+    });
 
-// 修复跨域问题
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
+    const app = express();
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-app.use('/api', index);
+    // 修复跨域问题
+    app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        next();
+    });
 
-loadMonitor(app);
-loadWinston();
-const log = new Logger(__filename);
+    app.use(express.json({ limit: '10mb' }));
+    app.use(express.urlencoded({ extended: true }));
+    app.use('/api', index);
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    console.error(`[APP][Error] ${err.stack}`);
-    res.status(500).send('Something broke!');
-};
-app.use(errorHandler);
+    loadMonitor(app);
+    loadWinston();
+    const log = new Logger(__filename);
 
-// 捕获未捕获的异常
-process.on('uncaughtException', (error) => {
-    console.error('Uncaught Exception:', error);
-});
+    const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+        console.error(`[APP][Error] ${err.stack}`);
+        res.status(500).send('Something broke!');
+    };
+    app.use(errorHandler);
 
-// 捕获未处理的 Promise 拒绝
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
+    // 捕获未捕获的异常
+    process.on('uncaughtException', (error) => {
+        console.error('Uncaught Exception:', error);
+    });
 
-// 关闭数据库连接
-process.on('SIGINT', async () => {
-    console.log('Received SIGINT.');
-    await closeSequelize();
-    process.exit();
-});
+    // 捕获未处理的 Promise 拒绝
+    process.on('unhandledRejection', (reason, promise) => {
+        console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    });
 
-app.listen(env.app.port, () => {
-    banner(log);
+    // 关闭数据库连接
+    process.on('SIGINT', async () => {
+        console.log('Received SIGINT.');
+        await closeSequelize();
+        process.exit();
+    });
+
+    app.listen(env.app.port, () => {
+        banner(log);
+    });
+}
+
+Main().then(() => {
+    console.log('Server started.');
 });
