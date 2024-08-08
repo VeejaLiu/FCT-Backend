@@ -1,7 +1,6 @@
 import express from 'express';
 import { Logger } from '../../lib/logger';
 import { bulkUpdatePlayer } from '../../general/player/bulk-update-player';
-import { doRawInsert, doRawQuery } from '../../models';
 import { getAllPlayers } from '../../general/player/get-all-players';
 import { getPlayerCount } from '../../general/player/get-player-count';
 import { getAllPlayerTrends } from '../../general/player/get-all-player-trends';
