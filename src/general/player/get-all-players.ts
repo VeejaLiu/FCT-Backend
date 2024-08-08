@@ -1,6 +1,7 @@
 import { sequelize } from '../../models/db-config';
 import { QueryTypes } from 'sequelize';
 import { Logger } from '../../lib/logger';
+import { doRawQuery } from '../../models';
 
 const logger = new Logger(__filename);
 
@@ -67,7 +68,7 @@ export const PLAYER_PRIMARY_POS_TYPE = {
 };
 
 export async function getAllPlayers() {
-    const sqlRes: any[] = await sequelize.query('SELECT * FROM player', { type: QueryTypes.SELECT, raw: true });
+    const sqlRes: any[] = await doRawQuery('SELECT * FROM player where is_archived = 0');
     logger.info(`[API_LOGS][/player] ${sqlRes.length} players found`);
 
     const result = [];
