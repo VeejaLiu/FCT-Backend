@@ -12,7 +12,7 @@ export async function bulkUpdatePlayer(players: any[]) {
         }
 
         // Query all existing players
-        const querySQL1 = `SELECT player_id FROM player`;
+        const querySQL1 = `SELECT player_id FROM player where is_archived = 0`;
         const existingPlayers: any = await doRawQuery(querySQL1);
         const existingPlayerIDs = existingPlayers.map((p: any) => p.player_id);
         const existingPlayerSet = new Set(existingPlayerIDs);
