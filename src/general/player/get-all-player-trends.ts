@@ -41,7 +41,7 @@ export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
                 SELECT player_id, in_game_date, overallrating, potential
                 FROM player_status_history
                 WHERE player_id = ${player.player_id}
-                order by in_game_date
+                order by in_game_date desc
                 limit 20`;
             const playerTrends: {
                 player_id: number;
@@ -49,13 +49,17 @@ export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
                 overallrating: number;
                 potential: number;
             }[] = await doRawQuery(sql2);
-            const trends = playerTrends.map((trend) => {
-                return {
-                    inGameDate: trend.in_game_date,
-                    overallRating: trend.overallrating,
-                    potential: trend.potential,
-                };
-            });
+            const trends = playerTrends
+                .sort((a, b) => {
+                    return new Date(a.in_game_date).getTime() - new Date(b.in_game_date).getTime();
+                })
+                .map((trend) => {
+                    return {
+                        inGameDate: trend.in_game_date,
+                        overallRating: trend.overallrating,
+                        potential: trend.potential,
+                    };
+                });
             if (!trends || trends.length === 0) {
                 continue;
             }
