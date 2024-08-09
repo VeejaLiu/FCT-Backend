@@ -13,6 +13,7 @@ export async function doRawQuery(query: string): Promise<any> {
         return res;
     } catch (e) {
         logger.error(`[doRawQuery] ${e}`);
+        throw e;
     }
 }
 
@@ -25,6 +26,7 @@ export async function doRawUpdate(query: string): Promise<any> {
         return res;
     } catch (e) {
         logger.error(`[doRawUpdate] ${e}`);
+        throw e;
     }
 }
 
@@ -37,5 +39,6 @@ export async function doRawInsert(query: string): Promise<any> {
         return res;
     } catch (e) {
         logger.error(`[doRawInsert] ${e}`);
+        throw e;
     }
 }
