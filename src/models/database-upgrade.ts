@@ -101,6 +101,13 @@ const sql = [
              )`,
         ],
     },
+    {
+        version: 1,
+        sql: [
+            `CREATE index IF NOT EXISTS idx_player_id
+                on player_status_history (player_id)`,
+        ],
+    },
 ];
 
 export async function databaseUpgrade() {
