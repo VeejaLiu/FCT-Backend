@@ -189,5 +189,5 @@ function OnEvent(events_manager, event_id, event)
     end
 end
 
---sendTeamPlayerAttr()
-AddEventHandler("post__CareerModeEvent", OnEvent)
+sendTeamPlayerAttr()
+-- AddEventHandler("post__CareerModeEvent", OnEvent)
