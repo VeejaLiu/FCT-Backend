@@ -29,7 +29,10 @@ router.get('/count', async (req: any, res) => {
  * Get player trends
  */
 router.get('/trends', async (req: any, res) => {
+    const start = new Date().getTime();
     const result = await getAllPlayerTrends();
+    const end = new Date().getTime();
+    logger.info(`[GET /player/trends] Time elapsed: ${end - start} ms`);
     res.send(result);
 });
 
