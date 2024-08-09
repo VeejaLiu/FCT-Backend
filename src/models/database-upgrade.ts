@@ -120,7 +120,7 @@ export async function databaseUpgrade() {
 
     // query to get current version
     console.log('[databaseUpgrade] Check current database version');
-    const existingVersionRes: any[] = await doRawQuery('SELECT version FROM db_version limit 1');
+    const existingVersionRes: any[] = await doRawQuery('SELECT max(version) as version FROM db_version limit 1');
     if (existingVersionRes.length > 0) {
         existingVersion = existingVersionRes[0]?.version;
         console.log(`[databaseUpgrade] Current database version: ${existingVersion}`);
