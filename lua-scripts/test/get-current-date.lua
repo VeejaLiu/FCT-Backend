@@ -1,3 +1,7 @@
+require 'imports/career_mode/helpers'
+require 'imports/other/helpers'
+local json = require("imports/external/json")
+
 local currentDate = GetCurrentDate()
 print(currentDate.year)
 print(currentDate.month)
