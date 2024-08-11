@@ -141,6 +141,14 @@ export async function bulkUpdatePlayer(players: any[]) {
                 const result = await doRawInsert(insertSQL);
                 // logger.info(`[bulkUpdatePlayer] Created new player: playerID=${playerID}`);
             } else {
+                if (
+                    Number(queryRes[0].overallrating) !== Number(overallrating) &&
+                    Number(queryRes[0].potential) !== Number(potential)
+                ) {
+                    logger.info(
+                        `[bulkUpdatePlayer] Update player: playerID=${playerID}, overallrating=${queryRes[0].overallrating} -> ${overallrating}, potential=${queryRes[0].potential} -> ${potential}`,
+                    );
+                }
                 const updateSQL = `
                 UPDATE player
                 SET player_name='${playerName}',
