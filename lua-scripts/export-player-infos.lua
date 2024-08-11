@@ -2,6 +2,109 @@ require 'imports/career_mode/helpers'
 require 'imports/other/helpers'
 local json = require("imports/external/json")
 
+
+local pre_cm_event_handlers = GetEventHandlers("pre__CareerModeEvent")
+local post_cm_event_handlers = GetEventHandlers("post__CareerModeEvent")
+
+print(string.format("You have %d pre__CareerModeEvents and %d post__CareerModeEvents", #pre_cm_event_handlers, #post_cm_event_handlers))
+
+if #pre_cm_event_handlers > 0 then
+    -- Remove first pre__CareerModeEvent
+    RemoveEventHandler("pre__CareerModeEvent", pre_cm_event_handlers[1].id)
+end
+
+if #post_cm_event_handlers > 0 then
+    -- Remove first post__CareerModeEvent
+    RemoveEventHandler("post__CareerModeEvent", post_cm_event_handlers[1].id)
+end
+
+pre_cm_event_handlers = GetEventHandlers("pre__CareerModeEvent")
+post_cm_event_handlers = GetEventHandlers("post__CareerModeEvent")
+
+print(string.format("You have %d pre__CareerModeEvents and %d post__CareerModeEvents", #pre_cm_event_handlers, #post_cm_event_handlers))
+
+
+
+local currentDate = GetCurrentDate()
+
+local systemDateYear = currentDate.year
+local systemDateMonth = currentDate.month
+local systemDateDay = currentDate.day
+
+local currentDateYear = currentDate.year
+local currentDateMonth = currentDate.month
+local currentDateDay = currentDate.day
+print(string.format("Init Current Date: %d-%d-%d", currentDateYear, currentDateMonth, currentDateDay))
+
+
+function addOneDay()
+    -- 创建时间表
+    local time_table = {
+        year = currentDateYear,
+        month = currentDateMonth,
+        day = currentDateDay,
+        hour = 0,
+        min = 0,
+        sec = 0
+    }
+
+    -- 获取当前时间戳
+    local timestamp = os.time(time_table)
+
+    -- 加一天（24小时）
+    local new_timestamp = timestamp + 24 * 60 * 60
+
+    -- 更新全局变量
+    local new_time_table = os.date("*t", new_timestamp)
+    y, m, d = new_time_table.year, new_time_table.month, new_time_table.day
+    currentDateYear = y
+    currentDateMonth = m
+    currentDateDay = d
+end
+
+function updateDateWhenDayPass()
+    -- 先尝试使用内置函数获取当前时间
+    local currentDate = GetCurrentDate()
+    Log(string.format("[updateDateWhenDayPass] Get from GetCurrentDate function: %d-%d-%d", currentDate.year, currentDate.month, currentDate.day))
+    Log(string.format("[updateDateWhenDayPass] Get from systemDate: %d-%d-%d", systemDateYear, systemDateMonth, systemDateDay))
+    Log(string.format("[updateDateWhenDayPass] Get from our currentDate: %d-%d-%d", currentDateYear, currentDateMonth, currentDateDay))
+    --如果这个时间没有更新，说明这个值没有被更新，这个值不能用，需要自己计算
+    if (currentDate.year == systemDateYear
+            and currentDate.month == systemDateMonth
+            and currentDate.day == systemDateDay
+        ) then
+        Log("[updateDateWhenDayPass] System Date is not updated, add one day")
+        addOneDay()
+        local dateStr = string.format("%d-%d-%d", currentDateYear, currentDateMonth, currentDateDay)
+        print(string.format("[updateDateWhenDayPass] Final Current Date: %s", dateStr))
+        return
+    end
+
+    Log("System Date is updated, so we can use it directly")
+    -- 如果这个值被更新了，说明这个值是可以用的，返回这个值，并且更新我们自己存储的时间
+    -- 更新系统时间
+    systemDateYear = currentDate.year
+    systemDateMonth = currentDate.month
+    systemDateDay = currentDate.day
+    -- 更新我们自己存储的时间
+    currentDateYear = currentDate.year
+    currentDateMonth = currentDate.month
+    currentDateDay = currentDate.day
+
+    local dateStr = string.format("%d-%d-%d", currentDate.year, currentDate.month, currentDate.day)
+    Log(string.format("[updateDateWhenDayPass] Final Current Date: %s", dateStr))
+end
+
+function OnDayPassedEvent(events_manager, event_id, event)
+    if (
+            event_id == ENUM_CM_EVENT_MSG_DAY_PASSED
+        ) then
+        updateDateWhenDayPass()
+    end
+end
+
+AddEventHandler("post__CareerModeEvent", OnDayPassedEvent)
+
 local attributeNameList = {
     "birthdate",
     "overallrating",
@@ -87,6 +190,7 @@ end
 
 -- Post to API
 function postPlayers(jsonStr, dateStr)
+    Log('[postPlayers] Start')
     local command = 'curl -X POST -H "Content-Type: application/json"'
 
     -- Save to file, data from file
@@ -103,13 +207,14 @@ function postPlayers(jsonStr, dateStr)
     -- Add URL
     command = command .. ' ' .. "http://localhost:8888/api/v1/player/bulk"
 
-    Log('Command: ' .. command)
+    Log('[postPlayers] Command: ' .. command)
 
     -- Upload to API
     os.execute(command)
+    Log('[postPlayers] Done')
 
     -- delete file
-    os.remove("fifa_career_dashboard_players.json")
+    --os.remove("fifa_career_dashboard_players.json")
 end
 
 function sendTeamPlayerAttr()
@@ -119,9 +224,9 @@ function sendTeamPlayerAttr()
     end
 
     -- local saveUID = GetSaveUID()
-    local currentDate = GetCurrentDate()
-    local dateStr = string.format("%d-%d-%d", currentDate.year, currentDate.month, currentDate.day)
-    Log(string.format("Current Date: %s", dateStr))
+    --local currentDate = GetCurrentDate()
+    local dateStr = string.format("%d-%d-%d", currentDateYear, currentDateMonth, currentDateDay)
+    Log(string.format("[sendTeamPlayerAttr] Current Date: %s", dateStr))
 
     local userTeamPlayerIDs = GetUserSeniorTeamPlayerIDs()
     local players_count = table_count(userTeamPlayerIDs)
@@ -184,7 +289,7 @@ end
 function OnEvent(events_manager, event_id, event)
     if (
             event_id == ENUM_CM_EVENT_MSG_WEEK_PASSED
-    ) then
+        ) then
         sendTeamPlayerAttr()
     end
 end
