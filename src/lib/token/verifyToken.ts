@@ -62,6 +62,9 @@ export function verifyToken(req: any, res: any, next: any) {
         });
     } else {
         req.user = undefined;
-        res.status(401).send();
+        res.status(401).send({
+            success: false,
+            message: 'Missing token',
+        });
     }
 }

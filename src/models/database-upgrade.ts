@@ -124,6 +124,23 @@ const sql = [
             `,
         ],
     },
+    {
+        version: 3,
+        sql: [
+            // add user_id to player table
+            `ALTER TABLE player
+                ADD COLUMN user_id INTEGER`,
+            // Add user id index to player table
+            `CREATE index IF NOT EXISTS idx_user_id
+                on player (user_id)`,
+            // add user_id to player_status_history
+            `ALTER TABLE player_status_history
+                ADD COLUMN user_id INTEGER`,
+            // Add user id index to player_status_history
+            `CREATE index IF NOT EXISTS idx_user_id
+                on player_status_history (user_id)`,
+        ],
+    },
 ];
 
 export async function databaseUpgrade() {

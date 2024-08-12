@@ -18,10 +18,13 @@ interface PlayerTrendData {
     trends: PlayerTrend[];
 }
 
-export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
+export async function getAllPlayerTrends({ userId }: { userId: string }): Promise<PlayerTrendData[]> {
     try {
         // query all players first
-        const sql1 = 'SELECT player_id, player_name, preferredposition1 FROM player WHERE is_archived = 0';
+        const sql1 = `SELECT player_id, player_name, preferredposition1
+                      FROM player
+                      WHERE is_archived = 0
+                        and user_id = ${userId}`;
         const players: {
             player_id: number;
             player_name: string;
@@ -41,6 +44,7 @@ export async function getAllPlayerTrends(): Promise<PlayerTrendData[]> {
                 SELECT player_id, in_game_date, overallrating, potential
                 FROM player_status_history
                 WHERE player_id = ${player.player_id}
+                AND user_id = ${userId}
                 order by in_game_date desc
                 limit 20`;
             const playerTrends: {

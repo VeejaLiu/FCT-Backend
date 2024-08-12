@@ -65,8 +65,11 @@ export const PLAYER_PRIMARY_POS_TYPE = {
     27: 'FOR',
 };
 
-export async function getAllPlayers() {
-    const sqlRes: any[] = await doRawQuery('SELECT * FROM player where is_archived = 0');
+export async function getAllPlayers({ userId }: { userId: string }) {
+    logger.info(`[API_LOGS][/player] [userId=${userId}] Get all players`);
+
+    const sqlRes: any[] = await doRawQuery(`SELECT * FROM player where is_archived = 0 and user_id = ${userId}`);
+
     logger.info(`[API_LOGS][/player] ${sqlRes.length} players found`);
 
     const result = [];

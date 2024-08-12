@@ -14,26 +14,26 @@ const logger = new Logger(__filename);
  * Get all players
  */
 router.get('', verifyToken, async (req: any, res) => {
-    const result = await getAllPlayers();
+    const { userId } = req.user;
+    const result = await getAllPlayers({ userId });
     res.send(result);
 });
 
 /**
  * Get player count
  */
-router.get('/count', async (req: any, res) => {
-    const count = await getPlayerCount();
+router.get('/count', verifyToken, async (req: any, res) => {
+    const { userId } = req.user;
+    const count = await getPlayerCount({ userId });
     res.send(count);
 });
 
 /**
  * Get player trends
  */
-router.get('/trends', async (req: any, res) => {
-    const start = new Date().getTime();
-    const result = await getAllPlayerTrends();
-    const end = new Date().getTime();
-    logger.info(`[GET /player/trends] Time elapsed: ${end - start} ms`);
+router.get('/trends', verifyToken, async (req: any, res) => {
+    const { userId } = req.user;
+    const result = await getAllPlayerTrends({ userId });
     res.send(result);
 });
 
