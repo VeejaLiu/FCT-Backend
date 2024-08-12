@@ -1,5 +1,3 @@
-import { sequelize } from '../../models/db-config';
-import { QueryTypes } from 'sequelize';
 import { Logger } from '../../lib/logger';
 import { doRawQuery } from '../../models';
 

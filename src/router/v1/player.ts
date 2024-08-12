@@ -4,6 +4,7 @@ import { bulkUpdatePlayer } from '../../general/player/bulk-update-player';
 import { getAllPlayers } from '../../general/player/get-all-players';
 import { getPlayerCount } from '../../general/player/get-player-count';
 import { getAllPlayerTrends } from '../../general/player/get-all-player-trends';
+import { verifyToken } from '../../lib/token/verifyToken';
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ const logger = new Logger(__filename);
 /**
  * Get all players
  */
-router.get('', async (req: any, res) => {
+router.get('', verifyToken, async (req: any, res) => {
     const result = await getAllPlayers();
     res.send(result);
 });

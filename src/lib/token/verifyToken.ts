@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { env } from '../../env';
+import { doRawQuery } from '../../models';
 
 const JWT_SECRET = env.secret.jwt;
 
@@ -19,16 +20,42 @@ export function testVerifyToken(token: string) {
 export function verifyToken(req: any, res: any, next: any) {
     const token = req.headers.token;
     if (token) {
-        jwt.verify(req.headers.token, JWT_SECRET, function (err, decode) {
+        jwt.verify(req.headers.token, JWT_SECRET, async function (err, decode) {
             if (err) {
                 req.user = undefined;
-                res.status(401).send();
+                res.status(401).send({
+                    success: false,
+                    message: 'Token is not valid',
+                });
             } else {
                 const { id, iat, exp } = decode;
+
                 if (Date.now() > exp * 1000) {
                     req.user = undefined;
-                    res.status(401).send();
+                    res.status(401).send({
+                        success: false,
+                        message: 'Token expired',
+                    });
                 }
+
+                // verify if the token matches database
+                const databaseRes = await doRawQuery(`SELECT * FROM user WHERE id = ${id}`);
+                if (databaseRes.length === 0) {
+                    req.user = undefined;
+                    res.status(401).send({
+                        success: false,
+                        message: 'Token is not valid',
+                    });
+                }
+
+                if (databaseRes[0].token !== token) {
+                    req.user = undefined;
+                    res.status(401).send({
+                        success: false,
+                        message: 'Token expired',
+                    });
+                }
+
                 req.user = { userId: id };
                 next();
             }
