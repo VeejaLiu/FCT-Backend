@@ -49,7 +49,8 @@ export async function loginUser({ username, password }: { username: string; pass
          * Sign token
          */
         const token = signToken(userID);
-        const saveTokenSql = `UPDATE user SET token = '${token}' WHERE id = ${userID}`;
+        const saveTokenSql = `UPDATE user SET token = '${token}', update_time = CURRENT_TIMESTAMP 
+                              WHERE id = ${userID}`;
         await doRawUpdate(saveTokenSql);
 
         return {
