@@ -5,6 +5,7 @@ import { getAllPlayers } from '../../general/player/get-all-players';
 import { getPlayerCount } from '../../general/player/get-player-count';
 import { getAllPlayerTrends } from '../../general/player/get-all-player-trends';
 import { verifyToken } from '../../lib/token/verifyToken';
+import { verifySecretKey } from '../../lib/token/verifySecretKey';
 
 const router = express.Router();
 
@@ -40,11 +41,15 @@ router.get('/trends', verifyToken, async (req: any, res) => {
 /**
  * Create or update players in bulk
  */
-router.post('/bulk', async (req: any, res) => {
+router.post('/bulk', verifySecretKey, async (req: any, res) => {
     res.send({
         message: 'Got the message',
     });
-    await bulkUpdatePlayer(req.body);
+    const { userId } = req.user;
+    await bulkUpdatePlayer({
+        userId: userId,
+        players: req.body,
+    });
 });
 
 export default router;

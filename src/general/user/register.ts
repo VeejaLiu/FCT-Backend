@@ -1,6 +1,7 @@
 import { doRawInsert, doRawQuery } from '../../models';
 import bcrypt from 'bcryptjs';
 import { Logger } from '../../lib/logger';
+import { refreshSecretKey } from './refresh-secret-key';
 
 const logger = new Logger(__filename);
 
@@ -73,6 +74,11 @@ export async function registerUser({
         const res = await doRawInsert(sql2);
         const userId = res[0];
         logger.info(`[/user/register] Register user success: ${userId}`);
+
+        /*
+         * Insert secret key
+         */
+        await refreshSecretKey({ userId: userId });
 
         return {
             success: true,

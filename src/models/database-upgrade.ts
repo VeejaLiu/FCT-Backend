@@ -141,6 +141,20 @@ const sql = [
                 on player_status_history (user_id)`,
         ],
     },
+    {
+        version: 4,
+        sql: [
+            // add new table for storing user's secret key
+            `CREATE TABLE user_secret_key
+             (
+                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                 user_id     INTEGER,
+                 secret_key  TEXT,
+                 create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+                 update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+             )`,
+        ],
+    },
 ];
 
 export async function databaseUpgrade() {

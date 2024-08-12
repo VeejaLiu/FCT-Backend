@@ -4,7 +4,7 @@ import { doRawInsert, doRawQuery, doRawUpdate } from '../../models';
 
 const logger = new Logger(__filename);
 
-export async function bulkUpdatePlayer(players: any[]) {
+export async function bulkUpdatePlayer({ userId, players }: { userId: string; players: any[] }) {
     try {
         logger.info(`[bulkUpdatePlayer] players.length=${players.length}`);
         if (!players || players.length === 0) {
