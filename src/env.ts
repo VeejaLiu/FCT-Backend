@@ -40,4 +40,7 @@ export const env = {
         username: getOsEnv('MONITOR_USERNAME'),
         password: getOsEnv('MONITOR_PASSWORD'),
     },
+    secret: {
+        jwt: getOsEnv('SECRET_JWT'),
+    },
 };

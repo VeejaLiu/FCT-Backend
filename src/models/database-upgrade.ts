@@ -108,6 +108,22 @@ const sql = [
                 on player_status_history (player_id)`,
         ],
     },
+    {
+        version: 2,
+        sql: [
+            `CREATE TABLE user
+             (
+                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                 username    TEXT NOT NULL,
+                 email       TEXT NOT NULL,
+                 password    TEXT NOT NULL,
+                 token       TEXT,
+                 create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+                 update_time DATETIME DEFAULT CURRENT_TIMESTAMP
+             );
+            `,
+        ],
+    },
 ];
 
 export async function databaseUpgrade() {
