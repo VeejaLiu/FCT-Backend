@@ -36,7 +36,6 @@ local currentDateMonth = currentDate.month
 local currentDateDay = currentDate.day
 print(string.format("Init Current Date: %d-%d-%d", currentDateYear, currentDateMonth, currentDateDay))
 
-
 function addOneDay()
     -- 创建时间表
     local time_table = {
@@ -192,6 +191,8 @@ end
 function postPlayers(jsonStr, dateStr)
     Log('[postPlayers] Start')
     local command = 'curl -X POST -H "Content-Type: application/json"'
+    -- add new header - token
+    command = command .. ' -H "secret-key: ******"'
 
     -- Save to file, data from file
     local fileName = "fifa_career_dashboard_players-" .. dateStr .. ".json"
