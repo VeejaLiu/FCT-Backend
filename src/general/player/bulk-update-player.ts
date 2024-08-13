@@ -6,13 +6,13 @@ const logger = new Logger(__filename);
 
 export async function bulkUpdatePlayer({ userId, players }: { userId: string; players: any[] }) {
     try {
-        logger.info(`[bulkUpdatePlayer] players.length=${players.length}`);
+        logger.info(`[bulkUpdatePlayer][userId=${userId}] players.length=${players.length}`);
         if (!players || players.length === 0) {
             return;
         }
 
         // Query all existing players
-        const querySQL1 = `SELECT player_id FROM player where is_archived = 0`;
+        const querySQL1 = `SELECT player_id FROM player where is_archived = 0 AND user_id = ${userId}`;
         const existingPlayers: any = await doRawQuery(querySQL1);
         const existingPlayerIDs = existingPlayers.map((p: any) => p.player_id);
         const existingPlayerSet = new Set(existingPlayerIDs);
@@ -105,12 +105,13 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
             // );
 
             // query first
-            const querySQL = `SELECT * FROM player WHERE player_id = ${playerID} limit 1`;
+            const querySQL = `SELECT * FROM player WHERE player_id = ${playerID} AND user_id = ${userId} limit 1`;
             const queryRes: any[] = await doRawQuery(querySQL);
             if (queryRes.length === 0) {
                 // insert
                 const insertSQL = `
                     INSERT INTO player (
+                                        user_id,
                                         player_id, player_name, overallrating, potential,
                                         birthdate, nationality, height, weight, age,
                                         preferredfoot,
@@ -124,7 +125,9 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                                         interceptions, headingaccuracy, defensiveawareness, standingtackle,
                                         slidingtackle, jumping, stamina, strength, aggression,
                                         gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
-                    VALUES (${playerID}, '${playerName}', ${overallrating}, ${potential},
+                    VALUES (
+                            ${userId},
+                            ${playerID}, '${playerName}', ${overallrating}, ${potential},
                             '${birthdate}', '${nationality}', ${height}, ${weight}, ${age},
                             '${preferredfoot}',
                             ${preferredposition1}, ${preferredposition2},
@@ -146,7 +149,7 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                     Number(queryRes[0].potential) !== Number(potential)
                 ) {
                     logger.info(
-                        `[bulkUpdatePlayer] Update player: playerID=${playerID}, overallrating=${queryRes[0].overallrating} -> ${overallrating}, potential=${queryRes[0].potential} -> ${potential}`,
+                        `[bulkUpdatePlayer][userID=${userId}] Update player: playerID=${playerID}, overallrating=${queryRes[0].overallrating} -> ${overallrating}, potential=${queryRes[0].potential} -> ${potential}`,
                     );
                 }
                 const updateSQL = `
@@ -202,7 +205,8 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                     gkkicking=${gkkicking},
                     gkpositioning=${gkpositioning},
                     gkreflexes=${gkreflexes}
-                WHERE player_id = ${playerID}`;
+                WHERE player_id = ${playerID} 
+                  AND user_id = ${userId}`;
                 const result = await doRawUpdate(updateSQL);
                 // logger.info(`[bulkUpdatePlayer] Updated player: playerID=${playerID}`);
             }
@@ -215,35 +219,46 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
             // query by player_id and in_game_date
             const queryStatusSQL = `
                 SELECT * FROM player_status_history
-                WHERE player_id = ${playerID} AND in_game_date = '${dateStr}'`;
+                WHERE player_id = ${playerID} 
+                  AND in_game_date = '${dateStr}'
+                  AND user_id = ${userId}`;
             const queryStatusResult = await doRawQuery(queryStatusSQL);
             if (queryStatusResult.length > 0) {
                 logger.warn(
-                    `[bulkUpdatePlayer] player_status_history already exists: playerID=${playerID}, date=${dateStr}`,
+                    `[bulkUpdatePlayer][userId=${userId}] player_status_history already exists: playerID=${playerID}, date=${dateStr}`,
                 );
                 // update
                 const updateStatusSQL = `
                     UPDATE player_status_history
                     SET overallrating=${overallrating},
                         potential=${potential}
-                    WHERE player_id = ${playerID} AND in_game_date = '${dateStr}'`;
+                    WHERE player_id = ${playerID} 
+                      AND in_game_date = '${dateStr}'
+                      AND user_id = ${userId}`;
                 await doRawUpdate(updateStatusSQL);
             } else {
                 const insertStatusSQL = `
-                    INSERT INTO player_status_history (player_id, in_game_date, overallrating, potential)
-                    VALUES (${playerID}, '${dateStr}', ${overallrating}, ${potential})`;
+                    INSERT INTO player_status_history 
+                        (player_id, in_game_date, overallrating, potential, user_id)
+                    VALUES 
+                        (${playerID}, '${dateStr}', ${overallrating}, ${potential}, ${userId})`;
                 await doRawInsert(insertStatusSQL);
             }
         }
 
         // archive players that are not in the new list
         if (existingPlayerSet.size > 0) {
-            logger.info(`[bulkUpdatePlayer] Archive players: ${Array.from(existingPlayerSet).join(',')}`);
+            logger.info(
+                `[bulkUpdatePlayer][userID=${userId}] Archive players: ${Array.from(existingPlayerSet).join(',')}`,
+            );
             const archivePlayerIDs = Array.from(existingPlayerSet);
-            const archiveSQL = `UPDATE player SET is_archived = 1 WHERE player_id IN (${archivePlayerIDs.join(',')})`;
+            const archiveSQL = `
+                UPDATE player SET is_archived = 1 
+                WHERE player_id IN (${archivePlayerIDs.join(',')})
+                    AND user_id = ${userId}`;
             await doRawUpdate(archiveSQL);
         }
     } catch (e) {
-        logger.error(`[bulkUpdatePlayer] error: ${e}`);
+        logger.error(`[bulkUpdatePlayer][userID=${userId}] error: ${e}`);
     }
 }
