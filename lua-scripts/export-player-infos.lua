@@ -206,7 +206,7 @@ function postPlayers(jsonStr, dateStr)
     -- command = command .. ' -d "' .. jsonStr .. '"'
 
     -- Add URL
-    command = command .. ' ' .. "http://localhost:8888/api/v1/player/bulk"
+    command = command .. ' ' .. "https://fifa.009988776.xyz/api/v1/player/bulk"
 
     Log('[postPlayers] Command: ' .. command)
 
