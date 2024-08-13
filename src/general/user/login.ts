@@ -15,7 +15,7 @@ export async function loginUser({ username, password }: { username: string; pass
             logger.info(`[/user/login] Missing required fields`);
             return {
                 success: false,
-                message: 'Missing required fields',
+                message: 'User or password not matched',
             };
         }
 
@@ -28,7 +28,7 @@ export async function loginUser({ username, password }: { username: string; pass
             logger.info(`[/user/login] User not found`);
             return {
                 success: false,
-                message: 'User not found with this username or email',
+                message: 'User or password not matched',
             };
         }
 
@@ -38,7 +38,7 @@ export async function loginUser({ username, password }: { username: string; pass
             logger.info(`[/user/login] Password not matched`);
             return {
                 success: false,
-                message: 'Password not matched',
+                message: 'User or password not matched',
             };
         }
 

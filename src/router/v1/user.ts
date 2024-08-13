@@ -36,6 +36,13 @@ router.post('/login', async (req: any, res: any) => {
 });
 
 /**
+ * Verify user token
+ */
+router.post('/verify-token', verifyToken, async (req: any, res: any) => {
+    res.status(200).send({ success: true, message: 'Token is valid' });
+});
+
+/**
  * User logout
  */
 router.post('/logout', verifyToken, async (req: any, res: any) => {
@@ -51,7 +58,7 @@ router.post('/logout', verifyToken, async (req: any, res: any) => {
  */
 router.get('/secret', verifyToken, async (req: any, res: any) => {
     const { userId } = req.user;
-    const result = getSecretKey({
+    const result = await getSecretKey({
         userId: userId,
     });
     res.status(200).send(result);
@@ -62,7 +69,7 @@ router.get('/secret', verifyToken, async (req: any, res: any) => {
  */
 router.post('/secret/refresh', verifyToken, async (req: any, res: any) => {
     const { userId } = req.user;
-    const result = refreshSecretKey({
+    const result = await refreshSecretKey({
         userId: userId,
     });
     res.status(200).send(result);
