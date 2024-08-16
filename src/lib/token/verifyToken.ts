@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { env } from '../../env';
 import { doRawQuery } from '../../models';
+import { Logger } from '../logger';
 
 const JWT_SECRET = env.secret.jwt;
+
+const logger = new Logger(__filename);
 
 export function testVerifyToken(token: string) {
     const result = jwt.verify(token, JWT_SECRET);
@@ -22,8 +25,9 @@ export function verifyToken(req: any, res: any, next: any) {
     if (token) {
         jwt.verify(req.headers.token, JWT_SECRET, async function (err, decode) {
             if (err) {
+                logger.error(`[verifyToken] verify error: ${err}`);
                 req.user = undefined;
-                res.status(401).send({
+                return res.status(401).send({
                     success: false,
                     message: 'Token is not valid',
                 });
@@ -31,8 +35,9 @@ export function verifyToken(req: any, res: any, next: any) {
                 const { id, iat, exp } = decode;
 
                 if (Date.now() > exp * 1000) {
+                    logger.error(`[verifyToken] token expired`);
                     req.user = undefined;
-                    res.status(401).send({
+                    return res.status(401).send({
                         success: false,
                         message: 'Token expired',
                     });
@@ -41,16 +46,18 @@ export function verifyToken(req: any, res: any, next: any) {
                 // verify if the token matches database
                 const databaseRes = await doRawQuery(`SELECT * FROM user WHERE id = ${id}`);
                 if (databaseRes.length === 0) {
+                    logger.error(`[verifyToken] user[${id}] not found`);
                     req.user = undefined;
-                    res.status(401).send({
+                    return res.status(401).send({
                         success: false,
                         message: 'Token is not valid',
                     });
                 }
 
                 if (databaseRes[0].token !== token) {
+                    logger.error(`[verifyToken] token not match`);
                     req.user = undefined;
-                    res.status(401).send({
+                    return res.status(401).send({
                         success: false,
                         message: 'Token expired',
                     });
