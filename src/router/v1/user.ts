@@ -14,15 +14,15 @@ const logger = new Logger(__filename);
 /**
  * User registration
  */
-// router.post('/register', async (req: any, res: any) => {
-//     const { username, email, password } = req.body;
-//     const result = await registerUser({
-//         username: username,
-//         email: email,
-//         password: password,
-//     });
-//     res.status(200).send(result);
-// });
+router.post('/register', async (req: any, res: any) => {
+    const { username, email, password } = req.body;
+    const result = await registerUser({
+        username: username,
+        email: email,
+        password: password,
+    });
+    res.status(200).send(result);
+});
 
 /**
  * User login
