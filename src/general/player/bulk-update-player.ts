@@ -19,7 +19,7 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
 
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
-            const {
+            let {
                 // -- player
                 playerID,
                 playerName,
@@ -84,7 +84,7 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                 gkpositioning,
                 gkreflexes,
             } = player;
-            playerName.replace(/'/g, ' ');
+            playerName = playerName.replace(/'/g, "''");
             // remove playerID from existingPlayerSet
             if (existingPlayerSet.has(playerID)) {
                 existingPlayerSet.delete(playerID);
