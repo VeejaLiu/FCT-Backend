@@ -7,9 +7,12 @@ const JWT_SECRET = env.secret.jwt;
 
 const logger = new Logger(__filename);
 
-export function testVerifyToken(token: string) {
-    const result = jwt.verify(token, JWT_SECRET);
-    console.log(result);
+export async function testVerifyToken(token: string) {
+    try {
+        const result = jwt.verify(token, JWT_SECRET);
+    } catch (e) {
+        logger.error(`[testVerifyToken] verify error: ${e}`);
+    }
 }
 
 /**

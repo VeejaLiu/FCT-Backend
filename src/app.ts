@@ -38,6 +38,18 @@ async function Main() {
     };
     app.use(errorHandler);
 
+    // Open websocket server
+    const WebSocket = require('ws');
+    const wss = new WebSocket.Server({ port: 8889 });
+    wss.on('connection', (socket, request) => {
+        const protocol = request.headers['sec-websocket-protocol'];
+        if (protocol === 'your-user-token') {
+            socket.send('Protocol accepted');
+        } else {
+            socket.close(1002, 'Protocol not supported');
+        }
+    });
+
     // Fix unhandled promise rejection
     process.on('uncaughtException', (error) => {
         console.error('Uncaught Exception:', error);
