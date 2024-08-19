@@ -20,7 +20,7 @@ export function testVerifyToken(token: string) {
  * @param res
  * @param next
  */
-export function verifyToken(req: any, res: any, next: any) {
+export function verifyTokenMiddleware(req: any, res: any, next: any) {
     const token = req.headers.token;
     if (token) {
         jwt.verify(req.headers.token, JWT_SECRET, async function (err, decode) {

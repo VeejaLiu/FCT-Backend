@@ -4,7 +4,7 @@ import { bulkUpdatePlayer } from '../../general/player/bulk-update-player';
 import { getAllPlayers } from '../../general/player/get-all-players';
 import { getPlayerCount } from '../../general/player/get-player-count';
 import { getAllPlayerTrends } from '../../general/player/get-all-player-trends';
-import { verifyToken } from '../../lib/token/verifyToken';
+import { verifyTokenMiddleware } from '../../lib/token/verifyTokenMiddleware';
 import { verifySecretKey } from '../../lib/token/verifySecretKey';
 
 const router = express.Router();
@@ -14,7 +14,7 @@ const logger = new Logger(__filename);
 /**
  * Get all players
  */
-router.get('', verifyToken, async (req: any, res) => {
+router.get('', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
     const result = await getAllPlayers({ userId });
     res.send(result);
@@ -23,7 +23,7 @@ router.get('', verifyToken, async (req: any, res) => {
 /**
  * Get player count
  */
-router.get('/count', verifyToken, async (req: any, res) => {
+router.get('/count', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
     const count = await getPlayerCount({ userId });
     res.send(count);
@@ -32,7 +32,7 @@ router.get('/count', verifyToken, async (req: any, res) => {
 /**
  * Get player trends
  */
-router.get('/trends', verifyToken, async (req: any, res) => {
+router.get('/trends', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
     const result = await getAllPlayerTrends({ userId });
     res.send(result);

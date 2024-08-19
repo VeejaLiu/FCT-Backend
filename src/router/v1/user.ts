@@ -2,7 +2,7 @@ import express from 'express';
 import { Logger } from '../../lib/logger';
 import { registerUser } from '../../general/user/register';
 import { loginUser } from '../../general/user/login';
-import { verifyToken } from '../../lib/token/verifyToken';
+import { verifyTokenMiddleware } from '../../lib/token/verifyTokenMiddleware';
 import { logoutUser } from '../../general/user/logout';
 import { getSecretKey } from '../../general/user/get-secret-key';
 import { refreshSecretKey } from '../../general/user/refresh-secret-key';
@@ -43,14 +43,14 @@ router.post('/login', async (req: any, res: any) => {
 /**
  * Verify user token
  */
-router.post('/verify-token', verifyToken, async (req: any, res: any) => {
+router.post('/verify-token', verifyTokenMiddleware, async (req: any, res: any) => {
     res.status(200).send({ success: true, message: 'Token is valid' });
 });
 
 /**
  * User logout
  */
-router.post('/logout', verifyToken, async (req: any, res: any) => {
+router.post('/logout', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
     const result = await logoutUser({
         userId: userId,
@@ -61,7 +61,7 @@ router.post('/logout', verifyToken, async (req: any, res: any) => {
 /**
  * Get user's secret key
  */
-router.get('/secret', verifyToken, async (req: any, res: any) => {
+router.get('/secret', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
     const result = await getSecretKey({
         userId: userId,
@@ -72,7 +72,7 @@ router.get('/secret', verifyToken, async (req: any, res: any) => {
 /**
  * Refresh user's secret key
  */
-router.post('/secret/refresh', verifyToken, async (req: any, res: any) => {
+router.post('/secret/refresh', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
     const result = await refreshSecretKey({
         userId: userId,
