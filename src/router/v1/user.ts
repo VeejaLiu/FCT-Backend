@@ -15,7 +15,11 @@ const logger = new Logger(__filename);
  * User registration
  */
 router.post('/register', async (req: any, res: any) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, rc } = req.body;
+    if (!rc || rc !== 'P7382Pq0XqFmwgIlBFkqyfDisKLK') {
+        res.status(400).send({ success: false, message: 'Invalid registerSecret' });
+        return;
+    }
     const result = await registerUser({
         username: username,
         email: email,
