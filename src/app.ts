@@ -5,15 +5,15 @@ import { banner } from './lib/banner';
 import { loadMonitor } from './loaders/loadMonitor';
 import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
-import { closeSequelize } from './models/db-config';
-import { databaseUpgrade } from './models/database-upgrade';
+import { closeSequelize } from './models/db-config-mysql';
+// import { databaseUpgrade } from './models/database-upgrade';
 
 async function Main() {
     // init database
-    await databaseUpgrade().catch((e) => {
-        console.error('Database upgrade failed:', e);
-        process.exit();
-    });
+    // await databaseUpgrade().catch((e) => {
+    //     console.error('Database upgrade failed:', e);
+    //     process.exit();
+    // });
 
     const app = express();
 

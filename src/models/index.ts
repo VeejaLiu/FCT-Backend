@@ -1,5 +1,5 @@
 import { Logger } from '../lib/logger';
-import { sequelize } from './db-config';
+import { sequelize } from './db-config-mysql';
 import { QueryTypes } from 'sequelize';
 
 const logger = new Logger(__filename);
