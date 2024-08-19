@@ -17,7 +17,7 @@ async function Main() {
 
     const app = express();
 
-    // 修复跨域问题
+    // Fix CORS issue
     app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Headers', '*');
@@ -38,17 +38,17 @@ async function Main() {
     };
     app.use(errorHandler);
 
-    // 捕获未捕获的异常
+    // Fix unhandled promise rejection
     process.on('uncaughtException', (error) => {
         console.error('Uncaught Exception:', error);
     });
 
-    // 捕获未处理的 Promise 拒绝
+    // Catch unhandled promise rejection
     process.on('unhandledRejection', (reason, promise) => {
         console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     });
 
-    // 关闭数据库连接
+    // Close sequelize connection on SIGINT
     process.on('SIGINT', async () => {
         console.log('Received SIGINT.');
         await closeSequelize();
