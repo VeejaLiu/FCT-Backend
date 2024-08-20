@@ -8,7 +8,7 @@ CREATE TABLE `player_status_history` (
   `user_id` int DEFAULT NULL,
   `save_id` int DEFAULT NULL,
   `player_id` int DEFAULT NULL,
-  `in_game_date` int DEFAULT NULL,
+  `in_game_date` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `overallrating` int DEFAULT NULL,
   `potential` int DEFAULT NULL,
   PRIMARY KEY (`id`),

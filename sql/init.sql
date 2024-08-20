@@ -65,13 +65,13 @@ CREATE TABLE `player`
 
 CREATE TABLE `player_status_history`
 (
-    `id`           int NOT NULL AUTO_INCREMENT,
-    `user_id`      int DEFAULT NULL,
-    `save_id`      int DEFAULT NULL,
-    `player_id`    int DEFAULT NULL,
-    `in_game_date` int DEFAULT NULL,
-    `overall`      int DEFAULT NULL,
-    `potential`    int DEFAULT NULL,
+    `id`            int NOT NULL AUTO_INCREMENT,
+    `user_id`       int         DEFAULT NULL,
+    `save_id`       int         DEFAULT NULL,
+    `player_id`     int         DEFAULT NULL,
+    `in_game_date`  varchar(20) DEFAULT NULL,
+    `overallrating` int         DEFAULT NULL,
+    `potential`     int         DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_player_id` (`player_id`)
