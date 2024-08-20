@@ -45,7 +45,17 @@ const UserSchema: ModelAttributes = {
     },
 };
 
-class UserModel extends Model {
+// export interface UserDB {
+//     id: number;
+//     username: string;
+//     email: string;
+//     password: string;
+//     token: string;
+//     create_time: Date;
+//     update_time: Date;
+// }
+
+export class UserModel extends Model {
     public id!: number;
     public username!: string;
     public email!: string;
@@ -53,6 +63,17 @@ class UserModel extends Model {
     public token!: string;
     public create_time!: Date;
     public update_time!: Date;
+
+    public static async getRawByID({ id }: { id: number }) {
+        const res = await UserModel.findOne({
+            where: { id },
+            raw: true,
+        });
+        if (!res) {
+            throw new Error(`User not found with id: ${id}`);
+        }
+        return res;
+    }
 }
 
 UserModel.init(UserSchema, {

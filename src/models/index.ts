@@ -6,7 +6,7 @@ const logger = new Logger(__filename);
 
 export async function doRawQuery(query: string): Promise<any> {
     try {
-        const res = await sequelize.query(query, {
+        const res = await sequelize.query(query.replace(/\s+/g, ' '), {
             type: QueryTypes.SELECT,
             raw: true,
         });
@@ -19,7 +19,7 @@ export async function doRawQuery(query: string): Promise<any> {
 
 export async function doRawUpdate(query: string): Promise<any> {
     try {
-        const res = await sequelize.query(query, {
+        const res = await sequelize.query(query.replace(/\s+/g, ' '), {
             type: QueryTypes.UPDATE,
             raw: true,
         });
@@ -32,7 +32,7 @@ export async function doRawUpdate(query: string): Promise<any> {
 
 export async function doRawInsert(query: string): Promise<any> {
     try {
-        const res = await sequelize.query(query, {
+        const res = await sequelize.query(query.replace(/\s+/g, ' '), {
             type: QueryTypes.INSERT,
             raw: true,
         });

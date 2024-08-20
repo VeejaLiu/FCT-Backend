@@ -42,7 +42,7 @@ const PlayerStatusHistorySchema: ModelAttributes = {
     },
 };
 
-class PlayerStatusHistoryModel extends Model {
+export class PlayerStatusHistoryModel extends Model {
     public id!: number;
     public user_id!: number;
     public save_id!: number;

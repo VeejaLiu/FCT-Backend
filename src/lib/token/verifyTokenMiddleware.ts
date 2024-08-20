@@ -1,17 +1,25 @@
 import jwt from 'jsonwebtoken';
 import { env } from '../../env';
-import { doRawQuery } from '../../models';
 import { Logger } from '../logger';
+import { UserModel } from '../../models/schema/UserDB';
 
 const JWT_SECRET = env.secret.jwt;
 
 const logger = new Logger(__filename);
 
-export async function testVerifyToken(token: string) {
+export async function verifyToken(token: string) {
     try {
         const result = jwt.verify(token, JWT_SECRET);
+        return {
+            success: true,
+            data: result,
+        };
     } catch (e) {
         logger.error(`[testVerifyToken] verify error: ${e}`);
+        return {
+            success: false,
+            message: 'Token is not valid',
+        };
     }
 }
 
@@ -47,8 +55,8 @@ export function verifyTokenMiddleware(req: any, res: any, next: any) {
                 }
 
                 // verify if the token matches database
-                const databaseRes = await doRawQuery(`SELECT * FROM user WHERE id = ${id}`);
-                if (databaseRes.length === 0) {
+                const user = await UserModel.getRawByID({ id });
+                if (!user) {
                     logger.error(`[verifyToken] user[${id}] not found`);
                     req.user = undefined;
                     return res.status(401).send({
@@ -57,7 +65,7 @@ export function verifyTokenMiddleware(req: any, res: any, next: any) {
                     });
                 }
 
-                if (databaseRes[0].token !== token) {
+                if (user.token !== token) {
                     logger.error(`[verifyToken] token not match`);
                     req.user = undefined;
                     return res.status(401).send({

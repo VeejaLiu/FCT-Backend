@@ -6,6 +6,7 @@ import { loadMonitor } from './loaders/loadMonitor';
 import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
 import { closeSequelize } from './models/db-config-mysql';
+import { verifyToken } from './lib/token/verifyTokenMiddleware';
 // import { databaseUpgrade } from './models/database-upgrade';
 
 async function Main() {
@@ -42,8 +43,9 @@ async function Main() {
     const WebSocket = require('ws');
     const wss = new WebSocket.Server({ port: 8889 });
     wss.on('connection', (socket, request) => {
-        const protocol = request.headers['sec-websocket-protocol'];
-        if (protocol === 'your-user-token') {
+        const token = request.headers['sec-websocket-protocol'];
+        const verifyRes = verifyToken(token);
+        if ('verifyRes') {
             socket.send('Protocol accepted');
         } else {
             socket.close(1002, 'Protocol not supported');

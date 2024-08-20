@@ -33,7 +33,7 @@ const UserSecretKeySchema: ModelAttributes = {
     },
 };
 
-class UserSecretKeyModel extends Model {
+export class UserSecretKeyModel extends Model {
     public id!: number;
     public user_id!: number;
     public secret_key!: string;
