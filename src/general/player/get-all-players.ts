@@ -1,5 +1,5 @@
 import { Logger } from '../../lib/logger';
-import { doRawQuery } from '../../models';
+import { PlayerModel } from '../../models/schema/PlayerDB';
 
 const logger = new Logger(__filename);
 
@@ -68,7 +68,25 @@ export const PLAYER_PRIMARY_POS_TYPE = {
 export async function getAllPlayers({ userId }: { userId: string }) {
     logger.info(`[API_LOGS][/player] [userId=${userId}] Get all players`);
 
-    const sqlRes: any[] = await doRawQuery(`SELECT * FROM player where is_archived = 0 and user_id = ${userId}`);
+    const sqlRes: PlayerModel[] = await PlayerModel.findAll({
+        attributes: [
+            'player_id',
+            'player_name',
+            'overallrating',
+            'potential',
+            'age',
+            'birthdate',
+            'preferredposition1',
+            'preferredposition2',
+            'preferredposition3',
+            'preferredposition4',
+        ],
+        where: {
+            is_archived: 0,
+            user_id: userId,
+        },
+        raw: true,
+    });
 
     logger.info(`[API_LOGS][/player] ${sqlRes.length} players found`);
 
