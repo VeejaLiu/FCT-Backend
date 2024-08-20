@@ -33,7 +33,7 @@ const UserSecretKeySchema: ModelAttributes = {
     },
 };
 
-class UserSecretKey extends Model {
+class UserSecretKeyModel extends Model {
     public id!: number;
     public user_id!: number;
     public secret_key!: string;
@@ -41,7 +41,7 @@ class UserSecretKey extends Model {
     public update_time!: Date;
 }
 
-UserSecretKey.init(UserSecretKeySchema, {
+UserSecretKeyModel.init(UserSecretKeySchema, {
     ...Defaultconfig,
     sequelize,
     tableName: 'user_secret_key',

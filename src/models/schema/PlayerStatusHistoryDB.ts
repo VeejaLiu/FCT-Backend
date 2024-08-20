@@ -42,7 +42,7 @@ const PlayerStatusHistorySchema: ModelAttributes = {
     },
 };
 
-class PlayerStatusHistory extends Model {
+class PlayerStatusHistoryModel extends Model {
     public id!: number;
     public user_id!: number;
     public save_id!: number;
@@ -52,7 +52,7 @@ class PlayerStatusHistory extends Model {
     public potential!: number;
 }
 
-PlayerStatusHistory.init(PlayerStatusHistorySchema, {
+PlayerStatusHistoryModel.init(PlayerStatusHistorySchema, {
     ...Defaultconfig,
     sequelize,
     tableName: 'player_status_history',

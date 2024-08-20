@@ -45,7 +45,7 @@ const UserSchema: ModelAttributes = {
     },
 };
 
-class User extends Model {
+class UserModel extends Model {
     public id!: number;
     public username!: string;
     public email!: string;
@@ -55,7 +55,7 @@ class User extends Model {
     public update_time!: Date;
 }
 
-User.init(UserSchema, {
+UserModel.init(UserSchema, {
     ...Defaultconfig,
     sequelize,
     tableName: 'user',
