@@ -42,10 +42,11 @@ async function Main() {
     // Open websocket server
     const WebSocket = require('ws');
     const wss = new WebSocket.Server({ port: 8889 });
-    wss.on('connection', (socket, request) => {
+    wss.on('connection', async (socket, request) => {
         const token = request.headers['sec-websocket-protocol'];
-        const verifyRes = verifyToken(token);
-        if ('verifyRes') {
+        const verifyRes = await verifyToken(token);
+        console.log('verifyRes:', verifyRes);
+        if (verifyRes.success) {
             socket.send('Protocol accepted');
         } else {
             socket.close(1002, 'Protocol not supported');
