@@ -239,7 +239,7 @@ const PlayerSchema: ModelAttributes = {
     },
 };
 
-class Player extends Model {
+export class PlayerModel extends Model {
     public id!: number;
     public user_id!: number;
     public save_id!: number | null;
@@ -299,7 +299,7 @@ class Player extends Model {
 }
 
 // Define the model with Sequelize
-Player.init(PlayerSchema, {
+PlayerModel.init(PlayerSchema, {
     ...Defaultconfig,
     sequelize, // the sequelize instance
     tableName: 'player',
