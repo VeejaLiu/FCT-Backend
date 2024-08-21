@@ -1,7 +1,8 @@
-import { doRawInsert, doRawQuery } from '../../models';
 import bcrypt from 'bcryptjs';
 import { Logger } from '../../lib/logger';
 import { refreshSecretKey } from './refresh-secret-key';
+import { UserModel } from '../../models/schema/UserDB';
+import { Op } from 'sequelize';
 
 const logger = new Logger(__filename);
 
@@ -26,15 +27,14 @@ export async function registerUser({
             };
         }
 
-        const emailReg = /^[A-Za-z0-9]+([_.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/;
-
-        if (!username || username.length < 1 || username.length > 16) {
+        if (username.length < 1 || username.length > 16) {
             return {
                 success: false,
                 message: 'Username must be between 1 and 16 characters',
             };
         }
 
+        const emailReg = /^[A-Za-z0-9]+([_.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/;
         if (!emailReg.test(email)) {
             return {
                 success: false,
@@ -42,7 +42,7 @@ export async function registerUser({
             };
         }
 
-        if (!password || password.length < 1 || password.length > 16) {
+        if (password.length < 1 || password.length > 16) {
             return {
                 success: false,
                 message: 'Password must be between 1 and 16 characters',
@@ -54,9 +54,10 @@ export async function registerUser({
         /*
          * Check if user already exists
          */
-        const sql1 = `SELECT * FROM user WHERE username = '${username}' OR email = '${email}' LIMIT 1`;
-        const existingUser = await doRawQuery(sql1);
-        if (existingUser.length > 0) {
+        const existingUser = await UserModel.findOne({
+            where: { [Op.or]: [{ username: username }, { email: email }] },
+        });
+        if (existingUser) {
             logger.info(`[/user/register] username or email duplicate`);
             return {
                 success: false,
@@ -70,9 +71,12 @@ export async function registerUser({
         /*
          * Insert user
          */
-        const sql2 = `INSERT INTO user (username, email, password) VALUES ('${username}', '${email}', '${hashedPassword}')`;
-        const res = await doRawInsert(sql2);
-        const userId = res[0];
+        const newUser = await UserModel.create({
+            username: username,
+            email: email,
+            password: hashedPassword,
+        });
+        const userId = newUser.id;
         logger.info(`[/user/register] Register user success: ${userId}`);
 
         /*

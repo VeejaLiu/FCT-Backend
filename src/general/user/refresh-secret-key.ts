@@ -4,7 +4,7 @@ import { UserSecretKeyModel } from '../../models/schema/UserSecretKeyDB';
 
 const logger = new Logger(__filename);
 
-export async function refreshSecretKey({ userId }: { userId: string }): Promise<{
+export async function refreshSecretKey({ userId }: { userId: number | string }): Promise<{
     success: boolean;
     message: string;
     data?: any;
