@@ -105,3 +105,19 @@ CREATE TABLE `user_secret_key`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
+
+alter table player_status_history
+    add column is_deleted  tinyint(1) default 0,
+    add column create_time datetime   default current_timestamp,
+    add column update_time datetime   default current_timestamp on update current_timestamp;
+
+alter table player
+    add column is_deleted  tinyint(1) default 0,
+    add column create_time datetime   default current_timestamp,
+    add column update_time datetime   default current_timestamp on update current_timestamp;
+
+alter table user
+    add column is_deleted tinyint(1) default 0 after token;
+
+alter table user_secret_key
+    add column is_deleted tinyint(1) default 0 after secret_key;
