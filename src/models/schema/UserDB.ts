@@ -5,10 +5,11 @@ import { Defaultconfig } from '../db-config-mysql';
 /*
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` text COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` text COLLATE utf8mb4_general_ci NOT NULL,
-  `token` text COLLATE utf8mb4_general_ci,
+  `username` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `token` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `is_deleted` tinyint(1) DEFAULT '0',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -22,38 +23,26 @@ const UserSchema: ModelAttributes = {
     },
     username: {
         type: Sequelize.TEXT,
-        allowNull: false,
     },
     email: {
         type: Sequelize.STRING(255),
-        allowNull: false,
     },
     password: {
         type: Sequelize.TEXT,
-        allowNull: false,
     },
     token: {
         type: Sequelize.TEXT,
     },
+    is_deleted: {
+        type: Sequelize.BOOLEAN,
+    },
     create_time: {
         type: Sequelize.DATE,
-        allowNull: false,
     },
     update_time: {
         type: Sequelize.DATE,
-        allowNull: false,
     },
 };
-
-// export interface UserDB {
-//     id: number;
-//     username: string;
-//     email: string;
-//     password: string;
-//     token: string;
-//     create_time: Date;
-//     update_time: Date;
-// }
 
 export class UserModel extends Model {
     public id!: number;
@@ -61,6 +50,7 @@ export class UserModel extends Model {
     public email!: string;
     public password!: string;
     public token!: string;
+    public is_deleted!: boolean;
     public create_time!: Date;
     public update_time!: Date;
 

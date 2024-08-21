@@ -3,66 +3,70 @@ import { sequelize } from '../db-config-mysql';
 import { Defaultconfig } from '../db-config-mysql';
 
 /*
-create table player
-(
-    id                      int auto_increment
-        primary key,
-    user_id                 int           not null,
-    save_id                 int           null,
-    player_id               int           null,
-    player_name             text          null,
-    birthdate               int           null,
-    age                     int           null,
-    overallrating           int           null,
-    potential               int           null,
-    nationality             text          null,
-    height                  int           null,
-    weight                  int           null,
-    preferredfoot           text          null,
-    preferredposition1      text          null,
-    preferredposition2      text          null,
-    preferredposition3      text          null,
-    preferredposition4      text          null,
-    skillmoves              int           null,
-    weakfootabilitytypecode int           null,
-    attackingworkrate       text          null,
-    defensiveworkrate       text          null,
-    acceleration            int           null,
-    sprintspeed             int           null,
-    positioning             int           null,
-    finishing               int           null,
-    shotpower               int           null,
-    longshots               int           null,
-    volleys                 int           null,
-    penalties               int           null,
-    vision                  int           null,
-    crossing                int           null,
-    freekickaccuracy        int           null,
-    shortpassing            int           null,
-    longpassing             int           null,
-    curve                   int           null,
-    agility                 int           null,
-    balance                 int           null,
-    reactions               int           null,
-    ballcontrol             int           null,
-    dribbling               int           null,
-    composure               int           null,
-    interceptions           int           null,
-    headingaccuracy         int           null,
-    defensiveawareness      int           null,
-    standingtackle          int           null,
-    slidingtackle           int           null,
-    jumping                 int           null,
-    stamina                 int           null,
-    strength                int           null,
-    aggression              int           null,
-    gkdiving                int           null,
-    gkhandling              int           null,
-    gkkicking               int           null,
-    gkpositioning           int           null,
-    gkreflexes              int           null,
-    is_archived             int default 0 null
-);
+CREATE TABLE `player` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `save_id` int DEFAULT NULL,
+  `player_id` int DEFAULT NULL,
+  `player_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `birthdate` int DEFAULT NULL,
+  `age` int DEFAULT NULL,
+  `overallrating` int DEFAULT NULL,
+  `potential` int DEFAULT NULL,
+  `nationality` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `height` int DEFAULT NULL,
+  `weight` int DEFAULT NULL,
+  `preferredfoot` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `preferredposition1` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `preferredposition2` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `preferredposition3` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `preferredposition4` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `skillmoves` int DEFAULT NULL,
+  `weakfootabilitytypecode` int DEFAULT NULL,
+  `attackingworkrate` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `defensiveworkrate` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `acceleration` int DEFAULT NULL,
+  `sprintspeed` int DEFAULT NULL,
+  `positioning` int DEFAULT NULL,
+  `finishing` int DEFAULT NULL,
+  `shotpower` int DEFAULT NULL,
+  `longshots` int DEFAULT NULL,
+  `volleys` int DEFAULT NULL,
+  `penalties` int DEFAULT NULL,
+  `vision` int DEFAULT NULL,
+  `crossing` int DEFAULT NULL,
+  `freekickaccuracy` int DEFAULT NULL,
+  `shortpassing` int DEFAULT NULL,
+  `longpassing` int DEFAULT NULL,
+  `curve` int DEFAULT NULL,
+  `agility` int DEFAULT NULL,
+  `balance` int DEFAULT NULL,
+  `reactions` int DEFAULT NULL,
+  `ballcontrol` int DEFAULT NULL,
+  `dribbling` int DEFAULT NULL,
+  `composure` int DEFAULT NULL,
+  `interceptions` int DEFAULT NULL,
+  `headingaccuracy` int DEFAULT NULL,
+  `defensiveawareness` int DEFAULT NULL,
+  `standingtackle` int DEFAULT NULL,
+  `slidingtackle` int DEFAULT NULL,
+  `jumping` int DEFAULT NULL,
+  `stamina` int DEFAULT NULL,
+  `strength` int DEFAULT NULL,
+  `aggression` int DEFAULT NULL,
+  `gkdiving` int DEFAULT NULL,
+  `gkhandling` int DEFAULT NULL,
+  `gkkicking` int DEFAULT NULL,
+  `gkpositioning` int DEFAULT NULL,
+  `gkreflexes` int DEFAULT NULL,
+  `is_archived` int DEFAULT '0',
+  `is_deleted` tinyint(1) DEFAULT '0',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_player_id` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
  */
 const PlayerSchema: ModelAttributes = {
     id: {
@@ -237,6 +241,16 @@ const PlayerSchema: ModelAttributes = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
     },
+    is_deleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+    },
+    create_time: {
+        type: Sequelize.DATE,
+    },
+    update_time: {
+        type: Sequelize.DATE,
+    },
 };
 
 export class PlayerModel extends Model {
@@ -296,6 +310,9 @@ export class PlayerModel extends Model {
     public gkpositioning!: number | null;
     public gkreflexes!: number | null;
     public is_archived!: number;
+    public is_deleted!: boolean;
+    public create_time!: Date;
+    public update_time!: Date;
 }
 
 // Define the model with Sequelize

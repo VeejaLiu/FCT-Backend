@@ -11,6 +11,9 @@ CREATE TABLE `player_status_history` (
   `in_game_date` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `overallrating` int DEFAULT NULL,
   `potential` int DEFAULT NULL,
+  `is_deleted` tinyint(1) DEFAULT '0',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
   KEY `idx_player_id` (`player_id`)
@@ -40,6 +43,15 @@ const PlayerStatusHistorySchema: ModelAttributes = {
     potential: {
         type: Sequelize.INTEGER,
     },
+    is_deleted: {
+        type: Sequelize.BOOLEAN,
+    },
+    create_time: {
+        type: Sequelize.DATE,
+    },
+    update_time: {
+        type: Sequelize.DATE,
+    },
 };
 
 export class PlayerStatusHistoryModel extends Model {
@@ -50,6 +62,9 @@ export class PlayerStatusHistoryModel extends Model {
     public in_game_date!: string;
     public overallrating!: number;
     public potential!: number;
+    public is_deleted!: boolean;
+    public create_time!: Date;
+    public update_time!: Date;
 }
 
 PlayerStatusHistoryModel.init(PlayerStatusHistorySchema, {
