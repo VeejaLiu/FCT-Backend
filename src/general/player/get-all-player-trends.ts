@@ -1,5 +1,4 @@
 import { Logger } from '../../lib/logger';
-import { doRawQuery } from '../../models';
 import { PLAYER_PRIMARY_POS_NAME, PLAYER_PRIMARY_POS_TYPE } from './get-all-players';
 import { PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';

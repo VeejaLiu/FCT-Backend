@@ -1,6 +1,7 @@
 import { DateUtils } from '../../utils/Date';
 import { Logger } from '../../lib/logger';
-import { doRawInsert, doRawQuery, doRawUpdate } from '../../models';
+import { PlayerModel } from '../../models/schema/PlayerDB';
+import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 
 const logger = new Logger(__filename);
 
@@ -12,9 +13,12 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
         }
 
         // Query all existing players
-        const querySQL1 = `SELECT player_id FROM player where is_archived = 0 AND user_id = ${userId}`;
-        const existingPlayers: any = await doRawQuery(querySQL1);
-        const existingPlayerIDs = existingPlayers.map((p: any) => p.player_id);
+        const existingPlayers = await PlayerModel.findAll({
+            attributes: ['player_id'],
+            where: { user_id: userId, is_archived: false },
+            raw: true,
+        });
+        const existingPlayerIDs = existingPlayers.map((p) => p.player_id);
         const existingPlayerSet = new Set(existingPlayerIDs);
 
         for (let i = 0; i < players.length; i++) {
@@ -84,7 +88,10 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                 gkpositioning,
                 gkreflexes,
             } = player;
+
+            // Some player names have single quotes, escape them, lime O'Connell
             playerName = playerName.replace(/'/g, "''");
+
             // remove playerID from existingPlayerSet
             if (existingPlayerSet.has(playerID)) {
                 existingPlayerSet.delete(playerID);
@@ -92,12 +99,12 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
 
             // convert currentDate to age, currentDate is in format 'yyyy-mm-dd'
             const [y, m, d] = currentDate.split('-').map((v: string) => Number(v));
-            const age = Math.floor((new DateUtils(y, m, d).toGregorianDays() - birthdate) / 365.25);
+            const playerAge = Math.floor((new DateUtils(y, m, d).toGregorianDays() - birthdate) / 365.25);
 
             // logger.info(
             //     `[bulkUpdatePlayer] [i=${i}]` +
             //         `playerID=${playerID}, ` +
-            //         `playerName=${playerName}, ` +
+            //         `playerName=[${playerName}], ` +
             //         `currentDate=${currentDate}, ` +
             //         `overallrating=${overallrating}, ` +
             //         `potential=${potential}, ` +
@@ -105,110 +112,248 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
             // );
 
             // query first
-            const querySQL = `SELECT * FROM player WHERE player_id = ${playerID} AND user_id = ${userId} limit 1`;
-            const queryRes: any[] = await doRawQuery(querySQL);
-            if (queryRes.length === 0) {
+            const existingPlayer = await PlayerModel.findOne({
+                where: { player_id: playerID, user_id: userId },
+            });
+            if (!existingPlayer) {
                 // insert
-                const insertSQL = `
-                    INSERT INTO player (
-                                        user_id,
-                                        player_id, player_name, overallrating, potential,
-                                        birthdate, nationality, height, weight, age,
-                                        preferredfoot,
-                                        preferredposition1, preferredposition2,
-                                        preferredposition3, preferredposition4,
-                                        skillmoves, weakfootabilitytypecode, attackingworkrate, defensiveworkrate,
-                                        acceleration, sprintspeed,
-                                        positioning, finishing, shotpower, longshots, volleys, penalties,
-                                        vision, crossing, freekickaccuracy, shortpassing, longpassing, curve,
-                                        agility, balance, reactions, ballcontrol, dribbling, composure,
-                                        interceptions, headingaccuracy, defensiveawareness, standingtackle,
-                                        slidingtackle, jumping, stamina, strength, aggression,
-                                        gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
-                    VALUES (
-                            ${userId},
-                            ${playerID}, '${playerName}', ${overallrating}, ${potential},
-                            '${birthdate}', '${nationality}', ${height}, ${weight}, ${age},
-                            '${preferredfoot}',
-                            ${preferredposition1}, ${preferredposition2},
-                            ${preferredposition3}, ${preferredposition4},
-                            ${skillmoves}, ${weakfootabilitytypecode}, ${attackingworkrate}, ${defensiveworkrate},
-                            ${acceleration}, ${sprintspeed},
-                            ${positioning}, ${finishing}, ${shotpower}, ${longshots}, ${volleys}, ${penalties},
-                            ${vision}, ${crossing}, ${freekickaccuracy}, ${shortpassing}, ${longpassing}, ${curve},
-                            ${agility}, ${balance}, ${reactions}, ${ballcontrol}, ${dribbling}, ${composure},
-                            ${interceptions}, ${headingaccuracy}, ${defensiveawareness}, ${standingtackle},
-                            ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression},
-                            ${gkdiving}, ${gkhandling}, ${gkkicking}, ${gkpositioning}, ${gkreflexes}
-                           )`;
-                const result = await doRawInsert(insertSQL);
+                // const insertSQL = `
+                //     INSERT INTO player (
+                //                         user_id,
+                //                         player_id, player_name, overallrating, potential,
+                //                         birthdate, nationality, height, weight, age,
+                //                         preferredfoot,
+                //                         preferredposition1, preferredposition2,
+                //                         preferredposition3, preferredposition4,
+                //                         skillmoves, weakfootabilitytypecode, attackingworkrate, defensiveworkrate,
+                //                         acceleration, sprintspeed,
+                //                         positioning, finishing, shotpower, longshots, volleys, penalties,
+                //                         vision, crossing, freekickaccuracy, shortpassing, longpassing, curve,
+                //                         agility, balance, reactions, ballcontrol, dribbling, composure,
+                //                         interceptions, headingaccuracy, defensiveawareness, standingtackle,
+                //                         slidingtackle, jumping, stamina, strength, aggression,
+                //                         gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
+                //     VALUES (
+                //             ${userId},
+                //             ${playerID}, '${playerName}', ${overallrating}, ${potential},
+                //             '${birthdate}', '${nationality}', ${height}, ${weight}, ${age},
+                //             '${preferredfoot}',
+                //             ${preferredposition1}, ${preferredposition2},
+                //             ${preferredposition3}, ${preferredposition4},
+                //             ${skillmoves}, ${weakfootabilitytypecode}, ${attackingworkrate}, ${defensiveworkrate},
+                //             ${acceleration}, ${sprintspeed},
+                //             ${positioning}, ${finishing}, ${shotpower}, ${longshots}, ${volleys}, ${penalties},
+                //             ${vision}, ${crossing}, ${freekickaccuracy}, ${shortpassing}, ${longpassing}, ${curve},
+                //             ${agility}, ${balance}, ${reactions}, ${ballcontrol}, ${dribbling}, ${composure},
+                //             ${interceptions}, ${headingaccuracy}, ${defensiveawareness}, ${standingtackle},
+                //             ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression},
+                //             ${gkdiving}, ${gkhandling}, ${gkkicking}, ${gkpositioning}, ${gkreflexes}
+                //            )`;
+                // const result = await doRawInsert(insertSQL);
+                const result = await PlayerModel.create({
+                    // user id
+                    user_id: userId,
+                    // basic info
+                    player_id: playerID,
+                    player_name: playerName,
+                    overallrating,
+                    potential,
+                    // personal info
+                    birthdate,
+                    nationality,
+                    height,
+                    weight,
+                    age: playerAge,
+                    // player details
+                    preferredfoot,
+                    preferredposition1,
+                    preferredposition2,
+                    preferredposition3,
+                    preferredposition4,
+                    skillmoves,
+                    weakfootabilitytypecode,
+                    attackingworkrate,
+                    defensiveworkrate,
+                    // pace
+                    acceleration,
+                    sprintspeed,
+                    // attacking
+                    positioning,
+                    finishing,
+                    shotpower,
+                    longshots,
+                    volleys,
+                    penalties,
+                    // passing
+                    vision,
+                    crossing,
+                    freekickaccuracy,
+                    shortpassing,
+                    longpassing,
+                    curve,
+                    // dribbling
+                    agility,
+                    balance,
+                    reactions,
+                    ballcontrol,
+                    dribbling,
+                    composure,
+                    // defending
+                    interceptions,
+                    headingaccuracy,
+                    defensiveawareness,
+                    standingtackle,
+                    slidingtackle,
+                    // physical
+                    jumping,
+                    stamina,
+                    strength,
+                    aggression,
+                    // goalkeeping
+                    gkdiving,
+                    gkhandling,
+                    gkkicking,
+                    gkpositioning,
+                    gkreflexes,
+                });
                 // logger.info(`[bulkUpdatePlayer] Created new player: playerID=${playerID}`);
             } else {
                 if (
-                    Number(queryRes[0].overallrating) !== Number(overallrating) &&
-                    Number(queryRes[0].potential) !== Number(potential)
+                    Number(existingPlayer.overallrating) !== Number(overallrating) &&
+                    Number(existingPlayer.potential) !== Number(potential)
                 ) {
                     logger.info(
-                        `[bulkUpdatePlayer][userID=${userId}] Update player: playerID=${playerID}, overallrating=${queryRes[0].overallrating} -> ${overallrating}, potential=${queryRes[0].potential} -> ${potential}`,
+                        `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, overallrating=${existingPlayer.overallrating} -> ${overallrating}`,
+                    );
+                    logger.info(
+                        `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, potential=${existingPlayer.potential} -> ${potential}`,
                     );
                 }
-                const updateSQL = `
-                UPDATE player
-                SET player_name='${playerName}',
-                    overallrating=${overallrating},
-                    potential=${potential},
-                    birthdate='${birthdate}',
-                    nationality='${nationality}',
-                    height=${height},
-                    weight=${weight},
-                    age=${age},
-                    preferredfoot='${preferredfoot}',
-                    preferredposition1=${preferredposition1},
-                    preferredposition2=${preferredposition2},
-                    preferredposition3=${preferredposition3},
-                    preferredposition4=${preferredposition4},
-                    skillmoves=${skillmoves},
-                    weakfootabilitytypecode=${weakfootabilitytypecode},
-                    attackingworkrate=${attackingworkrate},
-                    defensiveworkrate=${defensiveworkrate},
-                    acceleration=${acceleration},
-                    sprintspeed=${sprintspeed},
-                    positioning=${positioning},
-                    finishing=${finishing},
-                    shotpower=${shotpower},
-                    longshots=${longshots},
-                    volleys=${volleys},
-                    penalties=${penalties},
-                    vision=${vision},
-                    crossing=${crossing},
-                    freekickaccuracy=${freekickaccuracy},
-                    shortpassing=${shortpassing},
-                    longpassing=${longpassing},
-                    curve=${curve},
-                    agility=${agility},
-                    balance=${balance},
-                    reactions=${reactions},
-                    ballcontrol=${ballcontrol},
-                    dribbling=${dribbling},
-                    composure=${composure},
-                    interceptions=${interceptions},
-                    headingaccuracy=${headingaccuracy},
-                    defensiveawareness=${defensiveawareness},
-                    standingtackle=${standingtackle},
-                    slidingtackle=${slidingtackle},
-                    jumping=${jumping},
-                    stamina=${stamina},
-                    strength=${strength},
-                    aggression=${aggression},
-                    gkdiving=${gkdiving},
-                    gkhandling=${gkhandling},
-                    gkkicking=${gkkicking},
-                    gkpositioning=${gkpositioning},
-                    gkreflexes=${gkreflexes}
-                WHERE player_id = ${playerID} 
-                  AND user_id = ${userId}`;
-                const result = await doRawUpdate(updateSQL);
-                // logger.info(`[bulkUpdatePlayer] Updated player: playerID=${playerID}`);
+                // const updateSQL = `
+                // UPDATE player
+                // SET player_name='${playerName}',
+                //     overallrating=${overallrating},
+                //     potential=${potential},
+                //     birthdate='${birthdate}',
+                //     nationality='${nationality}',
+                //     height=${height},
+                //     weight=${weight},
+                //     age=${age},
+                //     preferredfoot='${preferredfoot}',
+                //     preferredposition1=${preferredposition1},
+                //     preferredposition2=${preferredposition2},
+                //     preferredposition3=${preferredposition3},
+                //     preferredposition4=${preferredposition4},
+                //     skillmoves=${skillmoves},
+                //     weakfootabilitytypecode=${weakfootabilitytypecode},
+                //     attackingworkrate=${attackingworkrate},
+                //     defensiveworkrate=${defensiveworkrate},
+                //     acceleration=${acceleration},
+                //     sprintspeed=${sprintspeed},
+                //     positioning=${positioning},
+                //     finishing=${finishing},
+                //     shotpower=${shotpower},
+                //     longshots=${longshots},
+                //     volleys=${volleys},
+                //     penalties=${penalties},
+                //     vision=${vision},
+                //     crossing=${crossing},
+                //     freekickaccuracy=${freekickaccuracy},
+                //     shortpassing=${shortpassing},
+                //     longpassing=${longpassing},
+                //     curve=${curve},
+                //     agility=${agility},
+                //     balance=${balance},
+                //     reactions=${reactions},
+                //     ballcontrol=${ballcontrol},
+                //     dribbling=${dribbling},
+                //     composure=${composure},
+                //     interceptions=${interceptions},
+                //     headingaccuracy=${headingaccuracy},
+                //     defensiveawareness=${defensiveawareness},
+                //     standingtackle=${standingtackle},
+                //     slidingtackle=${slidingtackle},
+                //     jumping=${jumping},
+                //     stamina=${stamina},
+                //     strength=${strength},
+                //     aggression=${aggression},
+                //     gkdiving=${gkdiving},
+                //     gkhandling=${gkhandling},
+                //     gkkicking=${gkkicking},
+                //     gkpositioning=${gkpositioning},
+                //     gkreflexes=${gkreflexes},
+                //     is_archived=0
+                // WHERE player_id = ${playerID}
+                //   AND user_id = ${userId}`;
+                // const result = await doRawUpdate(updateSQL);
+                const result = await PlayerModel.update(
+                    {
+                        // basic info
+                        player_name: playerName,
+                        overallrating,
+                        potential,
+                        // personal info
+                        birthdate,
+                        nationality,
+                        height,
+                        weight,
+                        age: playerAge,
+                        // player details
+                        preferredfoot,
+                        preferredposition1,
+                        preferredposition2,
+                        preferredposition3,
+                        preferredposition4,
+                        skillmoves,
+                        weakfootabilitytypecode,
+                        attackingworkrate,
+                        defensiveworkrate,
+                        // pace
+                        acceleration,
+                        sprintspeed,
+                        // attacking
+                        positioning,
+                        finishing,
+                        shotpower,
+                        longshots,
+                        volleys,
+                        penalties,
+                        // passing
+                        vision,
+                        crossing,
+                        freekickaccuracy,
+                        shortpassing,
+                        longpassing,
+                        curve,
+                        // dribbling
+                        agility,
+                        balance,
+                        reactions,
+                        ballcontrol,
+                        dribbling,
+                        composure,
+                        // defending
+                        interceptions,
+                        headingaccuracy,
+                        defensiveawareness,
+                        standingtackle,
+                        slidingtackle,
+                        // physical
+                        jumping,
+                        stamina,
+                        strength,
+                        aggression,
+                        // goalkeeping
+                        gkdiving,
+                        gkhandling,
+                        gkkicking,
+                        gkpositioning,
+                        gkreflexes,
+                        // meta info
+                        is_archived: 0,
+                    },
+                    { where: { player_id: playerID, user_id: userId } },
+                );
             }
 
             /*
@@ -217,32 +362,26 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
             // date format: '1991-1-1' -> '1991-01-01'
             const dateStr = `${y}-${m < 10 ? '0' : ''}${m}-${d < 10 ? '0' : ''}${d}`;
             // query by player_id and in_game_date
-            const queryStatusSQL = `
-                SELECT * FROM player_status_history
-                WHERE player_id = ${playerID} 
-                  AND in_game_date = '${dateStr}'
-                  AND user_id = ${userId}`;
-            const queryStatusResult = await doRawQuery(queryStatusSQL);
-            if (queryStatusResult.length > 0) {
+            const existingPSH = await PlayerStatusHistoryModel.findOne({
+                where: { player_id: playerID, in_game_date: dateStr, user_id: userId },
+            });
+            if (!existingPSH) {
+                await PlayerStatusHistoryModel.create({
+                    player_id: playerID,
+                    in_game_date: dateStr,
+                    overallrating,
+                    potential,
+                    user_id: userId,
+                });
+            } else {
                 logger.warn(
                     `[bulkUpdatePlayer][userId=${userId}] player_status_history already exists: playerID=${playerID}, date=${dateStr}`,
                 );
                 // update
-                const updateStatusSQL = `
-                    UPDATE player_status_history
-                    SET overallrating=${overallrating},
-                        potential=${potential}
-                    WHERE player_id = ${playerID} 
-                      AND in_game_date = '${dateStr}'
-                      AND user_id = ${userId}`;
-                await doRawUpdate(updateStatusSQL);
-            } else {
-                const insertStatusSQL = `
-                    INSERT INTO player_status_history 
-                        (player_id, in_game_date, overallrating, potential, user_id)
-                    VALUES 
-                        (${playerID}, '${dateStr}', ${overallrating}, ${potential}, ${userId})`;
-                await doRawInsert(insertStatusSQL);
+                await PlayerStatusHistoryModel.update(
+                    { overallrating, potential },
+                    { where: { player_id: playerID, in_game_date: dateStr, user_id: userId } },
+                );
             }
         }
 
@@ -252,11 +391,7 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                 `[bulkUpdatePlayer][userID=${userId}] Archive players: ${Array.from(existingPlayerSet).join(',')}`,
             );
             const archivePlayerIDs = Array.from(existingPlayerSet);
-            const archiveSQL = `
-                UPDATE player SET is_archived = 1 
-                WHERE player_id IN (${archivePlayerIDs.join(',')})
-                    AND user_id = ${userId}`;
-            await doRawUpdate(archiveSQL);
+            await PlayerModel.update({ is_archived: 1 }, { where: { player_id: archivePlayerIDs, user_id: userId } });
         }
     } catch (e) {
         logger.error(`[bulkUpdatePlayer][userID=${userId}] error: ${e}`);
