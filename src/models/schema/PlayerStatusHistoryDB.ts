@@ -32,7 +32,7 @@ const PlayerStatusHistorySchema: ModelAttributes = {
         type: Sequelize.INTEGER,
     },
     in_game_date: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
     },
     overallrating: {
         type: Sequelize.INTEGER,
@@ -47,7 +47,7 @@ export class PlayerStatusHistoryModel extends Model {
     public user_id!: number;
     public save_id!: number;
     public player_id!: number;
-    public in_game_date!: number;
+    public in_game_date!: string;
     public overallrating!: number;
     public potential!: number;
 }

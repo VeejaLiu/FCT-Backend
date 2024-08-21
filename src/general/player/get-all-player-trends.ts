@@ -1,6 +1,8 @@
 import { Logger } from '../../lib/logger';
 import { doRawQuery } from '../../models';
 import { PLAYER_PRIMARY_POS_NAME, PLAYER_PRIMARY_POS_TYPE } from './get-all-players';
+import { PlayerModel } from '../../models/schema/PlayerDB';
+import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 
 const logger = new Logger(__filename);
 
@@ -20,16 +22,15 @@ interface PlayerTrendData {
 
 export async function getAllPlayerTrends({ userId }: { userId: string }): Promise<PlayerTrendData[]> {
     try {
-        // query all players first
-        const sql1 = `SELECT player_id, player_name, preferredposition1
-                      FROM player
-                      WHERE is_archived = 0
-                        and user_id = ${userId}`;
         const players: {
             player_id: number;
             player_name: string;
-            preferredposition1: number;
-        }[] = await doRawQuery(sql1);
+            preferredposition1: string;
+        }[] = await PlayerModel.findAll({
+            attributes: ['player_id', 'player_name', 'preferredposition1'],
+            where: { user_id: userId, is_archived: false },
+            raw: true,
+        });
         logger.info(`[getAllPlayerTrends] ${players?.length} players found`);
         if (!players || players.length === 0) {
             logger.info(`[getAllPlayerTrends] No players found`);
@@ -40,19 +41,19 @@ export async function getAllPlayerTrends({ userId }: { userId: string }): Promis
         const result = [];
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
-            const sql2 = `
-                SELECT player_id, in_game_date, overallrating, potential
-                FROM player_status_history
-                WHERE player_id = ${player.player_id}
-                AND user_id = ${userId}
-                order by in_game_date desc
-                limit 20`;
             const playerTrends: {
                 player_id: number;
                 in_game_date: string;
                 overallrating: number;
                 potential: number;
-            }[] = await doRawQuery(sql2);
+            }[] = await PlayerStatusHistoryModel.findAll({
+                attributes: ['player_id', 'in_game_date', 'overallrating', 'potential'],
+                where: { player_id: player.player_id, user_id: userId },
+                order: [['in_game_date', 'DESC']],
+                limit: 40,
+                raw: true,
+            });
+
             const trends = playerTrends
                 .sort((a, b) => {
                     return new Date(a.in_game_date).getTime() - new Date(b.in_game_date).getTime();
