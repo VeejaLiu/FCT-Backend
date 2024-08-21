@@ -1,4 +1,4 @@
-import { doRawQuery } from '../../models';
+import { UserSecretKeyModel } from '../../models/schema/UserSecretKeyDB';
 
 /**
  * Verify secret key
@@ -14,12 +14,15 @@ export async function verifySecretKey(req: any, res: any, next: any) {
     }
 
     // query from the database
-    const qRes = await doRawQuery(`SELECT * FROM user_secret_key WHERE secret_key = '${secretKey}' limit 1`);
-    if (qRes.length === 0) {
+    const qRes: UserSecretKeyModel = await UserSecretKeyModel.findOne({
+        where: { secret_key: secretKey },
+    });
+
+    if (qRes) {
         return res.status(401).json({ message: 'Missing secret key' });
     }
 
-    const userId = qRes[0].user_id;
+    const userId = qRes.user_id;
     req.user = { userId };
 
     next();
