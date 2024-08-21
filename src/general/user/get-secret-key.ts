@@ -1,7 +1,6 @@
-import { doRawQuery } from '../../models';
-
 import { Logger } from '../../lib/logger';
 import { refreshSecretKey } from './refresh-secret-key';
+import { UserSecretKeyModel } from '../../models/schema/UserSecretKeyDB';
 
 const logger = new Logger(__filename);
 
@@ -11,18 +10,18 @@ export async function getSecretKey({ userId }: { userId: string }): Promise<{
     data?: any;
 }> {
     try {
-        const sql = `SELECT secret_key FROM user_secret_key WHERE user_id = ${userId}`;
-        const queryRes = await doRawQuery(sql);
-        if (queryRes.length <= 0 || !queryRes[0].secret_key) {
+        const userSecretKey = await UserSecretKeyModel.findOne({
+            where: { user_id: userId },
+        });
+
+        if (!userSecretKey || !userSecretKey.secret_key) {
             return await refreshSecretKey({ userId });
         }
-        const secretKey = queryRes[0].secret_key;
+
         return {
             success: true,
             message: 'success',
-            data: {
-                secretKey: secretKey,
-            },
+            data: { secretKey: userSecretKey.secret_key },
         };
     } catch (e) {
         logger.error(`[getSecretKey] ${e.message}`);

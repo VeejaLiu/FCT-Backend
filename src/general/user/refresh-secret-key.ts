@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { doRawInsert, doRawQuery } from '../../models';
 import { Logger } from '../../lib/logger';
+import { UserSecretKeyModel } from '../../models/schema/UserSecretKeyDB';
 
 const logger = new Logger(__filename);
 
@@ -14,15 +14,19 @@ export async function refreshSecretKey({ userId }: { userId: string }): Promise<
         const newSecretKey = `fcd-${newSecretKeyId}`;
 
         // query first
-        const sql1 = `SELECT * FROM user_secret_key WHERE user_id = ${userId}`;
-        const existingUser = await doRawQuery(sql1);
-        if (existingUser.length <= 0) {
-            const sql = `INSERT INTO user_secret_key (user_id, secret_key) VALUES (${userId}, '${newSecretKey}')`;
-            await doRawInsert(sql);
+        const existingUSK = await UserSecretKeyModel.findOne({
+            where: { user_id: userId },
+        });
+
+        // If not exist, insert, else update
+        if (!existingUSK) {
+            await UserSecretKeyModel.create({
+                user_id: userId,
+                secret_key: newSecretKey,
+            });
             logger.info(`[refreshSecretKey] Insert secret key success: ${newSecretKey}`);
         } else {
-            const sql = `UPDATE user_secret_key SET secret_key = '${newSecretKey}' WHERE id = ${userId}`;
-            await doRawQuery(sql);
+            await UserSecretKeyModel.update({ secret_key: newSecretKey }, { where: { user_id: userId } });
             logger.info(`[refreshSecretKey] Update secret key success: ${newSecretKey}`);
         }
 

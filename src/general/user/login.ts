@@ -1,7 +1,8 @@
-import { doRawInsert, doRawQuery, doRawUpdate } from '../../models';
 import bcrypt from 'bcryptjs';
 import { Logger } from '../../lib/logger';
 import { signToken } from '../../lib/token/signToken';
+import { UserModel } from '../../models/schema/UserDB';
+import { Op } from 'sequelize';
 
 const logger = new Logger(__filename);
 
@@ -22,9 +23,11 @@ export async function loginUser({ username, password }: { username: string; pass
         /*
          * Check if user already exists
          */
-        const sql1 = `SELECT * FROM user WHERE username = '${username}' OR email = '${username}' LIMIT 1`;
-        const queryRes = await doRawQuery(sql1);
-        if (queryRes.length <= 0) {
+        const user = await UserModel.findOne({
+            where: { [Op.or]: [{ username: username }, { email: username }] },
+        });
+
+        if (!user) {
             logger.info(`[/user/login] User not found`);
             return {
                 success: false,
@@ -32,7 +35,6 @@ export async function loginUser({ username, password }: { username: string; pass
             };
         }
 
-        const user = queryRes[0];
         const isPasswordMatched = await bcrypt.compare(password, user.password);
         if (!isPasswordMatched) {
             logger.info(`[/user/login] Password not matched`);
@@ -49,9 +51,7 @@ export async function loginUser({ username, password }: { username: string; pass
          * Sign token
          */
         const token = signToken(userID);
-        const saveTokenSql = `UPDATE user SET token = '${token}', update_time = CURRENT_TIMESTAMP 
-                              WHERE id = ${userID}`;
-        await doRawUpdate(saveTokenSql);
+        await UserModel.update({ token: token }, { where: { id: userID } });
 
         return {
             success: true,
@@ -61,8 +61,8 @@ export async function loginUser({ username, password }: { username: string; pass
                 username: user.username,
                 email: user.email,
                 token: token,
-                createTime: user.createTime,
-                updateTime: user.updateTime,
+                createTime: user.create_time,
+                updateTime: user.update_time,
             },
         };
     } catch (e) {

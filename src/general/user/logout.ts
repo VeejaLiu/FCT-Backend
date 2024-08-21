@@ -1,5 +1,5 @@
-import { doRawQuery, doRawUpdate } from '../../models';
 import { Logger } from '../../lib/logger';
+import { UserModel } from '../../models/schema/UserDB';
 
 const logger = new Logger(__filename);
 
@@ -20,9 +20,8 @@ export async function logoutUser({ userId }: { userId: string }): Promise<{
         /*
          * Check if user already exists
          */
-        const sql1 = `SELECT * FROM user WHERE id = ${userId}`;
-        const queryRes = await doRawQuery(sql1);
-        if (queryRes.length <= 0) {
+        const user = await UserModel.findOne({ where: { id: userId } });
+        if (!user) {
             logger.info(`[logoutUser] User not found`);
             return {
                 success: false,
@@ -33,10 +32,7 @@ export async function logoutUser({ userId }: { userId: string }): Promise<{
         /*
          * Revoking token
          */
-        const saveTokenSql = `UPDATE user SET token = '', update_time = CURRENT_TIMESTAMP 
-                              WHERE id = ${userId}`;
-        await doRawUpdate(saveTokenSql);
-
+        await UserModel.update({ token: '' }, { where: { id: userId } });
         return {
             success: true,
             message: 'success',
