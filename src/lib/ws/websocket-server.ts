@@ -21,6 +21,12 @@ export function startWebSocketServer(port: number) {
         if (verifyRes.success) {
             const userId = verifyRes.data.id;
             const existingSockets = userConnections.get(userId) || [];
+            if (existingSockets.length > 0) {
+                // Close existing connections
+                for (let i = 0; i < existingSockets.length; i++) {
+                    existingSockets[i].close(1000, 'New connection established');
+                }
+            }
             userConnections.set(userId, [...existingSockets, socket]);
             socket.on('close', () => {
                 userConnections.delete(userId);
