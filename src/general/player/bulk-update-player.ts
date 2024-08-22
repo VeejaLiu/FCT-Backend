@@ -2,10 +2,11 @@ import { DateUtils } from '../../utils/Date';
 import { Logger } from '../../lib/logger';
 import { PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
+import { sendMessageToUser } from '../../lib/ws/websocket-server';
 
 const logger = new Logger(__filename);
 
-export async function bulkUpdatePlayer({ userId, players }: { userId: string; players: any[] }) {
+export async function bulkUpdatePlayer({ userId, players }: { userId: number; players: any[] }) {
     try {
         logger.info(`[bulkUpdatePlayer][userId=${userId}] players.length=${players.length}`);
         if (!players || players.length === 0) {
@@ -20,6 +21,9 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
         });
         const existingPlayerIDs = existingPlayers.map((p) => p.player_id);
         const existingPlayerSet = new Set(existingPlayerIDs);
+        logger.info(`[bulkUpdatePlayer][userId=${userId}] existingPlayers.length=${existingPlayers.length}`);
+        logger.info(`[bulkUpdatePlayer][userId=${userId}] new players count: ${players.length}`);
+        logger.info(`[bulkUpdatePlayer][userId=${userId}] new players: ${players.map((p) => p.playerID).join(',')}`);
 
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
@@ -90,7 +94,7 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
             } = player;
 
             // Some player names have single quotes, escape them, lime O'Connell
-            playerName = playerName.replace(/'/g, "''");
+            playerName = playerName?.replace(/'/g, "''");
 
             // remove playerID from existingPlayerSet
             if (existingPlayerSet.has(playerID)) {
@@ -219,7 +223,7 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                 // logger.info(`[bulkUpdatePlayer] Created new player: playerID=${playerID}`);
             } else {
                 if (
-                    Number(existingPlayer.overallrating) !== Number(overallrating) &&
+                    Number(existingPlayer.overallrating) !== Number(overallrating) ||
                     Number(existingPlayer.potential) !== Number(potential)
                 ) {
                     logger.info(
@@ -228,6 +232,20 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: string; pl
                     logger.info(
                         `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, potential=${existingPlayer.potential} -> ${potential}`,
                     );
+                    sendMessageToUser({
+                        userId: userId,
+                        message: {
+                            type: 'PlayerUpdate.Overall',
+                            payload: {
+                                playerID: playerID,
+                                playerName: playerName,
+                                oldOverallrating: existingPlayer.overallrating,
+                                overallrating: overallrating,
+                                oldPotential: existingPlayer.potential,
+                                potential: potential,
+                            },
+                        },
+                    });
                 }
                 // const updateSQL = `
                 // UPDATE player

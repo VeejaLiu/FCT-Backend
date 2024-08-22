@@ -7,6 +7,9 @@ import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
 import { closeSequelize } from './models/db-config-mysql';
 import { verifyToken } from './lib/token/verifyTokenMiddleware';
+import { startWebSocketServer } from './lib/ws/websocket-server';
+
+const logger = new Logger(__filename);
 
 async function Main() {
     const app = express();
@@ -27,38 +30,26 @@ async function Main() {
     const log = new Logger(__filename);
 
     const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-        console.error(`[APP][Error] ${err.stack}`);
+        logger.error(`[APP][Error] ${err.stack}`);
         res.status(500).send('Something broke!');
     };
     app.use(errorHandler);
 
-    // Open websocket server
-    const WebSocket = require('ws');
-    const wss = new WebSocket.Server({ port: 8889 });
-    wss.on('connection', async (socket, request) => {
-        const token = request.headers['sec-websocket-protocol'];
-        const verifyRes = await verifyToken(token);
-        console.log('verifyRes:', verifyRes);
-        if (verifyRes.success) {
-            socket.send('Protocol accepted');
-        } else {
-            socket.close(1002, 'Protocol not supported');
-        }
-    });
+    startWebSocketServer(8889);
 
     // Fix unhandled promise rejection
     process.on('uncaughtException', (error) => {
-        console.error('Uncaught Exception:', error);
+        logger.error('Uncaught Exception:', error);
     });
 
     // Catch unhandled promise rejection
     process.on('unhandledRejection', (reason, promise) => {
-        console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+        logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
     });
 
     // Close sequelize connection on SIGINT
     process.on('SIGINT', async () => {
-        console.log('Received SIGINT.');
+        logger.info('SIGINT signal received.');
         await closeSequelize();
         process.exit();
     });
@@ -69,5 +60,5 @@ async function Main() {
 }
 
 Main().then(() => {
-    console.log('Server started.');
+    logger.info('Server started');
 });

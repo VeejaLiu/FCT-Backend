@@ -6,6 +6,7 @@ import { verifyTokenMiddleware } from '../../lib/token/verifyTokenMiddleware';
 import { logoutUser } from '../../general/user/logout';
 import { getSecretKey } from '../../general/user/get-secret-key';
 import { refreshSecretKey } from '../../general/user/refresh-secret-key';
+import { sendMessageToUser } from '../../lib/ws/websocket-server';
 
 const router = express.Router();
 
