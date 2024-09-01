@@ -35,8 +35,12 @@ export function startWebSocketServer(httpServer) {
             // If received ping message, reply with pong
             socket.on('message', (message: any) => {
                 logger.info('[ws.on_connection] Received message:', message);
-                if (message === 'ping') {
+                const parsedMessage = typeof message === 'string' ? message : message.toString();
+                logger.info('[ws.on_connection] Parsed message:', parsedMessage);
+
+                if (parsedMessage === 'ping') {
                     socket.send('pong');
+                    logger.info('[ws.on_connection] Sent pong message');
                 }
             });
 
