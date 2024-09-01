@@ -32,6 +32,14 @@ export function startWebSocketServer(httpServer) {
                 userConnections.delete(userId);
             });
 
+            // If received ping message, reply with pong
+            socket.on('message', (message: any) => {
+                logger.info('[ws.on_connection] Received message:', message);
+                if (message === 'ping') {
+                    socket.send('pong');
+                }
+            });
+
             logger.info('[ws.on_connection] Protocol accepted');
             socket.send('Protocol accepted');
         } else {
