@@ -11,7 +11,7 @@ const userConnections = new Map<number, WebSocket[]>(); // 存储用户连接
  * @param httpServer
  */
 export function startWebSocketServer(httpServer) {
-    const wss = new WebSocket.Server({ httpServer: httpServer });
+    const wss = new WebSocket.Server({ server: httpServer });
 
     wss.on('connection', async (socket, request) => {
         const token = request.headers['sec-websocket-protocol'];
