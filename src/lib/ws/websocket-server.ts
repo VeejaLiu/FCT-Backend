@@ -8,10 +8,10 @@ const userConnections = new Map<number, WebSocket[]>(); // 存储用户连接
 /**
  * Create a WebSocket server
  *
- * @param port
+ * @param httpServer
  */
-export function startWebSocketServer(port: number) {
-    const wss = new WebSocket.Server({ port });
+export function startWebSocketServer(httpServer) {
+    const wss = new WebSocket.Server({ httpServer: httpServer });
 
     wss.on('connection', async (socket, request) => {
         const token = request.headers['sec-websocket-protocol'];
@@ -40,7 +40,11 @@ export function startWebSocketServer(port: number) {
         }
     });
 
-    logger.info(`[ws.on_connection] WebSocket server started on port ${port}`);
+    wss.on('error', (error: any) => {
+        logger.error('[ws.on_error] Error:', error);
+    });
+
+    logger.info(`[ws.on_connection] WebSocket server started`);
 }
 
 interface WebsocketMessage {

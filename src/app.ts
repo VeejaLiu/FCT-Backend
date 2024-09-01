@@ -1,4 +1,5 @@
 import express, { ErrorRequestHandler } from 'express';
+import http from 'http';
 import index from './router';
 import { Logger } from './lib/logger';
 import { banner } from './lib/banner';
@@ -6,13 +7,13 @@ import { loadMonitor } from './loaders/loadMonitor';
 import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
 import { closeSequelize } from './models/db-config-mysql';
-import { verifyToken } from './lib/token/verifyTokenMiddleware';
 import { startWebSocketServer } from './lib/ws/websocket-server';
 
 const logger = new Logger(__filename);
 
 async function Main() {
     const app = express();
+    const server = http.createServer(app);
 
     // Fix CORS issue
     app.use((req, res, next) => {
@@ -35,7 +36,7 @@ async function Main() {
     };
     app.use(errorHandler);
 
-    startWebSocketServer(8889);
+    startWebSocketServer(server);
 
     // Fix unhandled promise rejection
     process.on('uncaughtException', (error) => {
@@ -54,7 +55,7 @@ async function Main() {
         process.exit();
     });
 
-    app.listen(env.app.port, () => {
+    server.listen(env.app.port, () => {
         banner(log);
     });
 }
