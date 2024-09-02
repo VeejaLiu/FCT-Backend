@@ -5,6 +5,7 @@ import { getPlayerCount } from '../../general/player/get-player-count';
 import { getAllPlayerTrends } from '../../general/player/get-all-player-trends';
 import { verifyTokenMiddleware } from '../../lib/token/verifyTokenMiddleware';
 import { verifySecretKey } from '../../lib/token/verifySecretKey';
+import { getPlayerDetail } from '../../general/player/get-player-detail';
 
 const router = express.Router();
 
@@ -14,6 +15,19 @@ const router = express.Router();
 router.get('', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
     const result = await getAllPlayers({ userId });
+    res.send(result);
+});
+
+/**
+ * Get player details by id
+ */
+router.get('/detail/:playerID', verifyTokenMiddleware, async (req: any, res) => {
+    const { userId } = req.user;
+    const { playerID } = req.params;
+    const result = await getPlayerDetail({
+        userId,
+        playerID: parseInt(playerID),
+    });
     res.send(result);
 });
 
