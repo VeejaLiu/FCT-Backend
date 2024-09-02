@@ -5,7 +5,7 @@ import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistor
 
 const logger = new Logger(__filename);
 
-interface PlayerTrend {
+export interface PlayerTrend {
     inGameDate: string;
     overallRating: number;
     potential: number;

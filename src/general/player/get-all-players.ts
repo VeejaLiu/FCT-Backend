@@ -65,7 +65,21 @@ export const PLAYER_PRIMARY_POS_TYPE = {
     27: 'FOR',
 };
 
-export async function getAllPlayers({ userId }: { userId: string }) {
+export interface PlayerOverall {
+    playerID: number;
+    playerName: string;
+    overallRating: number;
+    potential: number;
+    age: number;
+    positionType: 'GK' | 'DEF' | 'MID' | 'FOR';
+    position1: string;
+    position2: string;
+    position3: string;
+    position4: string;
+    imageUrl?: string;
+}
+
+export async function getAllPlayers({ userId }: { userId: string }): Promise<PlayerOverall[]> {
     logger.info(`[API_LOGS][/player] [userId=${userId}] Get all players`);
 
     const sqlRes: PlayerModel[] = await PlayerModel.findAll({

@@ -1,11 +1,24 @@
 import { PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 import { Logger } from '../../lib/logger';
-import { getAllPlayers } from './get-all-players';
+import { getAllPlayers, PlayerOverall } from './get-all-players';
+import { PlayerTrend } from './get-all-player-trends';
 
 const logger = new Logger(__filename);
 
-export async function getPlayerDetail({ userId, playerID }: { userId: string; playerID: number }) {
+interface PlayerDetail {
+    allPlayer: PlayerOverall[];
+    thisPlayer: PlayerModel;
+    trends: PlayerTrend[];
+}
+
+export async function getPlayerDetail({
+    userId,
+    playerID,
+}: {
+    userId: string;
+    playerID: number;
+}): Promise<PlayerDetail> {
     try {
         logger.info(`[getPlayerDetail] userId: ${userId}, playerID: ${playerID}`);
         if (!userId) {
