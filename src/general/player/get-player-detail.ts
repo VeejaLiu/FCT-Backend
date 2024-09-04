@@ -44,7 +44,6 @@ export async function getPlayerDetail({
                 user_id: userId,
             },
             order: [['in_game_date', 'DESC']],
-            limit: 40,
             raw: true,
         });
         const trends = playerTrends
