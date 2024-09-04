@@ -6,7 +6,7 @@ import { verifyTokenMiddleware } from '../../lib/token/verifyTokenMiddleware';
 import { logoutUser } from '../../general/user/logout';
 import { getSecretKey } from '../../general/user/get-secret-key';
 import { refreshSecretKey } from '../../general/user/refresh-secret-key';
-import { sendMessageToUser } from '../../lib/ws/websocket-server';
+import { env } from '../../env';
 
 const router = express.Router();
 
@@ -17,9 +17,11 @@ const logger = new Logger(__filename);
  */
 router.post('/register', async (req: any, res: any) => {
     const { username, email, password, rc } = req.body;
-    if (!rc || rc !== 'P7382Pq0XqFmwgIlBFkqyfDisKLK') {
-        res.status(400).send({ success: false, message: 'Invalid registerSecret' });
-        return;
+    if (env.app.env === 'production') {
+        if (!rc || rc !== 'P7382Pq0XqFmwgIlBFkqyfDisKLK') {
+            res.status(400).send({ success: false, message: 'Invalid registerSecret' });
+            return;
+        }
     }
     const result = await registerUser({
         username: username,

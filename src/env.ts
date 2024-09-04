@@ -28,6 +28,7 @@ export const env = {
         routePrefix: getOsEnv('APP_ROUTE_PREFIX'),
         port: normalizePort(process.env.PORT || getOsEnv('APP_PORT')),
         banner: toBool(getOsEnv('APP_BANNER')),
+        env: getOsEnv('APP_ENV'),
     },
     log: {
         level: getOsEnv('LOG_LEVEL'),
