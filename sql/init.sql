@@ -79,6 +79,57 @@ CREATE TABLE `player_status_history`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
 
+  CREATE TABLE `player_stat_tracker` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `save_id` int DEFAULT NULL,
+  `player_id` int DEFAULT NULL,
+  `in_game_date` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `overallrating` int DEFAULT NULL,
+  `potential` int DEFAULT NULL,
+  `acceleration` int DEFAULT NULL,
+  `sprintspeed` int DEFAULT NULL,
+  `positioning` int DEFAULT NULL,
+  `finishing` int DEFAULT NULL,
+  `shotpower` int DEFAULT NULL,
+  `longshots` int DEFAULT NULL,
+  `volleys` int DEFAULT NULL,
+  `penalties` int DEFAULT NULL,
+  `vision` int DEFAULT NULL,
+  `crossing` int DEFAULT NULL,
+  `freekickaccuracy` int DEFAULT NULL,
+  `shortpassing` int DEFAULT NULL,
+  `longpassing` int DEFAULT NULL,
+  `curve` int DEFAULT NULL,
+  `agility` int DEFAULT NULL,
+  `balance` int DEFAULT NULL,
+  `reactions` int DEFAULT NULL,
+  `ballcontrol` int DEFAULT NULL,
+  `dribbling` int DEFAULT NULL,
+  `composure` int DEFAULT NULL,
+  `interceptions` int DEFAULT NULL,
+  `headingaccuracy` int DEFAULT NULL,
+  `defensiveawareness` int DEFAULT NULL,
+  `standingtackle` int DEFAULT NULL,
+  `slidingtackle` int DEFAULT NULL,
+  `jumping` int DEFAULT NULL,
+  `stamina` int DEFAULT NULL,
+  `strength` int DEFAULT NULL,
+  `aggression` int DEFAULT NULL,
+  `gkdiving` int DEFAULT NULL,
+  `gkhandling` int DEFAULT NULL,
+  `gkkicking` int DEFAULT NULL,
+  `gkpositioning` int DEFAULT NULL,
+  `gkreflexes` int DEFAULT NULL,
+  `is_deleted` tinyint(1) DEFAULT '0',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_player_id` (`player_id`)) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
+
 CREATE TABLE `user`
 (
     `id`          int                                     NOT NULL AUTO_INCREMENT,
