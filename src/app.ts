@@ -8,6 +8,7 @@ import { loadWinston } from './loaders/winstonLoader';
 import { env } from './env';
 import { closeSequelize } from './models/db-config-mysql';
 import { startWebSocketServer } from './lib/ws/websocket-server';
+import * as dotenv from 'dotenv';
 
 const logger = new Logger(__filename);
 
@@ -63,3 +64,5 @@ async function Main() {
 Main().then(() => {
     logger.info('Server started');
 });
+// Load environment variables from .env file
+dotenv.config();
