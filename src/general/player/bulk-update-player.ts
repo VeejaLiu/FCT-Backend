@@ -3,10 +3,11 @@ import { Logger } from '../../lib/logger';
 import { PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 import { sendMessageToUser } from '../../lib/ws/websocket-server';
+import { getUserSetting, NOTIFICATION_ITEMS } from '../user/get-user-setting';
 
 const logger = new Logger(__filename);
 
-function sendPlayerUpdateNotification({
+async function sendPlayerUpdateNotification({
     userId,
     playerID,
     playerName,
@@ -21,9 +22,20 @@ function sendPlayerUpdateNotification({
     playerID: number;
     playerName: string;
 }) {
+    const userSettingRes = await getUserSetting({ userId });
+    if (!userSettingRes.success) {
+        return;
+    }
+    const userSetting = userSettingRes.data;
+
+    if (!userSetting.enableNotification) {
+        return;
+    }
+
     if (
-        Number(existingPlayer.overallrating) !== Number(overallrating) ||
-        Number(existingPlayer.potential) !== Number(potential)
+        (Number(existingPlayer.overallrating) !== Number(overallrating) ||
+            Number(existingPlayer.potential) !== Number(potential)) &&
+        userSetting.notificationItems.PlayerUpdate_Overall
     ) {
         logger.info(
             `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, overallrating=${existingPlayer.overallrating} -> ${overallrating}`,
@@ -34,7 +46,7 @@ function sendPlayerUpdateNotification({
         sendMessageToUser({
             userId: userId,
             message: {
-                type: 'PlayerUpdate.Overall',
+                type: NOTIFICATION_ITEMS.PlayerUpdate_Overall,
                 payload: {
                     playerID: playerID,
                     playerName: playerName,
