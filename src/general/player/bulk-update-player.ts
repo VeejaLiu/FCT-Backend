@@ -3,8 +3,62 @@ import { Logger } from '../../lib/logger';
 import { PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 import { sendMessageToUser } from '../../lib/ws/websocket-server';
+import { getUserSetting, NOTIFICATION_ITEMS } from '../user/get-user-setting';
 
 const logger = new Logger(__filename);
+
+async function sendPlayerUpdateNotification({
+    userId,
+    playerID,
+    playerName,
+    existingPlayer,
+    overallrating,
+    potential,
+}: {
+    existingPlayer: PlayerModel;
+    overallrating: number;
+    potential: number;
+    userId: number;
+    playerID: number;
+    playerName: string;
+}) {
+    const userSettingRes = await getUserSetting({ userId });
+    if (!userSettingRes.success) {
+        return;
+    }
+    const userSetting = userSettingRes.data;
+
+    if (!userSetting.enableNotification) {
+        return;
+    }
+
+    if (
+        (Number(existingPlayer.overallrating) !== Number(overallrating) ||
+            Number(existingPlayer.potential) !== Number(potential)) &&
+        userSetting.notificationItems.PlayerUpdate_Overall
+    ) {
+        logger.info(
+            `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, overallrating=${existingPlayer.overallrating} -> ${overallrating}`,
+        );
+        logger.info(
+            `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, potential=${existingPlayer.potential} -> ${potential}`,
+        );
+        sendMessageToUser({
+            userId: userId,
+            message: {
+                type: NOTIFICATION_ITEMS.PlayerUpdate_Overall,
+                payload: {
+                    playerID: playerID,
+                    playerName: playerName,
+                    oldOverallrating: existingPlayer.overallrating,
+                    overallrating: overallrating,
+                    oldPotential: existingPlayer.potential,
+                    potential: potential,
+                },
+            },
+        });
+    }
+}
 
 export async function bulkUpdatePlayer({ userId, players }: { userId: number; players: any[] }) {
     try {
@@ -120,41 +174,7 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: number; pl
                 where: { player_id: playerID, user_id: userId },
             });
             if (!existingPlayer) {
-                // insert
-                // const insertSQL = `
-                //     INSERT INTO player (
-                //                         user_id,
-                //                         player_id, player_name, overallrating, potential,
-                //                         birthdate, nationality, height, weight, age,
-                //                         preferredfoot,
-                //                         preferredposition1, preferredposition2,
-                //                         preferredposition3, preferredposition4,
-                //                         skillmoves, weakfootabilitytypecode, attackingworkrate, defensiveworkrate,
-                //                         acceleration, sprintspeed,
-                //                         positioning, finishing, shotpower, longshots, volleys, penalties,
-                //                         vision, crossing, freekickaccuracy, shortpassing, longpassing, curve,
-                //                         agility, balance, reactions, ballcontrol, dribbling, composure,
-                //                         interceptions, headingaccuracy, defensiveawareness, standingtackle,
-                //                         slidingtackle, jumping, stamina, strength, aggression,
-                //                         gkdiving, gkhandling, gkkicking, gkpositioning, gkreflexes)
-                //     VALUES (
-                //             ${userId},
-                //             ${playerID}, '${playerName}', ${overallrating}, ${potential},
-                //             '${birthdate}', '${nationality}', ${height}, ${weight}, ${age},
-                //             '${preferredfoot}',
-                //             ${preferredposition1}, ${preferredposition2},
-                //             ${preferredposition3}, ${preferredposition4},
-                //             ${skillmoves}, ${weakfootabilitytypecode}, ${attackingworkrate}, ${defensiveworkrate},
-                //             ${acceleration}, ${sprintspeed},
-                //             ${positioning}, ${finishing}, ${shotpower}, ${longshots}, ${volleys}, ${penalties},
-                //             ${vision}, ${crossing}, ${freekickaccuracy}, ${shortpassing}, ${longpassing}, ${curve},
-                //             ${agility}, ${balance}, ${reactions}, ${ballcontrol}, ${dribbling}, ${composure},
-                //             ${interceptions}, ${headingaccuracy}, ${defensiveawareness}, ${standingtackle},
-                //             ${slidingtackle}, ${jumping}, ${stamina}, ${strength}, ${aggression},
-                //             ${gkdiving}, ${gkhandling}, ${gkkicking}, ${gkpositioning}, ${gkreflexes}
-                //            )`;
-                // const result = await doRawInsert(insertSQL);
-                const result = await PlayerModel.create({
+                await PlayerModel.create({
                     // user id
                     user_id: userId,
                     // basic info
@@ -222,88 +242,14 @@ export async function bulkUpdatePlayer({ userId, players }: { userId: number; pl
                 });
                 // logger.info(`[bulkUpdatePlayer] Created new player: playerID=${playerID}`);
             } else {
-                if (
-                    Number(existingPlayer.overallrating) !== Number(overallrating) ||
-                    Number(existingPlayer.potential) !== Number(potential)
-                ) {
-                    logger.info(
-                        `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, overallrating=${existingPlayer.overallrating} -> ${overallrating}`,
-                    );
-                    logger.info(
-                        `[bulkUpdatePlayer][userID=${userId}] playerID=${playerID}, playerName=${playerName}, potential=${existingPlayer.potential} -> ${potential}`,
-                    );
-                    sendMessageToUser({
-                        userId: userId,
-                        message: {
-                            type: 'PlayerUpdate.Overall',
-                            payload: {
-                                playerID: playerID,
-                                playerName: playerName,
-                                oldOverallrating: existingPlayer.overallrating,
-                                overallrating: overallrating,
-                                oldPotential: existingPlayer.potential,
-                                potential: potential,
-                            },
-                        },
-                    });
-                }
-                // const updateSQL = `
-                // UPDATE player
-                // SET player_name='${playerName}',
-                //     overallrating=${overallrating},
-                //     potential=${potential},
-                //     birthdate='${birthdate}',
-                //     nationality='${nationality}',
-                //     height=${height},
-                //     weight=${weight},
-                //     age=${age},
-                //     preferredfoot='${preferredfoot}',
-                //     preferredposition1=${preferredposition1},
-                //     preferredposition2=${preferredposition2},
-                //     preferredposition3=${preferredposition3},
-                //     preferredposition4=${preferredposition4},
-                //     skillmoves=${skillmoves},
-                //     weakfootabilitytypecode=${weakfootabilitytypecode},
-                //     attackingworkrate=${attackingworkrate},
-                //     defensiveworkrate=${defensiveworkrate},
-                //     acceleration=${acceleration},
-                //     sprintspeed=${sprintspeed},
-                //     positioning=${positioning},
-                //     finishing=${finishing},
-                //     shotpower=${shotpower},
-                //     longshots=${longshots},
-                //     volleys=${volleys},
-                //     penalties=${penalties},
-                //     vision=${vision},
-                //     crossing=${crossing},
-                //     freekickaccuracy=${freekickaccuracy},
-                //     shortpassing=${shortpassing},
-                //     longpassing=${longpassing},
-                //     curve=${curve},
-                //     agility=${agility},
-                //     balance=${balance},
-                //     reactions=${reactions},
-                //     ballcontrol=${ballcontrol},
-                //     dribbling=${dribbling},
-                //     composure=${composure},
-                //     interceptions=${interceptions},
-                //     headingaccuracy=${headingaccuracy},
-                //     defensiveawareness=${defensiveawareness},
-                //     standingtackle=${standingtackle},
-                //     slidingtackle=${slidingtackle},
-                //     jumping=${jumping},
-                //     stamina=${stamina},
-                //     strength=${strength},
-                //     aggression=${aggression},
-                //     gkdiving=${gkdiving},
-                //     gkhandling=${gkhandling},
-                //     gkkicking=${gkkicking},
-                //     gkpositioning=${gkpositioning},
-                //     gkreflexes=${gkreflexes},
-                //     is_archived=0
-                // WHERE player_id = ${playerID}
-                //   AND user_id = ${userId}`;
-                // const result = await doRawUpdate(updateSQL);
+                sendPlayerUpdateNotification({
+                    userId,
+                    playerID,
+                    playerName,
+                    existingPlayer,
+                    overallrating,
+                    potential,
+                });
                 const result = await PlayerModel.update(
                     {
                         // basic info

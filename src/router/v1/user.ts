@@ -7,6 +7,7 @@ import { logoutUser } from '../../general/user/logout';
 import { getSecretKey } from '../../general/user/get-secret-key';
 import { refreshSecretKey } from '../../general/user/refresh-secret-key';
 import { env } from '../../env';
+import { getUserSetting } from '../../general/user/get-user-setting';
 
 const router = express.Router();
 
@@ -78,6 +79,17 @@ router.get('/secret', verifyTokenMiddleware, async (req: any, res: any) => {
 router.post('/secret/refresh', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
     const result = await refreshSecretKey({
+        userId: userId,
+    });
+    res.status(200).send(result);
+});
+
+/**
+ * Get user setting
+ */
+router.get('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
+    const { userId } = req.user;
+    const result = await getUserSetting({
         userId: userId,
     });
     res.status(200).send(result);

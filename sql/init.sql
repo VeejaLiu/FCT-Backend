@@ -121,3 +121,20 @@ alter table user
 
 alter table user_secret_key
     add column is_deleted tinyint(1) default 0 after secret_key;
+
+alter table user
+    modify column id bigint not null auto_increment;
+
+CREATE TABLE `user_setting`
+(
+    `id`                  int    NOT NULL AUTO_INCREMENT,
+    `user_id`             BIGINT NOT NULL,
+    `enable_notification` tinyint(1) DEFAULT 1,
+    `notification_items`  text,
+    `is_deleted`          tinyint(1) DEFAULT 0,
+    `create_time`         datetime   DEFAULT CURRENT_TIMESTAMP,
+    `update_time`         datetime   DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
