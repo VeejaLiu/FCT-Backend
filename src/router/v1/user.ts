@@ -8,6 +8,7 @@ import { getSecretKey } from '../../general/user/get-secret-key';
 import { refreshSecretKey } from '../../general/user/refresh-secret-key';
 import { env } from '../../env';
 import { getUserSetting } from '../../general/user/get-user-setting';
+import { updateUserSetting } from '../../general/user/update-user-setting';
 
 const router = express.Router();
 
@@ -91,6 +92,21 @@ router.get('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
     const result = await getUserSetting({
         userId: userId,
+    });
+    res.status(200).send(result);
+});
+
+/**
+ * Update user setting
+ */
+router.post('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
+    const { userId } = req.user;
+    const { category, subItem, value } = req.body;
+    const result = await updateUserSetting({
+        userId: userId,
+        category: category,
+        subItem: subItem,
+        value: value,
     });
     res.status(200).send(result);
 });
