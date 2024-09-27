@@ -26,86 +26,90 @@ async function sendPlayerUpdateNotification({
     skillmoves: number;
     weakfootabilitytypecode: number;
 }) {
-    const userSettingRes = await getUserSetting({ userId });
-    if (!userSettingRes.success) {
-        return;
-    }
-    const userSetting = userSettingRes.data;
+    try {
+        const userSettingRes = await getUserSetting({ userId });
+        if (!userSettingRes.success) {
+            return;
+        }
+        const userSetting = userSettingRes.data;
 
-    if (!userSetting.enableNotification) {
-        return;
-    }
+        if (!userSetting.enableNotification) {
+            return;
+        }
 
-    /*
-     * Check if overallrating or potential has changed
-     */
-    if (
-        (Number(existingPlayer.overallrating) !== Number(overallrating) ||
-            Number(existingPlayer.potential) !== Number(potential)) &&
-        userSetting.notificationItems.PlayerUpdate_Overall
-    ) {
-        logger.info(
-            `[sendPlayerUpdateNotification][userID=${userId}] playerID=${playerID}, playerName=${playerName}, overallrating=${existingPlayer.overallrating} -> ${overallrating}`,
-        );
-        logger.info(
-            `[sendPlayerUpdateNotification][userID=${userId}] playerID=${playerID}, playerName=${playerName}, potential=${existingPlayer.potential} -> ${potential}`,
-        );
-        sendMessageToUser({
-            userId: userId,
-            message: {
-                type: NOTIFICATION_ITEMS.PlayerUpdate_Overall,
-                payload: {
-                    playerID: playerID,
-                    playerName: playerName,
-                    oldOverallrating: existingPlayer.overallrating,
-                    overallrating: overallrating,
-                    oldPotential: existingPlayer.potential,
-                    potential: potential,
+        /*
+         * Check if overallrating or potential has changed
+         */
+        if (
+            (Number(existingPlayer.overallrating) !== Number(overallrating) ||
+                Number(existingPlayer.potential) !== Number(potential)) &&
+            userSetting.notificationItems.PlayerUpdate_Overall
+        ) {
+            logger.info(
+                `[sendPlayerUpdateNotification][userID=${userId}] playerID=${playerID}, playerName=${playerName}, overallrating=${existingPlayer.overallrating} -> ${overallrating}`,
+            );
+            logger.info(
+                `[sendPlayerUpdateNotification][userID=${userId}] playerID=${playerID}, playerName=${playerName}, potential=${existingPlayer.potential} -> ${potential}`,
+            );
+            sendMessageToUser({
+                userId: userId,
+                message: {
+                    type: NOTIFICATION_ITEMS.PlayerUpdate_Overall,
+                    payload: {
+                        playerID: playerID,
+                        playerName: playerName,
+                        oldOverallrating: existingPlayer.overallrating,
+                        overallrating: overallrating,
+                        oldPotential: existingPlayer.potential,
+                        potential: potential,
+                    },
                 },
-            },
-        });
-    }
+            });
+        }
 
-    /*
-     * Check if SkillMoves has changed
-     */
-    if (
-        Number(existingPlayer.skillmoves) !== Number(skillmoves) &&
-        userSetting.notificationItems.PlayerUpdate_SkillMove
-    ) {
-        sendMessageToUser({
-            userId: userId,
-            message: {
-                type: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
-                payload: {
-                    playerID: playerID,
-                    playerName: playerName,
-                    oldSkillMoves: existingPlayer.skillmoves,
-                    skillmoves: skillmoves,
+        /*
+         * Check if SkillMoves has changed
+         */
+        if (
+            Number(existingPlayer.skillmoves) !== Number(skillmoves) &&
+            userSetting.notificationItems.PlayerUpdate_SkillMove
+        ) {
+            sendMessageToUser({
+                userId: userId,
+                message: {
+                    type: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
+                    payload: {
+                        playerID: playerID,
+                        playerName: playerName,
+                        oldSkillMoves: existingPlayer.skillmoves,
+                        skillmoves: skillmoves,
+                    },
                 },
-            },
-        });
-    }
+            });
+        }
 
-    /*
-     * Check if WeakFootAbilityTypeCode has changed
-     */
-    if (
-        Number(existingPlayer.weakfootabilitytypecode) !== Number(weakfootabilitytypecode) &&
-        userSetting.notificationItems.PlayerUpdate_WeakFoot
-    ) {
-        sendMessageToUser({
-            userId: userId,
-            message: {
-                type: NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
-                payload: {
-                    playerID: playerID,
-                    playerName: playerName,
-                    oldWeakFootAbilityTypeCode: existingPlayer.weakfootabilitytypecode,
-                    weakfootabilitytypecode: weakfootabilitytypecode,
+        /*
+         * Check if WeakFootAbilityTypeCode has changed
+         */
+        if (
+            Number(existingPlayer.weakfootabilitytypecode) !== Number(weakfootabilitytypecode) &&
+            userSetting.notificationItems.PlayerUpdate_WeakFoot
+        ) {
+            sendMessageToUser({
+                userId: userId,
+                message: {
+                    type: NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
+                    payload: {
+                        playerID: playerID,
+                        playerName: playerName,
+                        oldWeakFootAbilityTypeCode: existingPlayer.weakfootabilitytypecode,
+                        weakfootabilitytypecode: weakfootabilitytypecode,
+                    },
                 },
-            },
-        });
+            });
+        }
+    } catch (e) {
+        logger.error(`[sendPlayerUpdateNotification][userID=${userId}] error: ${e}`);
     }
 }
 
