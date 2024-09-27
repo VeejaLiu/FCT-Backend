@@ -24,14 +24,27 @@ export async function getPlayerDetail({
         if (!userId) {
             return null;
         }
+
         const players = await getAllPlayers({ userId });
+        if (!players || players.length === 0) {
+            return null;
+        }
+
         if (!playerID) {
             playerID = players[0].playerID;
         }
-        const player = await PlayerModel.findOne({
+        let player = await PlayerModel.findOne({
             where: { user_id: userId, player_id: playerID },
             raw: true,
         });
+        if (!player) {
+            playerID = players[0].playerID;
+            player = await PlayerModel.findOne({
+                where: { user_id: userId, player_id: playerID },
+                raw: true,
+            });
+        }
+
         const playerTrends: {
             player_id: number;
             in_game_date: string;
