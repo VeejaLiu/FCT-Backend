@@ -18,11 +18,21 @@ const DEFAULT_USER_SETTING = {
     ],
 };
 
+async function initUserSetting(userId: number | string) {
+    await UserSettingModel.create({
+        user_id: userId,
+        default_game_version: 25,
+        enable_notification: DEFAULT_USER_SETTING.enable_notification,
+        notification_items: JSON.stringify(DEFAULT_USER_SETTING.notification_items),
+    });
+}
+
 export async function getUserSetting({ userId }: { userId: number | string }): Promise<{
     success: boolean;
     message: string;
     data?: {
         userId: number | string;
+        defaultGameVersion: number;
         enableNotification: boolean;
         notificationItems: {
             PlayerUpdate_Overall: boolean;
@@ -37,11 +47,7 @@ export async function getUserSetting({ userId }: { userId: number | string }): P
             raw: true,
         });
         if (!userSetting) {
-            await UserSettingModel.create({
-                user_id: userId,
-                enable_notification: DEFAULT_USER_SETTING.enable_notification,
-                notification_items: JSON.stringify(DEFAULT_USER_SETTING.notification_items),
-            });
+            await initUserSetting(userId);
             return await getUserSetting({ userId });
         }
 
@@ -50,6 +56,7 @@ export async function getUserSetting({ userId }: { userId: number | string }): P
             message: 'success',
             data: {
                 userId: userId,
+                defaultGameVersion: userSetting.default_game_version,
                 enableNotification: userSetting.enable_notification,
                 notificationItems: {
                     PlayerUpdate_Overall: userSetting.notification_items.includes(

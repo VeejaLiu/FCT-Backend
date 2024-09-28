@@ -138,3 +138,6 @@ CREATE TABLE `user_setting`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
+
+ALTER TABLE user_setting
+    ADD COLUMN `default_game_version` int DEFAULT NULL after user_id;
