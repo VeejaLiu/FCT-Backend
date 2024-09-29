@@ -3,9 +3,21 @@ import { PlayerModel } from '../../models/schema/PlayerDB';
 
 const logger = new Logger(__filename);
 
-export async function getPlayerCount({ userId }: { userId: string }): Promise<number> {
+export async function getPlayerCount({
+    userId,
+    gameVersion,
+}: {
+    userId: string;
+    gameVersion: number;
+}): Promise<number> {
     try {
-        const count = await PlayerModel.count({ where: { is_archived: 0, user_id: userId } });
+        const count = await PlayerModel.count({
+            where: {
+                is_archived: 0,
+                user_id: userId,
+                game_version: gameVersion,
+            },
+        });
         return count;
     } catch (e) {
         logger.error(`[getPlayerCount] error: ${e}`);

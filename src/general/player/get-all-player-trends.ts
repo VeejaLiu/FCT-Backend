@@ -19,7 +19,13 @@ interface PlayerTrendData {
     trends: PlayerTrend[];
 }
 
-export async function getAllPlayerTrends({ userId }: { userId: string }): Promise<PlayerTrendData[]> {
+export async function getAllPlayerTrends({
+    userId,
+    gameVersion,
+}: {
+    userId: string;
+    gameVersion: number;
+}): Promise<PlayerTrendData[]> {
     try {
         const players: {
             player_id: number;

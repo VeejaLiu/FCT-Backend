@@ -14,7 +14,11 @@ const router = express.Router();
  */
 router.get('', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
-    const result = await getAllPlayers({ userId });
+    const { gameVersion } = req.query;
+    const result = await getAllPlayers({
+        userId: userId,
+        gameVersion: parseInt(gameVersion),
+    });
     res.send(result);
 });
 
@@ -24,8 +28,10 @@ router.get('', verifyTokenMiddleware, async (req: any, res) => {
 router.get('/detail/:playerID', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
     const { playerID } = req.params;
+    const { gameVersion } = req.query;
     const result = await getPlayerDetail({
         userId,
+        gameVersion: parseInt(gameVersion),
         playerID: parseInt(playerID),
     });
     res.send(result);
@@ -36,7 +42,11 @@ router.get('/detail/:playerID', verifyTokenMiddleware, async (req: any, res) => 
  */
 router.get('/count', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
-    const count = await getPlayerCount({ userId });
+    const { gameVersion } = req.query;
+    const count = await getPlayerCount({
+        userId: userId,
+        gameVersion: parseInt(gameVersion),
+    });
     res.send(count);
 });
 
@@ -45,7 +55,11 @@ router.get('/count', verifyTokenMiddleware, async (req: any, res) => {
  */
 router.get('/trends', verifyTokenMiddleware, async (req: any, res) => {
     const { userId } = req.user;
-    const result = await getAllPlayerTrends({ userId });
+    const { gameVersion } = req.query;
+    const result = await getAllPlayerTrends({
+        userId: userId,
+        gameVersion: parseInt(gameVersion),
+    });
     res.send(result);
 });
 
@@ -55,8 +69,10 @@ router.get('/trends', verifyTokenMiddleware, async (req: any, res) => {
 router.post('/bulk', verifySecretKey, async (req: any, res) => {
     res.send({ message: 'Got the message' });
     const { userId } = req.user;
+    const { gameVersion } = req.query;
     await bulkUpdatePlayer({
         userId: userId,
+        gameVersion: parseInt(gameVersion),
         players: req.body,
     });
 });

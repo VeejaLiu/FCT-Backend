@@ -113,7 +113,15 @@ async function sendPlayerUpdateNotification({
     }
 }
 
-export async function bulkUpdatePlayer({ userId, players }: { userId: number; players: any[] }) {
+export async function bulkUpdatePlayer({
+    userId,
+    gameVersion,
+    players,
+}: {
+    userId: number;
+    gameVersion: number;
+    players: any[];
+}) {
     try {
         logger.info(`[bulkUpdatePlayer][userId=${userId}] players.length=${players.length}`);
         if (!players || players.length === 0) {
