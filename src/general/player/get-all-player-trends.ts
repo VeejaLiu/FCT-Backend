@@ -33,7 +33,11 @@ export async function getAllPlayerTrends({
             preferredposition1: string;
         }[] = await PlayerModel.findAll({
             attributes: ['player_id', 'player_name', 'preferredposition1'],
-            where: { user_id: userId, is_archived: false },
+            where: {
+                user_id: userId,
+                game_version: gameVersion,
+                is_archived: false,
+            },
             raw: true,
         });
         logger.info(`[getAllPlayerTrends] ${players?.length} players found`);
@@ -53,7 +57,11 @@ export async function getAllPlayerTrends({
                 potential: number;
             }[] = await PlayerStatusHistoryModel.findAll({
                 attributes: ['player_id', 'in_game_date', 'overallrating', 'potential'],
-                where: { player_id: player.player_id, user_id: userId },
+                where: {
+                    player_id: player.player_id,
+                    user_id: userId,
+                    game_version: gameVersion,
+                },
                 order: [['in_game_date', 'DESC']],
                 limit: 40,
                 raw: true,
