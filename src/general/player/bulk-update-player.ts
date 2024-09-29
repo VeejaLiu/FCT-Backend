@@ -127,6 +127,10 @@ export async function bulkUpdatePlayer({
         if (!players || players.length === 0) {
             return;
         }
+        if (gameVersion !== 24 && gameVersion !== 25) {
+            logger.error(`[bulkUpdatePlayer][userId=${userId}] unsupported game version: ${gameVersion}`);
+            return;
+        }
 
         // Query all existing players
         const existingPlayers = await PlayerModel.findAll({
