@@ -6,6 +6,7 @@ import { Defaultconfig } from '../db-config-mysql';
 CREATE TABLE `player` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
+  `game_version` int DEFAULT NULL,
   `save_id` int DEFAULT NULL,
   `player_id` int DEFAULT NULL,
   `player_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -77,6 +78,9 @@ const PlayerSchema: ModelAttributes = {
     user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+    },
+    game_version: {
+        type: Sequelize.INTEGER,
     },
     save_id: {
         type: Sequelize.INTEGER,
@@ -255,6 +259,7 @@ const PlayerSchema: ModelAttributes = {
 
 export class PlayerModel extends Model {
     public id!: number;
+    public game_version!: number;
     public user_id!: number;
     public save_id!: number | null;
     public player_id!: number | null;

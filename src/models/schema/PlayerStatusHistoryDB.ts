@@ -6,6 +6,7 @@ import { Defaultconfig } from '../db-config-mysql';
 CREATE TABLE `player_status_history` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int DEFAULT NULL,
+  `game_version` int DEFAULT NULL,
   `save_id` int DEFAULT NULL,
   `player_id` int DEFAULT NULL,
   `in_game_date` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -26,6 +27,9 @@ const PlayerStatusHistorySchema: ModelAttributes = {
         primaryKey: true,
     },
     user_id: {
+        type: Sequelize.INTEGER,
+    },
+    game_version: {
         type: Sequelize.INTEGER,
     },
     save_id: {

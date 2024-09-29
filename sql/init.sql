@@ -141,3 +141,9 @@ CREATE TABLE `user_setting`
 
 ALTER TABLE user_setting
     ADD COLUMN `default_game_version` int DEFAULT NULL after user_id;
+
+alter table player
+  add column game_version int after user_id;
+
+alter table player_status_history
+    add column game_version int after user_id;
