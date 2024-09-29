@@ -19,12 +19,12 @@ const logger = new Logger(__filename);
  */
 router.post('/register', async (req: any, res: any) => {
     const { username, email, password, rc } = req.body;
-    if (env.app.env === 'production') {
-        if (!rc || rc !== 'P7382Pq0XqFmwgIlBFkqyfDisKLK') {
-            res.status(400).send({ success: false, message: 'Invalid registerSecret' });
-            return;
-        }
-    }
+    // if (env.app.env === 'production') {
+    //     if (!rc || rc !== 'P7382Pq0XqFmwgIlBFkqyfDisKLK') {
+    //         res.status(400).send({ success: false, message: 'Invalid registerSecret' });
+    //         return;
+    //     }
+    // }
     const result = await registerUser({
         username: username,
         email: email,
