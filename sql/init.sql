@@ -141,9 +141,12 @@ CREATE TABLE `user_setting`
 
 ALTER TABLE user_setting
     ADD COLUMN `default_game_version` int DEFAULT NULL after user_id;
+update user_setting set default_game_version = 24 where 1 = 1;
 
 alter table player
   add column game_version int after user_id;
+update player set game_version = 24 where 1 = 1;
 
 alter table player_status_history
     add column game_version int after user_id;
+update player_status_history set game_version = 24 where 1 = 1;
