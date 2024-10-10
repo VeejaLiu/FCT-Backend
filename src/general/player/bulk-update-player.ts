@@ -113,53 +113,139 @@ async function sendPlayerUpdateNotification({
     }
 }
 
-export async function bulkUpdatePlayer({
-    userId,
-    gameVersion,
-    players,
-}: {
-    userId: number;
-    gameVersion: number;
-    players: any[];
-}) {
-    try {
-        logger.info(`[bulkUpdatePlayer][userId=${userId}] players.length=${players.length}`);
-        if (!players || players.length === 0) {
-            return;
-        }
-        if (gameVersion !== 24 && gameVersion !== 25) {
-            logger.error(`[bulkUpdatePlayer][userId=${userId}] unsupported game version: ${gameVersion}`);
-            return;
+async function bulkUpdatePlayer24({ userId, players }: { players: any[]; userId: number }) {
+    // Query all existing players
+    const existingPlayers = await PlayerModel.findAll({
+        attributes: ['player_id'],
+        where: {
+            user_id: userId,
+            game_version: 24,
+            is_archived: false,
+        },
+        raw: true,
+    });
+    const existingPlayerIDs = existingPlayers.map((p) => p.player_id);
+    const existingPlayerSet = new Set(existingPlayerIDs);
+    logger.info(`[bulkUpdatePlayer24][userId=${userId}] existingPlayers.length=${existingPlayers.length}`);
+    logger.info(`[bulkUpdatePlayer24][userId=${userId}] new players count: ${players.length}`);
+    logger.info(`[bulkUpdatePlayer24][userId=${userId}] new players: ${players.map((p) => p.playerID).join(',')}`);
+
+    for (let i = 0; i < players.length; i++) {
+        const player = players[i];
+        let {
+            // -- player
+            playerID,
+            playerName,
+            currentDate,
+            // overallrating,
+            overallrating,
+            potential,
+            // -- personal
+            birthdate,
+            nationality,
+            height,
+            weight,
+            // -- player details
+            preferredfoot,
+            preferredposition1,
+            preferredposition2,
+            preferredposition3,
+            preferredposition4,
+            skillmoves,
+            weakfootabilitytypecode,
+            attackingworkrate,
+            defensiveworkrate,
+            // -- pace
+            acceleration,
+            sprintspeed,
+            // -- attacking
+            positioning,
+            finishing,
+            shotpower,
+            longshots,
+            volleys,
+            penalties,
+            // -- passing
+            vision,
+            crossing,
+            freekickaccuracy,
+            shortpassing,
+            longpassing,
+            curve,
+            // -- dribbling
+            agility,
+            balance,
+            reactions,
+            ballcontrol,
+            dribbling,
+            composure,
+            // -- defending
+            interceptions,
+            headingaccuracy,
+            defensiveawareness,
+            standingtackle,
+            slidingtackle,
+            // -- physical
+            jumping,
+            stamina,
+            strength,
+            aggression,
+            // -- goalkeeping
+            gkdiving,
+            gkhandling,
+            gkkicking,
+            gkpositioning,
+            gkreflexes,
+        } = player;
+
+        // Some player names have single quotes, escape them, lime O'Connell
+        playerName = playerName?.replace(/'/g, "''");
+
+        // remove playerID from existingPlayerSet
+        if (existingPlayerSet.has(playerID)) {
+            existingPlayerSet.delete(playerID);
         }
 
-        // Query all existing players
-        const existingPlayers = await PlayerModel.findAll({
-            attributes: ['player_id'],
-            where: { user_id: userId, is_archived: false },
-            raw: true,
+        // convert currentDate to age, currentDate is in format 'yyyy-mm-dd'
+        const [y, m, d] = currentDate.split('-').map((v: string) => Number(v));
+        const playerAge = Math.floor((new DateUtils(y, m, d).toGregorianDays() - birthdate) / 365.25);
+
+        // logger.info(
+        //     `[bulkUpdatePlayer] [i=${i}]` +
+        //         `playerID=${playerID}, ` +
+        //         `playerName=[${playerName}], ` +
+        //         `currentDate=${currentDate}, ` +
+        //         `overallrating=${overallrating}, ` +
+        //         `potential=${potential}, ` +
+        //         `birthdate=${birthdate}`,
+        // );
+
+        // query first
+        const existingPlayer = await PlayerModel.findOne({
+            where: {
+                user_id: userId,
+                game_version: 24,
+                player_id: playerID,
+            },
         });
-        const existingPlayerIDs = existingPlayers.map((p) => p.player_id);
-        const existingPlayerSet = new Set(existingPlayerIDs);
-        logger.info(`[bulkUpdatePlayer][userId=${userId}] existingPlayers.length=${existingPlayers.length}`);
-        logger.info(`[bulkUpdatePlayer][userId=${userId}] new players count: ${players.length}`);
-        logger.info(`[bulkUpdatePlayer][userId=${userId}] new players: ${players.map((p) => p.playerID).join(',')}`);
-
-        for (let i = 0; i < players.length; i++) {
-            const player = players[i];
-            let {
-                // -- player
-                playerID,
-                playerName,
-                currentDate,
-                // overallrating,
+        if (!existingPlayer) {
+            await PlayerModel.create({
+                // user id
+                user_id: userId,
+                // game version
+                game_version: 24,
+                // basic info
+                player_id: playerID,
+                player_name: playerName,
                 overallrating,
                 potential,
-                // -- personal
+                // personal info
                 birthdate,
                 nationality,
                 height,
                 weight,
-                // -- player details
+                age: playerAge,
+                // player details
                 preferredfoot,
                 preferredposition1,
                 preferredposition2,
@@ -169,81 +255,63 @@ export async function bulkUpdatePlayer({
                 weakfootabilitytypecode,
                 attackingworkrate,
                 defensiveworkrate,
-                // -- pace
+                // pace
                 acceleration,
                 sprintspeed,
-                // -- attacking
+                // attacking
                 positioning,
                 finishing,
                 shotpower,
                 longshots,
                 volleys,
                 penalties,
-                // -- passing
+                // passing
                 vision,
                 crossing,
                 freekickaccuracy,
                 shortpassing,
                 longpassing,
                 curve,
-                // -- dribbling
+                // dribbling
                 agility,
                 balance,
                 reactions,
                 ballcontrol,
                 dribbling,
                 composure,
-                // -- defending
+                // defending
                 interceptions,
                 headingaccuracy,
                 defensiveawareness,
                 standingtackle,
                 slidingtackle,
-                // -- physical
+                // physical
                 jumping,
                 stamina,
                 strength,
                 aggression,
-                // -- goalkeeping
+                // goalkeeping
                 gkdiving,
                 gkhandling,
                 gkkicking,
                 gkpositioning,
                 gkreflexes,
-            } = player;
-
-            // Some player names have single quotes, escape them, lime O'Connell
-            playerName = playerName?.replace(/'/g, "''");
-
-            // remove playerID from existingPlayerSet
-            if (existingPlayerSet.has(playerID)) {
-                existingPlayerSet.delete(playerID);
-            }
-
-            // convert currentDate to age, currentDate is in format 'yyyy-mm-dd'
-            const [y, m, d] = currentDate.split('-').map((v: string) => Number(v));
-            const playerAge = Math.floor((new DateUtils(y, m, d).toGregorianDays() - birthdate) / 365.25);
-
-            // logger.info(
-            //     `[bulkUpdatePlayer] [i=${i}]` +
-            //         `playerID=${playerID}, ` +
-            //         `playerName=[${playerName}], ` +
-            //         `currentDate=${currentDate}, ` +
-            //         `overallrating=${overallrating}, ` +
-            //         `potential=${potential}, ` +
-            //         `birthdate=${birthdate}`,
-            // );
-
-            // query first
-            const existingPlayer = await PlayerModel.findOne({
-                where: { player_id: playerID, user_id: userId },
             });
-            if (!existingPlayer) {
-                await PlayerModel.create({
-                    // user id
-                    user_id: userId,
+            // logger.info(`[bulkUpdatePlayer] Created new player: playerID=${playerID}`);
+        } else {
+            sendPlayerUpdateNotification({
+                userId,
+                playerID,
+                playerName,
+                existingPlayer,
+                overallrating,
+                potential,
+                skillmoves,
+                weakfootabilitytypecode,
+            }).then();
+            const result = await PlayerModel.update(
+                {
                     // basic info
-                    player_id: playerID,
                     player_name: playerName,
                     overallrating,
                     potential,
@@ -304,125 +372,115 @@ export async function bulkUpdatePlayer({
                     gkkicking,
                     gkpositioning,
                     gkreflexes,
-                });
-                // logger.info(`[bulkUpdatePlayer] Created new player: playerID=${playerID}`);
-            } else {
-                sendPlayerUpdateNotification({
-                    userId,
-                    playerID,
-                    playerName,
-                    existingPlayer,
-                    overallrating,
-                    potential,
-                    skillmoves,
-                    weakfootabilitytypecode,
-                }).then();
-                const result = await PlayerModel.update(
-                    {
-                        // basic info
-                        player_name: playerName,
-                        overallrating,
-                        potential,
-                        // personal info
-                        birthdate,
-                        nationality,
-                        height,
-                        weight,
-                        age: playerAge,
-                        // player details
-                        preferredfoot,
-                        preferredposition1,
-                        preferredposition2,
-                        preferredposition3,
-                        preferredposition4,
-                        skillmoves,
-                        weakfootabilitytypecode,
-                        attackingworkrate,
-                        defensiveworkrate,
-                        // pace
-                        acceleration,
-                        sprintspeed,
-                        // attacking
-                        positioning,
-                        finishing,
-                        shotpower,
-                        longshots,
-                        volleys,
-                        penalties,
-                        // passing
-                        vision,
-                        crossing,
-                        freekickaccuracy,
-                        shortpassing,
-                        longpassing,
-                        curve,
-                        // dribbling
-                        agility,
-                        balance,
-                        reactions,
-                        ballcontrol,
-                        dribbling,
-                        composure,
-                        // defending
-                        interceptions,
-                        headingaccuracy,
-                        defensiveawareness,
-                        standingtackle,
-                        slidingtackle,
-                        // physical
-                        jumping,
-                        stamina,
-                        strength,
-                        aggression,
-                        // goalkeeping
-                        gkdiving,
-                        gkhandling,
-                        gkkicking,
-                        gkpositioning,
-                        gkreflexes,
-                        // meta info
-                        is_archived: 0,
+                    // meta info
+                    is_archived: 0,
+                },
+                {
+                    where: {
+                        user_id: userId,
+                        game_version: 24,
+                        player_id: playerID,
                     },
-                    { where: { player_id: playerID, user_id: userId } },
-                );
-            }
-
-            /*
-             * Update player_status_history
-             */
-            // date format: '1991-1-1' -> '1991-01-01'
-            const dateStr = `${y}-${m < 10 ? '0' : ''}${m}-${d < 10 ? '0' : ''}${d}`;
-            // query by player_id and in_game_date
-            const existingPSH = await PlayerStatusHistoryModel.findOne({
-                where: { player_id: playerID, in_game_date: dateStr, user_id: userId },
-            });
-            if (!existingPSH) {
-                await PlayerStatusHistoryModel.create({
-                    player_id: playerID,
-                    in_game_date: dateStr,
-                    overallrating,
-                    potential,
-                    user_id: userId,
-                });
-            } else {
-                logger.warn(
-                    `[bulkUpdatePlayer][userId=${userId}] player_status_history already exists: playerID=${playerID}, date=${dateStr}`,
-                );
-                // update
-                await PlayerStatusHistoryModel.update(
-                    { overallrating, potential },
-                    { where: { player_id: playerID, in_game_date: dateStr, user_id: userId } },
-                );
-            }
+                },
+            );
         }
 
-        // archive players that are not in the new list
-        if (existingPlayerSet.size > 0) {
-            logger.info(
-                `[bulkUpdatePlayer][userID=${userId}] Archive players: ${Array.from(existingPlayerSet).join(',')}`,
+        /*
+         * Update player_status_history
+         */
+        // date format: '1991-1-1' -> '1991-01-01'
+        const dateStr = `${y}-${m < 10 ? '0' : ''}${m}-${d < 10 ? '0' : ''}${d}`;
+        // query by player_id and in_game_date
+        const existingPSH = await PlayerStatusHistoryModel.findOne({
+            where: {
+                user_id: userId,
+                game_version: 24,
+                in_game_date: dateStr,
+                player_id: playerID,
+            },
+        });
+        if (!existingPSH) {
+            await PlayerStatusHistoryModel.create({
+                player_id: playerID,
+                game_version: 24,
+                in_game_date: dateStr,
+                overallrating,
+                potential,
+                user_id: userId,
+            });
+        } else {
+            logger.warn(
+                `[bulkUpdatePlayer24][userId=${userId}] player_status_history already exists: playerID=${playerID}, date=${dateStr}`,
             );
-            const archivePlayerIDs = Array.from(existingPlayerSet);
-            await PlayerModel.update({ is_archived: 1 }, { where: { player_id: archivePlayerIDs, user_id: userId } });
+            // update
+            await PlayerStatusHistoryModel.update(
+                { overallrating, potential },
+                {
+                    where: {
+                        user_id: userId,
+                        game_version: 24,
+                        in_game_date: dateStr,
+                        player_id: playerID,
+                    },
+                },
+            );
+        }
+    }
+
+    // archive players that are not in the new list
+    if (existingPlayerSet.size > 0) {
+        logger.info(
+            `[bulkUpdatePlayer24][userID=${userId}] Archive players: ${Array.from(existingPlayerSet).join(',')}`,
+        );
+        const archivePlayerIDs = Array.from(existingPlayerSet);
+        await PlayerModel.update(
+            { is_archived: 1 },
+            {
+                where: {
+                    user_id: userId,
+                    game_version: 24,
+                    player_id: archivePlayerIDs,
+                },
+            },
+        );
+    }
+}
+
+async function bulkUpdatePlayer25({ userId, players }: { players: any[]; userId: number }) {
+    logger.info(`[bulkUpdatePlayer25][userId=${userId}] players.length=${players.length}`);
+
+    logger.info(`[bulkUpdatePlayer25][userId=${userId}] Not supported yet`);
+}
+
+export async function bulkUpdatePlayer({
+    userId,
+    gameVersion,
+    players,
+}: {
+    userId: number;
+    gameVersion: number;
+    players: any[];
+}) {
+    try {
+        logger.info(
+            `[bulkUpdatePlayer][userId=${userId}][gameVersion=${gameVersion}] players.length=${players.length}`,
+        );
+        if (!players || players.length === 0) {
+            return;
+        }
+        if (gameVersion !== 24 && gameVersion !== 25) {
+            logger.error(`[bulkUpdatePlayer][userId=${userId}] unsupported game version: ${gameVersion}`);
+            return;
+        }
+
+        switch (gameVersion) {
+            case 24:
+                // do something
+                await bulkUpdatePlayer24({ userId, players });
+                break;
+            case 25:
+                await bulkUpdatePlayer25({ userId, players });
+                break;
         }
     } catch (e) {
         logger.error(`[bulkUpdatePlayer][userID=${userId}] error: ${e}`);
