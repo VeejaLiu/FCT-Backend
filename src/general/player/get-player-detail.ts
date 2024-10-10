@@ -14,9 +14,11 @@ interface PlayerDetail {
 
 export async function getPlayerDetail({
     userId,
+    gameVersion,
     playerID,
 }: {
     userId: string;
+    gameVersion: number;
     playerID: number;
 }): Promise<PlayerDetail> {
     try {
@@ -25,7 +27,7 @@ export async function getPlayerDetail({
             return null;
         }
 
-        const players = await getAllPlayers({ userId });
+        const players = await getAllPlayers({ userId, gameVersion });
         if (!players || players.length === 0) {
             return null;
         }
@@ -34,13 +36,21 @@ export async function getPlayerDetail({
             playerID = players[0].playerID;
         }
         let player = await PlayerModel.findOne({
-            where: { user_id: userId, player_id: playerID },
+            where: {
+                user_id: userId,
+                game_version: gameVersion,
+                player_id: playerID,
+            },
             raw: true,
         });
         if (!player) {
             playerID = players[0].playerID;
             player = await PlayerModel.findOne({
-                where: { user_id: userId, player_id: playerID },
+                where: {
+                    user_id: userId,
+                    game_version: gameVersion,
+                    player_id: playerID,
+                },
                 raw: true,
             });
         }
@@ -53,8 +63,9 @@ export async function getPlayerDetail({
         }[] = await PlayerStatusHistoryModel.findAll({
             attributes: ['player_id', 'in_game_date', 'overallrating', 'potential'],
             where: {
-                player_id: playerID,
                 user_id: userId,
+                game_version: gameVersion,
+                player_id: playerID,
             },
             order: [['in_game_date', 'DESC']],
             raw: true,

@@ -79,7 +79,13 @@ export interface PlayerOverall {
     imageUrl?: string;
 }
 
-export async function getAllPlayers({ userId }: { userId: string }): Promise<PlayerOverall[]> {
+export async function getAllPlayers({
+    userId,
+    gameVersion,
+}: {
+    userId: string;
+    gameVersion: number;
+}): Promise<PlayerOverall[]> {
     logger.info(`[API_LOGS][/player] [userId=${userId}] Get all players`);
 
     const sqlRes: PlayerModel[] = await PlayerModel.findAll({
@@ -98,6 +104,7 @@ export async function getAllPlayers({ userId }: { userId: string }): Promise<Pla
         where: {
             is_archived: 0,
             user_id: userId,
+            game_version: gameVersion,
         },
         raw: true,
     });

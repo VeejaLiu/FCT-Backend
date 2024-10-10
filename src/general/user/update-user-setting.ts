@@ -55,6 +55,9 @@ export async function updateUserSetting({
                         { where: { user_id: userId } },
                     );
                     break;
+                case 'default_game_version':
+                    await UserSettingModel.update({ default_game_version: value }, { where: { user_id: userId } });
+                    break;
                 default:
                     break;
             }
