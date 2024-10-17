@@ -5,10 +5,10 @@ const logger = new Logger(__filename);
 
 export async function createNewUserActivity({ userID }: { userID: string }): Promise<void> {
     try {
-        await UserActivityModel.create({
-            userId: userID,
-            activity_time: new Date(),
-        });
+        const now = new Date();
+        logger.info(`[createNewUserActivity] userID: ${userID}, time: ${now}`);
+
+        await UserActivityModel.create({ userId: userID, activity_time: now });
     } catch (e) {
         logger.error(`[createNewUserActivity] ${e}`);
     }
