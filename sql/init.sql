@@ -150,3 +150,15 @@ update player set game_version = 24 where 1 = 1;
 alter table player_status_history
     add column game_version int after user_id;
 update player_status_history set game_version = 24 where 1 = 1;
+
+CREATE TABLE `user_activity` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `activity_time` datetime DEFAULT NULL,
+  `is_deleted` tinyint(1) DEFAULT '0',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_activity_time` (`activity_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

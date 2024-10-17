@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '../../env';
 import { Logger } from '../logger';
 import { UserModel } from '../../models/schema/UserDB';
+import { createNewUserActivity } from '../../general/user-activity/create-new-user-activity';
 
 const JWT_SECRET = env.secret.jwt;
 
@@ -83,6 +84,9 @@ export function verifyTokenMiddleware(req: any, res: any, next: any) {
                         message: 'Token expired',
                     });
                 }
+
+                // record user activity
+                createNewUserActivity({ userID: id }).then();
 
                 req.user = { userId: id };
                 next();

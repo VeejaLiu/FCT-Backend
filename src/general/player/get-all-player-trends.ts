@@ -19,6 +19,59 @@ interface PlayerTrendData {
     trends: PlayerTrend[];
 }
 
+async function getTrendsForSinglePlayer({
+    userID,
+    player,
+    gameVersion,
+}: {
+    userID: number | string;
+    player: {
+        player_id: number;
+        player_name: string;
+        preferredposition1: string;
+    };
+    gameVersion: number;
+}): Promise<PlayerTrendData> {
+    const playerTrends: {
+        player_id: number;
+        in_game_date: string;
+        overallrating: number;
+        potential: number;
+    }[] = await PlayerStatusHistoryModel.findAll({
+        attributes: ['player_id', 'in_game_date', 'overallrating', 'potential'],
+        where: {
+            player_id: player.player_id,
+            user_id: userID,
+            game_version: gameVersion,
+        },
+        order: [['in_game_date', 'DESC']],
+        limit: 40,
+        raw: true,
+    });
+
+    const trends = playerTrends
+        .sort((a, b) => {
+            return new Date(a.in_game_date).getTime() - new Date(b.in_game_date).getTime();
+        })
+        .map((trend) => {
+            return {
+                inGameDate: trend.in_game_date,
+                overallRating: trend.overallrating,
+                potential: trend.potential,
+            };
+        });
+    if (!trends || trends.length === 0) {
+        return null;
+    }
+    return {
+        playerID: player.player_id,
+        playerName: player.player_name,
+        positionType: PLAYER_PRIMARY_POS_TYPE[player.preferredposition1],
+        preferredposition1: PLAYER_PRIMARY_POS_NAME[player.preferredposition1],
+        trends: trends,
+    };
+}
+
 export async function getAllPlayerTrends({
     userId,
     gameVersion,
@@ -47,48 +100,18 @@ export async function getAllPlayerTrends({
         }
 
         // query all player trends
-        const result = [];
-        for (let i = 0; i < players.length; i++) {
-            const player = players[i];
-            const playerTrends: {
-                player_id: number;
-                in_game_date: string;
-                overallrating: number;
-                potential: number;
-            }[] = await PlayerStatusHistoryModel.findAll({
-                attributes: ['player_id', 'in_game_date', 'overallrating', 'potential'],
-                where: {
-                    player_id: player.player_id,
-                    user_id: userId,
-                    game_version: gameVersion,
-                },
-                order: [['in_game_date', 'DESC']],
-                limit: 40,
-                raw: true,
-            });
+        const promises = [];
 
-            const trends = playerTrends
-                .sort((a, b) => {
-                    return new Date(a.in_game_date).getTime() - new Date(b.in_game_date).getTime();
-                })
-                .map((trend) => {
-                    return {
-                        inGameDate: trend.in_game_date,
-                        overallRating: trend.overallrating,
-                        potential: trend.potential,
-                    };
-                });
-            if (!trends || trends.length === 0) {
-                continue;
-            }
-            result.push({
-                playerID: player.player_id,
-                playerName: player.player_name,
-                positionType: PLAYER_PRIMARY_POS_TYPE[player.preferredposition1],
-                preferredposition1: PLAYER_PRIMARY_POS_NAME[player.preferredposition1],
-                trends: trends,
-            });
+        for (let i = 0; i < players.length; i++) {
+            promises.push(
+                getTrendsForSinglePlayer({
+                    userID: userId,
+                    player: players[i],
+                    gameVersion: gameVersion,
+                }),
+            );
         }
+        const result = await Promise.all(promises);
         return result;
     } catch (e) {
         logger.error(`[getAllPlayerTrends] ${e.stack}`);
