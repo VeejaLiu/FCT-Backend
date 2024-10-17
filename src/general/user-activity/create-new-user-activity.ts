@@ -8,7 +8,7 @@ export async function createNewUserActivity({ userID }: { userID: string }): Pro
         const now = new Date();
         logger.info(`[createNewUserActivity] userID: ${userID}, time: ${now}`);
 
-        await UserActivityModel.create({ userId: userID, activity_time: now });
+        await UserActivityModel.create({ user_id: userID, activity_time: now });
     } catch (e) {
         logger.error(`[createNewUserActivity] ${e}`);
     }

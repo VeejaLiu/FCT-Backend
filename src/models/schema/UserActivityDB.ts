@@ -4,8 +4,8 @@ import { Defaultconfig } from '../db-config-mysql';
 
 /*
 CREATE TABLE `user_activity` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `activity_time` datetime DEFAULT NULL,
   `is_deleted` tinyint(1) DEFAULT '0',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -17,7 +17,7 @@ CREATE TABLE `user_activity` (
  */
 const UserActivitySchema: ModelAttributes = {
     id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         autoIncrement: true,
         primaryKey: true,
     },

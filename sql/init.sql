@@ -152,8 +152,8 @@ alter table player_status_history
 update player_status_history set game_version = 24 where 1 = 1;
 
 CREATE TABLE `user_activity` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `activity_time` datetime DEFAULT NULL,
   `is_deleted` tinyint(1) DEFAULT '0',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
