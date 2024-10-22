@@ -49,7 +49,7 @@ async function getTrendsForSinglePlayer({
         raw: true,
     });
 
-    const trends = playerTrends
+    let trends = playerTrends
         .sort((a, b) => {
             return new Date(a.in_game_date).getTime() - new Date(b.in_game_date).getTime();
         })
@@ -61,7 +61,8 @@ async function getTrendsForSinglePlayer({
             };
         });
     if (!trends || trends.length === 0) {
-        return null;
+        logger.info(`[getTrendsForSinglePlayer] No trends found for playerID: ${player.player_id}`);
+        trends = [];
     }
     return {
         playerID: player.player_id,
@@ -93,7 +94,9 @@ export async function getAllPlayerTrends({
             },
             raw: true,
         });
-        logger.info(`[getAllPlayerTrends] ${players?.length} players found`);
+        logger.info(
+            `[getAllPlayerTrends] ${players?.length} players found, playerIDs: ${players?.map((p) => p.player_id)}`,
+        );
         if (!players || players.length === 0) {
             logger.info(`[getAllPlayerTrends] No players found`);
             return [];
@@ -111,7 +114,8 @@ export async function getAllPlayerTrends({
                 }),
             );
         }
-        const result = await Promise.all(promises);
+        const result = (await Promise.all(promises)).filter((r) => r);
+        logger.info(`[getAllPlayerTrends] ${result?.length} player trends(not null) found`);
         return result;
     } catch (e) {
         logger.error(`[getAllPlayerTrends] ${e.stack}`);
