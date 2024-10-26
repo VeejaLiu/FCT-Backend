@@ -447,9 +447,336 @@ async function bulkUpdatePlayer24({ userId, players }: { players: any[]; userId:
 }
 
 async function bulkUpdatePlayer25({ userId, players }: { players: any[]; userId: number }) {
-    logger.info(`[bulkUpdatePlayer25][userId=${userId}] players.length=${players.length}`);
+    // Query all existing players
+    const existingPlayers = await PlayerModel.findAll({
+        attributes: ['player_id'],
+        where: {
+            user_id: userId,
+            game_version: 25,
+            is_archived: false,
+        },
+        raw: true,
+    });
+    const existingPlayerIDs = existingPlayers.map((p) => p.player_id);
+    const existingPlayerSet = new Set(existingPlayerIDs);
+    logger.info(`[bulkUpdatePlayer25][userId=${userId}] existingPlayers.length=${existingPlayers.length}`);
+    logger.info(`[bulkUpdatePlayer25][userId=${userId}] new players count: ${players.length}`);
+    logger.info(`[bulkUpdatePlayer25][userId=${userId}] new players: ${players.map((p) => p.playerID).join(',')}`);
 
-    logger.info(`[bulkUpdatePlayer25][userId=${userId}] Not supported yet`);
+    for (let i = 0; i < players.length; i++) {
+        const player = players[i];
+        let {
+            // -- player
+            playerID,
+            playerName,
+            currentDate,
+            // overallrating,
+            overallrating,
+            potential,
+            // -- personal
+            birthdate,
+            nationality,
+            height,
+            weight,
+            // -- player details
+            preferredfoot,
+            preferredposition1,
+            preferredposition2,
+            preferredposition3,
+            preferredposition4,
+            skillmoves,
+            weakfootabilitytypecode,
+            // attackingworkrate, // not in FC 25
+            // defensiveworkrate, // not in FC 25
+            // -- pace
+            acceleration,
+            sprintspeed,
+            // -- attacking
+            positioning,
+            finishing,
+            shotpower,
+            longshots,
+            volleys,
+            penalties,
+            // -- passing
+            vision,
+            crossing,
+            freekickaccuracy,
+            shortpassing,
+            longpassing,
+            curve,
+            // -- dribbling
+            agility,
+            balance,
+            reactions,
+            ballcontrol,
+            dribbling,
+            composure,
+            // -- defending
+            interceptions,
+            headingaccuracy,
+            defensiveawareness,
+            standingtackle,
+            slidingtackle,
+            // -- physical
+            jumping,
+            stamina,
+            strength,
+            aggression,
+            // -- goalkeeping
+            gkdiving,
+            gkhandling,
+            gkkicking,
+            gkpositioning,
+            gkreflexes,
+        } = player;
+
+        // Some player names have single quotes, escape them, lime O'Connell
+        playerName = playerName?.replace(/'/g, "''");
+
+        // remove playerID from existingPlayerSet
+        if (existingPlayerSet.has(playerID)) {
+            existingPlayerSet.delete(playerID);
+        }
+
+        // convert currentDate to age, currentDate is in format 'yyyy-mm-dd'
+        const [y, m, d] = currentDate.split('-').map((v: string) => Number(v));
+        const playerAge = Math.floor((new DateUtils(y, m, d).toGregorianDays() - birthdate) / 365.25);
+
+        // logger.info(
+        //     `[bulkUpdatePlayer] [i=${i}]` +
+        //         `playerID=${playerID}, ` +
+        //         `playerName=[${playerName}], ` +
+        //         `currentDate=${currentDate}, ` +
+        //         `overallrating=${overallrating}, ` +
+        //         `potential=${potential}, ` +
+        //         `birthdate=${birthdate}`,
+        // );
+
+        // query first
+        const existingPlayer = await PlayerModel.findOne({
+            where: {
+                user_id: userId,
+                game_version: 25,
+                player_id: playerID,
+            },
+        });
+        if (!existingPlayer) {
+            await PlayerModel.create({
+                // user id
+                user_id: userId,
+                // game version
+                game_version: 25,
+                // basic info
+                player_id: playerID,
+                player_name: playerName,
+                overallrating,
+                potential,
+                // personal info
+                birthdate,
+                nationality,
+                height,
+                weight,
+                age: playerAge,
+                // player details
+                preferredfoot,
+                preferredposition1,
+                preferredposition2,
+                preferredposition3,
+                preferredposition4,
+                skillmoves,
+                weakfootabilitytypecode,
+                // attackingworkrate,
+                // defensiveworkrate,
+                // pace
+                acceleration,
+                sprintspeed,
+                // attacking
+                positioning,
+                finishing,
+                shotpower,
+                longshots,
+                volleys,
+                penalties,
+                // passing
+                vision,
+                crossing,
+                freekickaccuracy,
+                shortpassing,
+                longpassing,
+                curve,
+                // dribbling
+                agility,
+                balance,
+                reactions,
+                ballcontrol,
+                dribbling,
+                composure,
+                // defending
+                interceptions,
+                headingaccuracy,
+                defensiveawareness,
+                standingtackle,
+                slidingtackle,
+                // physical
+                jumping,
+                stamina,
+                strength,
+                aggression,
+                // goalkeeping
+                gkdiving,
+                gkhandling,
+                gkkicking,
+                gkpositioning,
+                gkreflexes,
+            });
+            // logger.info(`[bulkUpdatePlayer] Created new player: playerID=${playerID}`);
+        } else {
+            sendPlayerUpdateNotification({
+                userId,
+                playerID,
+                playerName,
+                existingPlayer,
+                overallrating,
+                potential,
+                skillmoves,
+                weakfootabilitytypecode,
+            }).then();
+            const result = await PlayerModel.update(
+                {
+                    // basic info
+                    player_name: playerName,
+                    overallrating,
+                    potential,
+                    // personal info
+                    birthdate,
+                    nationality,
+                    height,
+                    weight,
+                    age: playerAge,
+                    // player details
+                    preferredfoot,
+                    preferredposition1,
+                    preferredposition2,
+                    preferredposition3,
+                    preferredposition4,
+                    skillmoves,
+                    weakfootabilitytypecode,
+                    // attackingworkrate,
+                    // defensiveworkrate,
+                    // pace
+                    acceleration,
+                    sprintspeed,
+                    // attacking
+                    positioning,
+                    finishing,
+                    shotpower,
+                    longshots,
+                    volleys,
+                    penalties,
+                    // passing
+                    vision,
+                    crossing,
+                    freekickaccuracy,
+                    shortpassing,
+                    longpassing,
+                    curve,
+                    // dribbling
+                    agility,
+                    balance,
+                    reactions,
+                    ballcontrol,
+                    dribbling,
+                    composure,
+                    // defending
+                    interceptions,
+                    headingaccuracy,
+                    defensiveawareness,
+                    standingtackle,
+                    slidingtackle,
+                    // physical
+                    jumping,
+                    stamina,
+                    strength,
+                    aggression,
+                    // goalkeeping
+                    gkdiving,
+                    gkhandling,
+                    gkkicking,
+                    gkpositioning,
+                    gkreflexes,
+                    // meta info
+                    is_archived: 0,
+                },
+                {
+                    where: {
+                        user_id: userId,
+                        game_version: 25,
+                        player_id: playerID,
+                    },
+                },
+            );
+        }
+
+        /*
+         * Update player_status_history
+         */
+        // date format: '1991-1-1' -> '1991-01-01'
+        const dateStr = `${y}-${m < 10 ? '0' : ''}${m}-${d < 10 ? '0' : ''}${d}`;
+        // query by player_id and in_game_date
+        const existingPSH = await PlayerStatusHistoryModel.findOne({
+            where: {
+                user_id: userId,
+                game_version: 25,
+                in_game_date: dateStr,
+                player_id: playerID,
+            },
+        });
+        if (!existingPSH) {
+            await PlayerStatusHistoryModel.create({
+                player_id: playerID,
+                game_version: 25,
+                in_game_date: dateStr,
+                overallrating,
+                potential,
+                user_id: userId,
+            });
+        } else {
+            logger.warn(
+                `[bulkUpdatePlayer25][userId=${userId}] player_status_history already exists: playerID=${playerID}, date=${dateStr}`,
+            );
+            // update
+            await PlayerStatusHistoryModel.update(
+                { overallrating, potential },
+                {
+                    where: {
+                        user_id: userId,
+                        game_version: 25,
+                        in_game_date: dateStr,
+                        player_id: playerID,
+                    },
+                },
+            );
+        }
+    }
+
+    // archive players that are not in the new list
+    if (existingPlayerSet.size > 0) {
+        logger.info(
+            `[bulkUpdatePlayer25][userID=${userId}] Archive players: ${Array.from(existingPlayerSet).join(',')}`,
+        );
+        const archivePlayerIDs = Array.from(existingPlayerSet);
+        await PlayerModel.update(
+            { is_archived: 1 },
+            {
+                where: {
+                    user_id: userId,
+                    game_version: 25,
+                    player_id: archivePlayerIDs,
+                },
+            },
+        );
+    }
 }
 
 export async function bulkUpdatePlayer({
