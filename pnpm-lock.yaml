@@ -35,6 +35,9 @@ importers:
       express-status-monitor:
         specifier: 1.3.4
         version: 1.3.4
+      express-validator:
+        specifier: ^7.2.0
+        version: 7.2.0
       jsonwebtoken:
         specifier: 9.0.2
         version: 9.0.2
@@ -1027,6 +1030,10 @@ packages:
   express-status-monitor@1.3.4:
     resolution: {integrity: sha512-EyqHvgX57ujN4fqfUT+x6Bv2xwRyzQdv3AJvWQxcG+jK4TcF9vhrKVqGcE0T6bhT4rstpvOKRuxHBwC/Q6AXQg==}
     engines: {node: '>=8'}
+
+  express-validator@7.2.0:
+    resolution: {integrity: sha512-I2ByKD8panjtr8Y05l21Wph9xk7kk64UMyvJCl/fFM/3CTJq8isXYPLeKW/aZBCdb/LYNv63PwhY8khw8VWocA==}
+    engines: {node: '>= 8.0.0'}
 
   express@5.0.0:
     resolution: {integrity: sha512-V4UkHQc+B7ldh1YC84HCXHwf60M4BOMvp9rkvTUWCK5apqDC1Esnbid4wm6nFyVuDy8XMfETsJw5lsIGBWyo0A==}
@@ -3536,6 +3543,11 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
+
+  express-validator@7.2.0:
+    dependencies:
+      lodash: 4.17.21
+      validator: 13.12.0
 
   express@5.0.0:
     dependencies:

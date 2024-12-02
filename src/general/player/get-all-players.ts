@@ -77,6 +77,8 @@ export interface PlayerOverall {
     position3: string;
     position4: string;
     imageUrl?: string;
+    overallRanking?: number;
+    potentialRanking?: number;
 }
 
 export async function getAllPlayers({
@@ -86,49 +88,68 @@ export async function getAllPlayers({
     userId: string;
     gameVersion: number;
 }): Promise<PlayerOverall[]> {
-    logger.info(`[API_LOGS][/player] [userId=${userId}] Get all players`);
+    try {
+        logger.info(`[API_LOGS][getAllPlayers] [userId=${userId}] Get all players`);
 
-    const sqlRes: PlayerModel[] = await PlayerModel.findAll({
-        attributes: [
-            'player_id',
-            'player_name',
-            'overallrating',
-            'potential',
-            'age',
-            'birthdate',
-            'preferredposition1',
-            'preferredposition2',
-            'preferredposition3',
-            'preferredposition4',
-        ],
-        where: {
-            is_archived: 0,
-            user_id: userId,
-            game_version: gameVersion,
-        },
-        raw: true,
-    });
-
-    logger.info(`[API_LOGS][/player] ${sqlRes.length} players found`);
-
-    const result = [];
-    for (let i = 0; i < sqlRes.length; i++) {
-        const player = sqlRes[i];
-        const birthdate = player.birthdate;
-        result.push({
-            playerID: player.player_id,
-            playerName: player.player_name,
-            overallRating: player.overallrating,
-            potential: player.potential,
-            age: player.age,
-            birthdate: player.birthdate,
-            positionType: PLAYER_PRIMARY_POS_TYPE[player.preferredposition1],
-            position1: PLAYER_PRIMARY_POS_NAME[player.preferredposition1],
-            position2: PLAYER_PRIMARY_POS_NAME[player.preferredposition2],
-            position3: PLAYER_PRIMARY_POS_NAME[player.preferredposition3],
-            position4: PLAYER_PRIMARY_POS_NAME[player.preferredposition4],
+        const sqlRes: PlayerModel[] = await PlayerModel.findAll({
+            attributes: [
+                'player_id',
+                'player_name',
+                'overallrating',
+                'potential',
+                'age',
+                'birthdate',
+                'preferredposition1',
+                'preferredposition2',
+                'preferredposition3',
+                'preferredposition4',
+            ],
+            where: {
+                is_archived: 0,
+                user_id: userId,
+                game_version: gameVersion,
+            },
+            raw: true,
         });
-    }
 
-    return result;
+        logger.info(`[API_LOGS][getAllPlayers] ${sqlRes.length} players found`);
+
+        const result: PlayerOverall[] = [];
+        for (let i = 0; i < sqlRes.length; i++) {
+            const player = sqlRes[i];
+            result.push({
+                playerID: player.player_id,
+                playerName: player.player_name,
+                overallRating: player.overallrating,
+                potential: player.potential,
+                age: player.age,
+                positionType: PLAYER_PRIMARY_POS_TYPE[player.preferredposition1],
+                position1: PLAYER_PRIMARY_POS_NAME[player.preferredposition1],
+                position2: PLAYER_PRIMARY_POS_NAME[player.preferredposition2],
+                position3: PLAYER_PRIMARY_POS_NAME[player.preferredposition3],
+                position4: PLAYER_PRIMARY_POS_NAME[player.preferredposition4],
+            });
+        }
+
+        result.forEach((player) => {
+            const samePositionPlayers = result.filter((p) => p.position1 === player.position1);
+            // Get the overall rating ranking of the player
+            const overallRanking = samePositionPlayers
+                .map((p) => p.overallRating)
+                .sort((a, b) => b - a)
+                .indexOf(player.overallRating);
+            // Get the potential ranking of the player
+            const potentialRanking = samePositionPlayers
+                .map((p) => p.potential)
+                .sort((a, b) => b - a)
+                .indexOf(player.potential);
+            player.overallRanking = overallRanking + 1;
+            player.potentialRanking = potentialRanking + 1;
+        });
+
+        return result;
+    } catch (e) {
+        logger.error(`[API_LOGS][getAllPlayers] Get all players failed: ${e.message}`);
+        return [];
+    }
 }
