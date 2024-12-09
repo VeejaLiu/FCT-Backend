@@ -162,3 +162,27 @@ CREATE TABLE `user_activity` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_activity_time` (`activity_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `user_notification` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `game_version` int NOT NULL,
+  `in_game_date` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `message_type` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `message_subtype` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `player_id` int NOT NULL,
+  `old_overall_rating` int DEFAULT NULL,
+  `overall_rating` int DEFAULT NULL,
+  `old_potential` int DEFAULT NULL,
+  `potential` int DEFAULT NULL,
+  `old_skillmoves` int DEFAULT NULL,
+  `skillmoves` int DEFAULT NULL,
+  `old_weakfoot` int DEFAULT NULL,
+  `weakfoot` int DEFAULT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `is_deleted` tinyint(1) DEFAULT '0',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
