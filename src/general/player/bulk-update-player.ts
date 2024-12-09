@@ -4,6 +4,7 @@ import { PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 import { sendMessageToUser } from '../../lib/ws/websocket-server';
 import { getUserSetting, NOTIFICATION_ITEMS } from '../user/get-user-setting';
+import { UserNotificationModel } from '../../models/schema/UserNotificationDB';
 
 const logger = new Logger(__filename);
 
@@ -51,6 +52,19 @@ async function sendPlayerUpdateNotification({
             logger.info(
                 `[sendPlayerUpdateNotification][userID=${userId}] playerID=${playerID}, playerName=${playerName}, potential=${existingPlayer.potential} -> ${potential}`,
             );
+            const notification = await UserNotificationModel.create({
+                user_id: userId,
+                game_version: existingPlayer.game_version,
+                message_type: 'Player',
+                message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
+                player_id: playerID,
+                old_overall_rating: existingPlayer.overallrating,
+                overall_rating: overallrating,
+                old_potential: existingPlayer.potential,
+                potential: potential,
+                is_read: 0,
+            });
+
             sendMessageToUser({
                 userId: userId,
                 message: {
@@ -62,6 +76,7 @@ async function sendPlayerUpdateNotification({
                         overallrating: overallrating,
                         oldPotential: existingPlayer.potential,
                         potential: potential,
+                        userNotificationID: notification.id,
                     },
                 },
             });
@@ -74,6 +89,17 @@ async function sendPlayerUpdateNotification({
             Number(existingPlayer.skillmoves) !== Number(skillmoves) &&
             userSetting.notificationItems.PlayerUpdate_SkillMove
         ) {
+            const notification = await UserNotificationModel.create({
+                user_id: userId,
+                game_version: existingPlayer.game_version,
+                message_type: 'Player',
+                message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
+                player_id: playerID,
+                old_skillmoves: existingPlayer.skillmoves,
+                skillmoves: skillmoves,
+                is_read: 0,
+            });
+
             sendMessageToUser({
                 userId: userId,
                 message: {
@@ -82,7 +108,8 @@ async function sendPlayerUpdateNotification({
                         playerID: playerID,
                         playerName: playerName,
                         oldSkillMoves: existingPlayer.skillmoves,
-                        skillmoves: skillmoves,
+                        skillMoves: skillmoves,
+                        userNotificationID: notification.id,
                     },
                 },
             });
@@ -95,6 +122,17 @@ async function sendPlayerUpdateNotification({
             Number(existingPlayer.weakfootabilitytypecode) !== Number(weakfootabilitytypecode) &&
             userSetting.notificationItems.PlayerUpdate_WeakFoot
         ) {
+            const notification = await UserNotificationModel.create({
+                user_id: userId,
+                game_version: existingPlayer.game_version,
+                message_type: 'Player',
+                message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
+                player_id: playerID,
+                old_weakfoot: existingPlayer.weakfootabilitytypecode,
+                weakfoot: weakfootabilitytypecode,
+                is_read: 0,
+            });
+
             sendMessageToUser({
                 userId: userId,
                 message: {
@@ -103,7 +141,8 @@ async function sendPlayerUpdateNotification({
                         playerID: playerID,
                         playerName: playerName,
                         oldWeakFootAbilityTypeCode: existingPlayer.weakfootabilitytypecode,
-                        weakfootabilitytypecode: weakfootabilitytypecode,
+                        weakFootAbilityTypeCode: weakfootabilitytypecode,
+                        userNotificationID: notification.id,
                     },
                 },
             });
