@@ -7,7 +7,8 @@ CREATE TABLE `user_notification` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `game_version` int NOT NULL,
-  `message_type` int NOT NULL,
+  `message_type` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `message_subtype` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `player_id` int NOT NULL,
   `old_overall_rating` int DEFAULT NULL,
   `overall_rating` int DEFAULT NULL,
@@ -38,7 +39,10 @@ const UserNotificationSchema: ModelAttributes = {
         type: Sequelize.INTEGER,
     },
     message_type: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
+    },
+    message_subtype: {
+        type: Sequelize.STRING,
     },
     player_id: {
         type: Sequelize.INTEGER,
@@ -95,7 +99,8 @@ export interface UserNotificationDb {
     id?: number;
     user_id?: number;
     game_version?: number;
-    message_type?: number;
+    message_type?: string;
+    message_subtype?: string;
     player_id?: number;
     old_overall_rating?: number;
     overall_rating?: number;
@@ -115,7 +120,8 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
     public id!: number;
     public user_id!: number;
     public game_version!: number;
-    public message_type!: number;
+    public message_type!: string;
+    public message_subtype!: string;
     public player_id!: number;
     public old_overall_rating!: number | null;
     public overall_rating!: number | null;
