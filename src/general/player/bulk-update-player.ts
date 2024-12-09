@@ -55,7 +55,7 @@ async function sendPlayerUpdateNotification({
             const notification = await UserNotificationModel.create({
                 user_id: userId,
                 game_version: existingPlayer.game_version,
-                message_type: 'Player',
+                message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
                 player_id: playerID,
                 old_overall_rating: existingPlayer.overallrating,
@@ -92,7 +92,7 @@ async function sendPlayerUpdateNotification({
             const notification = await UserNotificationModel.create({
                 user_id: userId,
                 game_version: existingPlayer.game_version,
-                message_type: 'Player',
+                message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
                 player_id: playerID,
                 old_skillmoves: existingPlayer.skillmoves,
@@ -125,7 +125,7 @@ async function sendPlayerUpdateNotification({
             const notification = await UserNotificationModel.create({
                 user_id: userId,
                 game_version: existingPlayer.game_version,
-                message_type: 'Player',
+                message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
                 player_id: playerID,
                 old_weakfoot: existingPlayer.weakfootabilitytypecode,
