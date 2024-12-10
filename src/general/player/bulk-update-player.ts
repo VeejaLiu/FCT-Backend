@@ -10,6 +10,8 @@ const logger = new Logger(__filename);
 
 async function sendPlayerUpdateNotification({
     userId,
+    gameVersion,
+    inGameDate,
     playerID,
     playerName,
     existingPlayer,
@@ -19,6 +21,8 @@ async function sendPlayerUpdateNotification({
     weakfootabilitytypecode,
 }: {
     userId: number;
+    gameVersion: number;
+    inGameDate: string;
     playerID: number;
     playerName: string;
     existingPlayer: PlayerModel;
@@ -55,8 +59,9 @@ async function sendPlayerUpdateNotification({
             const notification = await UserNotificationModel.create({
                 user_id: userId,
                 game_version: existingPlayer.game_version,
+                in_game_date: inGameDate,
                 message_type: 'PlayerUpdate',
-                message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
+                message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_Overall,
                 player_id: playerID,
                 old_overall_rating: existingPlayer.overallrating,
                 overall_rating: overallrating,
@@ -92,6 +97,7 @@ async function sendPlayerUpdateNotification({
             const notification = await UserNotificationModel.create({
                 user_id: userId,
                 game_version: existingPlayer.game_version,
+                in_game_date: inGameDate,
                 message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
                 player_id: playerID,
@@ -125,6 +131,7 @@ async function sendPlayerUpdateNotification({
             const notification = await UserNotificationModel.create({
                 user_id: userId,
                 game_version: existingPlayer.game_version,
+                in_game_date: inGameDate,
                 message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
                 player_id: playerID,
@@ -340,6 +347,8 @@ async function bulkUpdatePlayer24({ userId, players }: { players: any[]; userId:
         } else {
             sendPlayerUpdateNotification({
                 userId,
+                gameVersion: 24,
+                inGameDate: currentDate,
                 playerID,
                 playerName,
                 existingPlayer,
@@ -673,6 +682,8 @@ async function bulkUpdatePlayer25({ userId, players }: { players: any[]; userId:
         } else {
             sendPlayerUpdateNotification({
                 userId,
+                gameVersion: 25,
+                inGameDate: currentDate,
                 playerID,
                 playerName,
                 existingPlayer,
