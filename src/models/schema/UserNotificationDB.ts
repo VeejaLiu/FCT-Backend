@@ -1,6 +1,7 @@
 import Sequelize, { ModelAttributes, Model } from 'sequelize';
 import { sequelize } from '../db-config-mysql';
 import { Defaultconfig } from '../db-config-mysql';
+import { PLAYER_PRIMARY_POS_NAME } from '../../general/player/get-all-players';
 
 /*
 CREATE TABLE `user_notification` (
@@ -165,7 +166,7 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
         gameVersion: number;
     }): Promise<any> {
         const [results] = await sequelize.query(`
-            SELECT un.*, p.player_name
+            SELECT un.*, p.player_name, p.preferredposition1
             FROM user_notification un
                      LEFT JOIN player p ON un.player_id = p.player_id
             WHERE un.user_id = ${userId}
@@ -181,6 +182,7 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
                 message_type: result.message_type,
                 message_subtype: result.message_subtype,
                 player_id: result.player_id,
+                player_position: PLAYER_PRIMARY_POS_NAME[result.preferredposition1],
                 player_name: result.player_name,
                 old_overall_rating: result.old_overall_rating,
                 overall_rating: result.overall_rating,
