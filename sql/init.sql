@@ -141,24 +141,61 @@ CREATE TABLE `user_setting`
 
 ALTER TABLE user_setting
     ADD COLUMN `default_game_version` int DEFAULT NULL after user_id;
-update user_setting set default_game_version = 24 where 1 = 1;
+update user_setting
+set default_game_version = 24
+where 1 = 1;
 
 alter table player
-  add column game_version int after user_id;
-update player set game_version = 24 where 1 = 1;
+    add column game_version int after user_id;
+update player
+set game_version = 24
+where 1 = 1;
 
 alter table player_status_history
     add column game_version int after user_id;
-update player_status_history set game_version = 24 where 1 = 1;
+update player_status_history
+set game_version = 24
+where 1 = 1;
 
-CREATE TABLE `user_activity` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `activity_time` datetime DEFAULT NULL,
-  `is_deleted` tinyint(1) DEFAULT '0',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_activity_time` (`activity_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `user_activity`
+(
+    `id`            bigint NOT NULL AUTO_INCREMENT,
+    `user_id`       int    NOT NULL,
+    `activity_time` datetime   DEFAULT NULL,
+    `is_deleted`    tinyint(1) DEFAULT '0',
+    `create_time`   datetime   DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   datetime   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_activity_time` (`activity_time`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
+
+CREATE TABLE `user_notification`
+(
+    `id`                 bigint                                 NOT NULL AUTO_INCREMENT,
+    `user_id`            int                                    NOT NULL,
+    `game_version`       int                                    NOT NULL,
+    `in_game_date`       varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+    `message_type`       varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `message_subtype`    varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `player_id`          int                                    NOT NULL,
+    `old_overall_rating` int        DEFAULT NULL,
+    `overall_rating`     int        DEFAULT NULL,
+    `old_potential`      int        DEFAULT NULL,
+    `potential`          int        DEFAULT NULL,
+    `old_skillmoves`     int        DEFAULT NULL,
+    `skillmoves`         int        DEFAULT NULL,
+    `old_weakfoot`       int        DEFAULT NULL,
+    `weakfoot`           int        DEFAULT NULL,
+    `is_read`            tinyint(1) DEFAULT '0',
+    `is_deleted`         tinyint(1) DEFAULT '0',
+    `create_time`        datetime   DEFAULT CURRENT_TIMESTAMP,
+    `update_time`        datetime   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_in_game_date` (`in_game_date`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;

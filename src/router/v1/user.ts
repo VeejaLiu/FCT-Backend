@@ -6,7 +6,6 @@ import { verifyTokenMiddleware } from '../../lib/token/verifyTokenMiddleware';
 import { logoutUser } from '../../general/user/logout';
 import { getSecretKey } from '../../general/user/get-secret-key';
 import { refreshSecretKey } from '../../general/user/refresh-secret-key';
-import { env } from '../../env';
 import { getUserSetting } from '../../general/user/get-user-setting';
 import { updateUserSetting } from '../../general/user/update-user-setting';
 import { getUserInfo } from '../../general/user/get-user-info';
