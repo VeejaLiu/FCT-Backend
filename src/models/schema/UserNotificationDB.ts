@@ -173,7 +173,8 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
               AND un.game_version = ${gameVersion}
               AND p.game_version = ${gameVersion}
               AND un.is_deleted = 0
-            ORDER BY un.in_game_date DESC`);
+            ORDER BY un.in_game_date DESC,
+                     un.id DESC`);
         return results.map((result: any) => {
             return {
                 id: result.id,
