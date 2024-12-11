@@ -42,6 +42,10 @@ async function sendPlayerUpdateNotification({
             return;
         }
 
+        // date format: '1991-1-1' -> '1991-01-01'
+        const [y, m, d] = inGameDate.split('-').map((v: string) => Number(v));
+        const dateStr = `${y}-${m < 10 ? '0' : ''}${m}-${d < 10 ? '0' : ''}${d}`;
+
         /*
          * Check if overallrating or potential has changed
          */
@@ -58,8 +62,8 @@ async function sendPlayerUpdateNotification({
             );
             const notification = await UserNotificationModel.create({
                 user_id: userId,
-                game_version: existingPlayer.game_version,
-                in_game_date: inGameDate,
+                game_version: gameVersion,
+                in_game_date: dateStr,
                 message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_Overall,
                 player_id: playerID,
@@ -96,8 +100,8 @@ async function sendPlayerUpdateNotification({
         ) {
             const notification = await UserNotificationModel.create({
                 user_id: userId,
-                game_version: existingPlayer.game_version,
-                in_game_date: inGameDate,
+                game_version: gameVersion,
+                in_game_date: dateStr,
                 message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
                 player_id: playerID,
@@ -130,8 +134,8 @@ async function sendPlayerUpdateNotification({
         ) {
             const notification = await UserNotificationModel.create({
                 user_id: userId,
-                game_version: existingPlayer.game_version,
-                in_game_date: inGameDate,
+                game_version: gameVersion,
+                in_game_date: dateStr,
                 message_type: 'PlayerUpdate',
                 message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
                 player_id: playerID,
