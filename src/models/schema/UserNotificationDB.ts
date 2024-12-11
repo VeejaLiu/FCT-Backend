@@ -166,14 +166,17 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
         gameVersion: number;
     }): Promise<any> {
         const [results] = await sequelize.query(`
-            SELECT un.*, p.player_name, p.preferredposition1
+            SELECT un.*,
+                   p.player_name,
+                   p.preferredposition1
             FROM user_notification un
                      LEFT JOIN player p ON un.player_id = p.player_id
             WHERE un.user_id = ${userId}
               AND un.game_version = ${gameVersion}
               AND p.game_version = ${gameVersion}
               AND un.is_deleted = 0
-            ORDER BY un.in_game_date DESC`);
+            ORDER BY un.in_game_date DESC,
+                     un.id DESC`);
         return results.map((result: any) => {
             return {
                 id: result.id,
