@@ -171,6 +171,7 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
                      LEFT JOIN player p ON un.player_id = p.player_id
             WHERE un.user_id = ${userId}
               AND un.game_version = ${gameVersion}
+              AND p.game_version = ${gameVersion}
               AND un.is_deleted = 0
             ORDER BY un.in_game_date DESC`);
         return results.map((result: any) => {
