@@ -72,14 +72,14 @@ export function sendMessageToUser({ userId, message }: { userId: number; message
         const socket = userConnections.get(userId);
 
         if (socket && socket.length > 0) {
-            logger.info(`[sendMessageToUser] ${socket.length} socket(s) found for user ${userId}`);
+            // logger.info(`[sendMessageToUser] ${socket.length} socket(s) found for user ${userId}`);
             for (let i = 0; i < socket.length; i++) {
                 const s = socket[i];
                 s.send(JSON.stringify(message));
-                logger.info(`[sendMessageToUser][Socket-${i}] Message sent to user ${userId}`);
+                // logger.info(`[sendMessageToUser][Socket-${i}] Message sent to user ${userId}`);
             }
         } else {
-            logger.error(`[sendMessageToUser] User ${userId} is not connected.`);
+            // logger.error(`[sendMessageToUser] User ${userId} is not connected.`);
         }
     } catch (e) {
         logger.error('[sendMessageToUser] Error:', e);
