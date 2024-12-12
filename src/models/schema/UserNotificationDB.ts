@@ -170,7 +170,7 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
                    p.player_name,
                    p.preferredposition1
             FROM user_notification un
-                     LEFT JOIN player p ON un.player_id = p.player_id
+                     RIGHT JOIN player p ON un.player_id = p.player_id
             WHERE un.user_id = ${userId}
               AND un.game_version = ${gameVersion}
               AND p.game_version = ${gameVersion}
