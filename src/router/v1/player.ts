@@ -6,7 +6,7 @@ import { getAllPlayerTrends } from '../../general/player/get-all-player-trends';
 import { verifyTokenMiddleware } from '../../lib/token/verifyTokenMiddleware';
 import { verifySecretKey } from '../../lib/token/verifySecretKey';
 import { getPlayerDetail } from '../../general/player/get-player-detail';
-import { query } from 'express-validator';
+import { param, query } from 'express-validator';
 import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
 
 const router = express.Router();
@@ -41,6 +41,7 @@ router.get(
     query('gameVersion')
         .isInt({ min: 24, max: 25 }) // only 24/25
         .withMessage('Game version must be 24 or 25'),
+    param('playerID').isInt().withMessage('Player ID must be an integer'),
     validateErrorCheck,
     async (req: any, res) => {
         const { userId } = req.user;

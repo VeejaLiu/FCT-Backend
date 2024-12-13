@@ -1,13 +1,11 @@
 import { PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 import { Logger } from '../../lib/logger';
-import { getAllPlayers, PlayerOverall } from './get-all-players';
 import { PlayerTrend } from './get-all-player-trends';
 
 const logger = new Logger(__filename);
 
 interface PlayerDetail {
-    allPlayer: PlayerOverall[];
     thisPlayer: PlayerModel;
     trends: PlayerTrend[];
 }
@@ -23,18 +21,7 @@ export async function getPlayerDetail({
 }): Promise<PlayerDetail> {
     try {
         logger.info(`[getPlayerDetail] userId: ${userId}, playerID: ${playerID}`);
-        if (!userId) {
-            return null;
-        }
 
-        const players = await getAllPlayers({ userId, gameVersion });
-        if (!players || players.length === 0) {
-            return null;
-        }
-
-        if (!playerID) {
-            playerID = players[0].playerID;
-        }
         let player = await PlayerModel.findOne({
             where: {
                 user_id: userId,
@@ -43,17 +30,6 @@ export async function getPlayerDetail({
             },
             raw: true,
         });
-        if (!player) {
-            playerID = players[0].playerID;
-            player = await PlayerModel.findOne({
-                where: {
-                    user_id: userId,
-                    game_version: gameVersion,
-                    player_id: playerID,
-                },
-                raw: true,
-            });
-        }
 
         const playerTrends: {
             player_id: number;
@@ -83,7 +59,6 @@ export async function getPlayerDetail({
             });
 
         return {
-            allPlayer: players,
             thisPlayer: player,
             trends: trends,
         };
