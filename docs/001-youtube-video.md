@@ -427,21 +427,10 @@ If a player’s ability has reached their potential, the potential will appear i
 我觉得这是一个非常有用的功能，让我更容易的找到我的关键球员。
 "I think this is a very useful feature that makes it easier for me to identify my key players."
 
-再让我们看一下 Player trends 页面，这里会显示了球员的能力值和潜力值的变化。
+然后是 Trends 页面，这里会显示了球员的能力值和潜力值的变化。
+"Next is the Trends page, where you can see the changes in players' overall and potential."
 
-Now, let’s take a look at the Player Trends page. Here, you'll see the changes in players' ability and potential values.
-
-但是因为我们只收集了一次数据，所以这里只有一条数据。
-
-However, since we only collected data once, there’s only one entry here.
-
-让我们回到游戏，获得更多的数据。
-
-Let’s go back to the game and gather more data.
-
-随着时间的流逝，我们可以看到每经过一周，就会弹出一个黑窗口，这就是我们之前说的事件。
-
-As time passes, we can see that every week a black window pops up. This is the event we mentioned earlier.
+每个球员都会有
 
 并且我想为你介绍一个小功能，这个功能是我最近加入的。
 
