@@ -1,4 +1,4 @@
-import Sequelize, { ModelAttributes, Model } from 'sequelize';
+import Sequelize, { ModelAttributes, Model, Op } from 'sequelize';
 import { sequelize } from '../db-config-mysql';
 import { Defaultconfig } from '../db-config-mysql';
 
@@ -63,6 +63,19 @@ export class UserModel extends Model {
             throw new Error(`User not found with id: ${id}`);
         }
         return res;
+    }
+
+    public static async isUsernameOrEmailExist({
+        username,
+        email,
+    }: {
+        username: string;
+        email: string;
+    }): Promise<boolean> {
+        const user = await UserModel.findOne({
+            where: { [Op.or]: [{ username: { [Op.iLike]: username } }, { email: { [Op.iLike]: email } }] },
+        });
+        return !!user;
     }
 }
 
