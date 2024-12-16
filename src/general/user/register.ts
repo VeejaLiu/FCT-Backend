@@ -40,42 +40,14 @@ export async function registerUser({
     data?: any;
 }> {
     try {
-        if (!username || !email || !password) {
-            return {
-                success: false,
-                message: 'Missing required fields',
-            };
-        }
-
-        if (username.length < 1 || username.length > 16) {
-            return {
-                success: false,
-                message: 'Username must be between 1 and 16 characters',
-            };
-        }
-
-        const emailReg = /^[A-Za-z0-9]+([_.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/;
-        if (!emailReg.test(email)) {
-            return {
-                success: false,
-                message: 'Invalid email',
-            };
-        }
-
-        if (password.length < 1 || password.length > 16) {
-            return {
-                success: false,
-                message: 'Password must be between 1 and 16 characters',
-            };
-        }
-
         logger.info(`[/user/register] username: ${username}, email: ${email}`);
 
         /*
-         * Check if user already exists
+         * Check if user already exists (case insensitive)
          */
-        const existingUser = await UserModel.findOne({
-            where: { [Op.or]: [{ username: username }, { email: email }] },
+        const existingUser = await UserModel.isUsernameOrEmailExist({
+            username: username,
+            email: email,
         });
         if (existingUser) {
             logger.info(`[/user/register] username or email duplicate`);
