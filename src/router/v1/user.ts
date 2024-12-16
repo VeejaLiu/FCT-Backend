@@ -11,6 +11,7 @@ import { updateUserSetting } from '../../general/user/update-user-setting';
 import { getUserInfo } from '../../general/user/get-user-info';
 import { body } from 'express-validator';
 import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
+import { changePassword } from '../../general/user/change-password';
 
 const router = express.Router();
 
@@ -81,6 +82,29 @@ router.get('/info', verifyTokenMiddleware, async (req: any, res: any) => {
 router.post('/verify-token', verifyTokenMiddleware, async (req: any, res: any) => {
     res.status(200).send({ success: true, message: 'Token is valid' });
 });
+
+/**
+ * Change user password
+ */
+router.post(
+    '/password',
+    body('oldPassword').isString().withMessage('Old password must be a string'),
+    body('newPassword').isString().withMessage('New password must be a string'),
+    body('confirmNewPassword').isString().withMessage('Confirm new password must be a string'),
+    validateErrorCheck,
+    verifyTokenMiddleware,
+    async (req: any, res: any) => {
+        const { userId } = req.user;
+        const { oldPassword, newPassword, confirmNewPassword } = req.body;
+        const result = await changePassword({
+            userId: userId,
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+            confirmNewPassword: confirmNewPassword,
+        });
+        res.status(200).send(result);
+    },
+);
 
 /**
  * User logout
