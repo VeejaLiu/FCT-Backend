@@ -39,13 +39,19 @@ router.get(
     query('gameVersion')
         .isInt({ min: 24, max: 25 }) // only 24/25
         .withMessage('Game version must be 24 or 25'),
+    query('page').isInt({ min: 1 }).withMessage('page must be an integer'),
+    query('limit').isInt({ min: 1 }).withMessage('limit must be an integer'),
+    query('onlyUnread').isBoolean().withMessage('onlyUnread must be a boolean'),
     validateErrorCheck,
     async (req: any, res) => {
         const { userId } = req.user;
-        const { gameVersion } = req.query;
+        const { gameVersion, page, limit, onlyUnread } = req.query;
         const result = await getUserNotifications({
             userId: userId,
             gameVersion: parseInt(gameVersion),
+            page: parseInt(page),
+            limit: parseInt(limit),
+            onlyUnread: onlyUnread === 'true',
         });
         res.send(result);
     },
