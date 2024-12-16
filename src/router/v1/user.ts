@@ -9,6 +9,8 @@ import { refreshSecretKey } from '../../general/user/refresh-secret-key';
 import { getUserSetting } from '../../general/user/get-user-setting';
 import { updateUserSetting } from '../../general/user/update-user-setting';
 import { getUserInfo } from '../../general/user/get-user-info';
+import { body } from 'express-validator';
+import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
 
 const router = express.Router();
 
@@ -17,27 +19,50 @@ const logger = new Logger(__filename);
 /**
  * User registration
  */
-router.post('/register', async (req: any, res: any) => {
-    const { username, email, password, rc } = req.body;
-    const result = await registerUserWithLock({
-        username: username,
-        email: email,
-        password: password,
-    });
-    res.status(200).send(result);
-});
+router.post(
+    '/register',
+    body('username')
+        .isString()
+        .withMessage('Username must be a string')
+        .isLength({ min: 1, max: 20 })
+        .withMessage('Username must be between 3 and 20 characters')
+        .matches(/^[a-zA-Z0-9]+$/)
+        .withMessage('Username must contain only letters and numbers'),
+    body('email').isEmail().withMessage('Email must be a valid email'),
+    body('password')
+        .isString()
+        .withMessage('Password must be a string')
+        .isLength({ min: 6, max: 20 })
+        .withMessage('Password must be between 6 and 50 characters'),
+    validateErrorCheck,
+    async (req: any, res: any) => {
+        const { username, email, password, rc } = req.body;
+        const result = await registerUserWithLock({
+            username: username,
+            email: email,
+            password: password,
+        });
+        res.status(200).send(result);
+    },
+);
 
 /**
  * User login
  */
-router.post('/login', async (req: any, res: any) => {
-    const { username, password } = req.body;
-    const result = await loginUser({
-        username: username,
-        password: password,
-    });
-    res.status(200).send(result);
-});
+router.post(
+    '/login',
+    body('username').isString().withMessage('Username must be a string'),
+    body('password').isString().withMessage('Password must be a string'),
+    validateErrorCheck,
+    async (req: any, res: any) => {
+        const { username, password } = req.body;
+        const result = await loginUser({
+            username: username,
+            password: password,
+        });
+        res.status(200).send(result);
+    },
+);
 
 /**
  * Get user's info
