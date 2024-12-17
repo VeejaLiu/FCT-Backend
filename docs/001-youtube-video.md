@@ -30,21 +30,13 @@ Especially those you’ve developed from the youth team.
 
 Watching them make progress bit by bit, growing into a world-class player, is such an amazing feeling.
 
-而且FIFA(FC)引入了球员的动态潜力之后，这变得更加好玩了。
+但是久久以来，一直有个问题一直困扰着我，那就是如何更好的观察和记录球员的成长。
 
-And after FIFA (FC) introduced the dynamic potential of players, it became even more fun.
-
-我非常想知道这个赛季表现出色的球员，下个赛季潜力会增加多少。
-
-I’m really curious to see how much the potential of standout players will increase for the next season!
+But for a long time, there’s been a problem that’s been bothering me: how to better observe and record a player’s growth.
 
 所以我非常需要一个工具来追踪这些数据。
 
-So I really need a tool to track this data.
-
-尽管FIFA/FC并没有提供这样的功能，但是我们可以通过一些方式来追踪这些数据。
-
-Although FIFA/FC doesn’t provide this feature, we can track this data in some other ways.
+I really need a something to track this data.
 
 最早的时候，我把球员的数据写到纸上。
 
@@ -58,6 +50,10 @@ I used Live Editor and Cheat Engine to read the age, overall and potential of ea
 
 I would also highlight the key players, especially those with high potential.
 
+我会重点培养他们，因为他们能达到更高的高度，这是我球队的未来。
+
+I would focus on developing them because they could reach greater heights, and they were the future of my team.
+
 然后每个赛季结束后，我都会更新这个数据。
 
 Then at the end of each season, I would update the data.
@@ -66,7 +62,7 @@ Then at the end of each season, I would update the data.
 
 Cross out the old numbers and write in the new ones.
 
-写在纸上的感觉很好，我像是一个真正的老式的教练。
+写在纸上让我感觉很好，我像是一个真正的老式的教练。
 
 Writing it down on paper feels great; I feel like a real old-school coach.
 
@@ -158,61 +154,89 @@ This application is free because I'm using Oracle's free hosting, so I don't hav
 
 Also, this project is open source! If you're interested, feel free to join in the development or share your suggestions.
 
-首先让我们来看一下如何使用这个应用：
+好，接下来让我为你展示一些如何使用这个应用。
 
-First, let’s take a look at how to use this application:
+Alright, let me show you how to use this application.
 
-首先前往这个网页，然后注册一个账号。
+首先前往应用网站，app.fccareer.top，
 
 First, go to this webpage and register for an account.
 
-这里请注意，这里需要输入邮箱，尽管我并没有添加邮箱验证，你可以输入任意的邮箱，...
+当然你可以通过 www.fccareer.top 来访问我制作的一个简陋的官网，然后点击 Go to APP 前往应用界面。
 
-Note that you need to enter your email here. Although I haven’t added email verification. So, you can use any email address.
+Of course, you can visit www.fccareer.top, the simple official website I made, and click Go to APP to go to the application interface.
 
-但是我还是推荐你使用你真实的邮箱，
+接下来让我们注册一个账号。
+
+And then let’s register an account.
+
+这里请注意，这里需要输入邮箱，但是我并没有添加邮箱验证，你可以输入任意的邮箱
+
+Note that you need to enter your email here. But I haven’t added email verification. So, you can use any email address.
+
+但是我还是推荐你使用你真实的邮箱
 
 But I still recommend using your real email.
 
-对你来说比较容易记忆，并且如果你忘记了密码，或者后续我不得不添加邮箱验证，
+首先，对你来说比较容易记忆，
 
-It’s easier to remember. Plus, if you forget your password or if I later add email verification,
+Firstly, It’s easier to remember for you.
+
+并且如果你忘记了密码，或者后续我不得不添加邮箱验证，
+
+Plus, if you forget your password or if I have to add email verification later,
 
 那么这个邮箱会成为唯一且重要的凭证。
 
 that email will be your only important credential.
 
-否则可能到时候我不得不删除你的账号，当然，也包括你的数据。
-
-Otherwise, I might have to delete your account, of course, including your data.
-
 注册之后，你可以登录到这个应用。
 
 After registering, you can log into the application.
 
-这里还没有任何的数据，首先，我们先选择一下你的游戏版本。
+这里还没有任何的数据。
 
-There’s no data here yet. First, let’s select your game version.
+There’s no data here yet.
 
-点击一下这里，选择你的游戏版本。你可以随时切换你的游戏版本，并且数据是独立的。
+首先，我们先选择一下你的游戏版本。
 
-Click here to choose your game version. You can switch your game version anytime, and the data will be independent for each version.
+First, let’s select your game version.
+
+点击一下这里，选择你的游戏版本。
+
+Click here to choose your game version.
+
+你可以随时切换你的游戏版本，并且数据是独立的。
+
+You can switch your game version anytime, and the data will be independent for each version.
+
+但是很遗憾的是，目前只支持一个存档。
+
+Unfortunately, it only supports one save file right now.
+
+但是目前我的使用体验来看，这足够了，
+
+But from my experience, this is enough for now.
+
+如果你们确实需要多个存档，我会考虑添加这个功能。
+
+If you really need multiple save files, I’ll consider adding this feature.
 
 我会以FC 25为例，所以我就选择FC 25。
 
-I'll use FC 25 as an example, so I'll select FC 25.
+OK, I'll use FC 25 as an example, so I'll select FC 25.
 
 接下来，让我们转到Get Started页面。
 
 Next, let’s go to the Get Started page.
 
-这里会把这个过程描述的尽可能的清楚，并且有一些提醒和细节上的说明。
+这里有简单的说明，你可以看到如何使用这个应用，以及这个应用的依赖项。
 
-This page will explain the process in a clear way and share some tips and details.
+"Here’s a quick guide where you can see how to use this app and what it depends on."
 
 让我们实际上操作一遍吧，这更简单。
 
-Let’s actually go through it step by step; it’ll be easier that way.
+"Let’s actually walk through it together; it’ll be easier that way."
 
 让我们返回桌面，
 
@@ -222,121 +246,191 @@ Let’s go back to the desktop.
 
 First, open Live Editor.
 
-然后打开游戏，目前支持FC 24和FC 25。这里我使用FC 25作为例子。
+然后打开游戏，
 
-Then launch the game. Currently, only FC 24 and FC 25 are supported. Here, I’ll use FC 25.
+Then launch the game.
 
-进入你的存档。
+这可能需要点时间，让我们等待一会，
 
-Now, enter your save file.
+This might take a moment, so let’s wait a bit.
 
-当进入存档之后，我们就需要再次唤醒Live Editor, 然后我们转到 Lua engine。
+好了我们进入了游戏，
 
-Once you enter your save file, we need to activate Live Editor again and then switch to the Lua engine.
+Alright, we’re in the game now.
 
-这里我们需要一段可以导出数据的脚本。
+为了方便演示，我这里会创建一个新的存档。
+
+To make it easier for the demo, I'll create a new manager career mode save.
+
+好了，我们现在来到了经理生涯模式中。
+
+"Okay, we’re now in the manager career mode."
+
+这个时候，我们就需要再次唤醒Live Editor, 我这里是F9。
+
+然后，我们打开 Lua engine 功能。
+
+"Next, we’ll open the Lua engine features."
+
+这里呢，我们需要一段可以导出数据的脚本。
 
 Here, we need a script to export the data.
 
-这些我都为你准备好了，你可以在Get Started页面找到。
+"Don't worry, I've got all of that prepared for you."
 
-I've prepared all of this for you; you can find it on the Get Started page.
+你可以在Get Started页面找到。
+
+you can find it on the Get Started page.
 
 点击这个按钮来复制代码。
 
 Click this button to copy the code.
 
-请注意，这个代码是根据你的账号生成的，里面包含了你的secret key，所以请不要分享给其他人。
+但是请注意，这个代码是根据你的账号生成的，里面包含了你的secret key，所以请不要分享给其他人。
 
 Please note that this code is generated based on your account and includes your secret key, so do not share it with others.
 
+当然，你可以随时在setting界面里面重置你的secret key。
+
+"Of course, you can reset your secret key anytime in the settings page."
+
+就像这样，
+"Just like this,"
+
+在我结束这个视频之后，我会重置我的secret key。
+"After I finish this video, I'll reset my secret key."
+
+让我们回到Get Started页面，代码中的secret key会自动替换成新的的secret key。
+"Let’s go back to the Get Started page, and the secret key in the code will automatically be replaced with the new one."
+
+所以我们再次复制这个代码。
+"So, let’s copy this code again."
+
 我们回到游戏，然后粘贴这个代码到这里。
+"Now, let's go back to the game and paste this code here."
 
-Let’s go back to the game and paste this code here.
+在执行这个代码之前，先让我为你简单的描述一下这个脚本做了什么。
+"Before we run this code, let me briefly explain what this script does."
 
-在这里我简单的描述一下这个脚本做了什么。
+这个脚本利用了 Live Editor 的API，
+"This script uses the Live Editor API
 
-Here, let me briefly explain what this script does.
+收集你的球员的数据并且发送到我们的后端服务器。
+"Collects your player data and sends it to our backend server."
 
-这个脚本利用了 Live Editor 的API，会获取你的球员的数据并且发送到我们应用的服务器。这样，就完成了一次数据收集。
+这样，就完成了一次数据收集。
+"And that’s how we complete a data collection."
 
-This script uses the Live Editor API to retrieve your player data and send it to our application’s server. And that completes a data collection.
+并且还使用了 Live Editor 提供的Event功能，
 
-并且还使用了 Live Editor 提供的Event功能，为游戏绑定了一个事件
+"And it also uses the event feature provided by the Live Editor
 
-It also uses the Event feature provided by Live Editor to bind an event to the game.
+为游戏绑定了一个事件
+
+to bind an event to the game."
 
 当游戏中每经过一周，就会自动执行一遍这个过程
 
-When the week ends in the game, this process will automatically execute.
+"Every time a week passes in the game, this process will automatically run."
 
 这样就达到了我们说的自动化的目的。
 
-This achieves the automation we talked about.
+"This way, we achieve the goal of automation."
 
-OK，让我们回到这个流程，
+好，让我们试一下。
 
-Okay, let’s go back to this process.
+"Alright, let’s give it a try."
 
-粘贴代码后，点击Run。
+粘贴代码后，点击运行按钮。
 
-past the code, then click Run.
-
-当点击了Run之后，会立马执行一遍我们之前说的那个流程，收集你的球员数据并且发送到应用的服务器。
-
-When you click, it will immediately execute the process, collecting your player data and sending it to the application’s server.
+past the code, then click Execute.
 
 可能你看到了一个黑窗口一闪而过，这就是发送你的数据到服务器的过程。
-
 You might have seen a black window flash briefly; that’s the process of sending your data to the server.
 
-如果你的网速够快，这个黑窗口会非常快的消失，几乎看不到。
+你可能想问，为什么会有这样的一个该死的黑窗口，这很不优雅。
+You might be wondering why there's this annoying black window; it’s not very elegant.
 
-If your internet is fast enough, this black window will disappear quickly, almost too fast to notice.
+这是因为目前没有什么好的办法可以在Lua脚本中直接发送http请求。
+"This is because there isn't a great way to send HTTP requests directly from Lua scripts right now."
 
-如果你的网络到我的服务器有点慢，那么这个黑窗口可能会停留一小下，然后消失。
+所以我只能通过cmd来调用系统的curl命令来执行。
+"So, I can only use the cmd to call the system's curl command to execute it."
 
-If your connection to my server is a bit slow, the black window might remain open for a moment before disappearing.
+后面我会尝试找到更好的解决方案。让这个过程更加的优雅。
+"I'll try to find a better solution later to make this process more elegant."
+
+但是实际上，一般情况下，这个黑窗口会非常快的消失，几乎看不到。
+"But usually, this black window will disappear very quickly, almost without being noticed."
+
+并且在下面，你可以看到一些日志，这是这个过程执行过程中的一些输出。
+"And below, you can see some logs; these are outputs from the execution of the process."
 
 现在让我们返回应用，然后刷新一下页面。
 
-Now, let’s go back to the application and refresh the page.
+Now, let’s go back to the website and refresh the page.
 
-你会看到你的数据已经被成功的导入到了应用中。
+如果一切正常，你会看到你的数据已经被成功的导入到了应用中。
+"If everything went well, you should see that your data has been successfully imported into the app."
 
-If all goes well, You’ll see that your players' data has been successfully imported into the application.
+让我们暂时回到游戏中，让我们把时间快进一些，好能收集到更多的数据。
+"Let’s temporarily go back to the game and speed up time a bit so we can collect more data."
+
+并且在此之前，我先修改一下球员们的发展计划，以让他们的能力值更快的提升。
+"And before that, let me adjust the players' development plans to help them improve their attributes faster."
+
+先让我把窗口缩小一些，然后把网站放在右边。
+"First, let me minimize the window a bit and place the website on the right."
+
+OK，让我们开始快进。
+"Okay, let’s start fast-forwarding."
+
+你可以看到，每经过一周，就会弹出一个黑窗口，这就是我们之前说的事件。这样就完成了一次数据收集。
+"You can see that every week, a black window pops up; that's the event we talked about. This completes another data collection."
+
+并且，你可能已经注意到了，网页中不断地有通知弹出来
+"And you may have noticed that notifications keep popping up on the webpage."
+
+这是我另一个非常喜欢的功能，我将稍后为你介绍。
+"That's another feature I really like, and I'll explain it to you later."
+
+好了，时间过了一段时间了，我们已经收集了足够多的数据了。
+"Alright, some time has passed, and we've collected enough data."
+
+让我为你介绍一下这个应用的一些功能。
+"Let me introduce you to some features of this app."
 
 这里是球员的列表，
-
 Here’s the player list.
 
 你可以看到他们的基本信息，比如名字、年龄、位置、能力、潜力...
-
 You can see their basic information, like name, age, position, ability, and potential.
 
-并且如果球员的能力值已经达到了他的潜力值，那么潜力值会成为灰色，并且旁边有个小的标记。
+并且这里有简单的搜索和排序功能。
+"And there’s a simple search and sorting feature here."
 
+并且如果球员的能力值已经达到了他的潜力值，那么潜力值会成为灰色，并且旁边有个小的标记。
 If a player’s ability has reached their potential, the potential will appear in gray with a little marker next to it.
 
 这个是模仿了FIFA/FC中的显示方式。
+"This mimics the display style used in FIFA/FC."
 
-This mimics the display style found in FIFA/FC.
+并且我还添加一个功能，这是我最近才添加的，我称之为 ”金牌球员“
+"And I've also added a feature, which I recently implemented. I call it 'Gold Player'."
 
-再让我们看一下 Player trends 页面，这里会显示了球员的能力值和潜力值的变化。
+在同一位置上，我会给那些能力值或者潜力值前三的球员添加一个标记，分别是金牌和银牌和铜牌。
+"In the same position, I’ll mark the top three players based on their attributes or potential with gold, silver, and bronze badges."
 
-Now, let’s take a look at the Player Trends page. Here, you'll see the changes in players' ability and potential values.
+这意味着他们是你的球队中最好或者最值得培养的球员。
+"This means they are the best or most promising players in your team."
 
-但是因为我们只收集了一次数据，所以这里只有一条数据。
+我觉得这是一个非常有用的功能，让我更容易的找到我的关键球员。
+"I think this is a very useful feature that makes it easier for me to identify my key players."
 
-However, since we only collected data once, there’s only one entry here.
+然后是 Trends 页面，这里会显示了球员的能力值和潜力值的变化。
+"Next is the Trends page, where you can see the changes in players' overall and potential."
 
-让我们回到游戏，获得更多的数据。
-
-Let’s go back to the game and gather more data.
-
-随着时间的流逝，我们可以看到每经过一周，就会弹出一个黑窗口，这就是我们之前说的事件。
-
-As time passes, we can see that every week a black window pops up. This is the event we mentioned earlier.
+每个球员都会有
 
 并且我想为你介绍一个小功能，这个功能是我最近加入的。
 
