@@ -45,7 +45,7 @@ async function getTrendsForSinglePlayer({
             game_version: gameVersion,
         },
         order: [['in_game_date', 'DESC']],
-        limit: 40,
+        limit: 100,
         raw: true,
     });
 
