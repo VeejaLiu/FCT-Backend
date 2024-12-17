@@ -115,32 +115,38 @@ But in the table, you only keep the latest data.
 If you want to keep historical data, you’ll need another table or some more advanced feature.
 
 所以，是时候做出一些改变了!
-
 So, it’s time to make some changes!
 
 我的研究仍然基于Live Editor，因为它提供了非常丰富的API，可以让我们做很多事情。
-
 My research is still based on Live Editor because it offers a very rich API that allows us to do a lot of things.
 
-我在想，既然可以通过 Live Editor 导出数据，
+所以，也很遗憾，如果你是主机玩家，那么这个应用对你来说是不适用的。
+So, it’s a bit unfortunate that if you’re a console player, this app isn't applicable to you.
 
-I'm thinking, since we can export data through Live Editor,
+当然我也一直在想一些办法，让这个应用能够支持主机玩家。当然了，这会很难。
+I’ve been thinking about ways to make the app support console players, but I know it’s going to be a challenge.
 
-那么我为什么不将数据导入到一个数据库中，然后我写一个应用来展示这些数据呢？
+这个我视频的最后讨论这件事情。
+I'll discuss this at the end of the video.
 
-Then why not import the data into a database and create an application to showcase that data?
+好，我在想，既然可以通过 Live Editor 导出数据，
+Alright, I'm thinking, since we can export data through Live Editor,
+
+那么我为什么不将数据导入到一个数据库中，然后我写一个网页应用来展示这些数据呢？
+Then why not import the data into a database and create an web application to showcase that data?
 
 这就是我今天要给你介绍的我做的一个新的应用 —— 我命名为 FC Career Top!
-
 This is what I want to introduce to you today — a new application I created, I called it FC Career Top!
 
 这个应用的目的就是解决我们上面所有的问题，并将整个过程变得自动化！
-
 This application aims to address all the problems we talked about and make the entire process automated!
 
 并且尽可能多的提供各种维度的数据展示，
 
 and provide as many different dimensions of data display as possible.
+
+并且因为这是一个网页应用，所以你可以在任何地方使用它，比如手机、pad。
+And since it's a web app, you can use it anywhere, whether on your phone or pad.
 
 以及我还做了一些有意思的小功能，我会逐步的介绍给你们。
 
@@ -273,25 +279,18 @@ To make it easier for the demo, I'll create a new manager career mode save.
 "Next, we’ll open the Lua engine features."
 
 这里呢，我们需要一段可以导出数据的脚本。
-
 Here, we need a script to export the data.
 
-"Don't worry, I've got all of that prepared for you."
-
 你可以在Get Started页面找到。
-
-you can find it on the Get Started page.
+you can find it on the Get Started page. I've got all of that prepared for you."
 
 点击这个按钮来复制代码。
-
 Click this button to copy the code.
 
 但是请注意，这个代码是根据你的账号生成的，里面包含了你的secret key，所以请不要分享给其他人。
-
 Please note that this code is generated based on your account and includes your secret key, so do not share it with others.
 
 当然，你可以随时在setting界面里面重置你的secret key。
-
 "Of course, you can reset your secret key anytime in the settings page."
 
 就像这样，
@@ -367,7 +366,6 @@ You might be wondering why there's this annoying black window; it’s not very e
 "And below, you can see some logs; these are outputs from the execution of the process."
 
 现在让我们返回应用，然后刷新一下页面。
-
 Now, let’s go back to the website and refresh the page.
 
 如果一切正常，你会看到你的数据已经被成功的导入到了应用中。
@@ -415,8 +413,8 @@ If a player’s ability has reached their potential, the potential will appear i
 这个是模仿了FIFA/FC中的显示方式。
 "This mimics the display style used in FIFA/FC."
 
-并且我还添加一个功能，这是我最近才添加的，我称之为 ”金牌球员“
-"And I've also added a feature, which I recently implemented. I call it 'Gold Player'."
+并且这里还有一个新功能，我最近才添加的，我称之为 “金牌球员”
+"And there’s a new feature here that I recently added, called 'Gold Player'. I call it 'Gold Player'."
 
 在同一位置上，我会给那些能力值或者潜力值前三的球员添加一个标记，分别是金牌和银牌和铜牌。
 "In the same position, I’ll mark the top three players based on their attributes or potential with gold, silver, and bronze badges."
@@ -427,65 +425,169 @@ If a player’s ability has reached their potential, the potential will appear i
 我觉得这是一个非常有用的功能，让我更容易的找到我的关键球员。
 "I think this is a very useful feature that makes it easier for me to identify my key players."
 
-然后是 Trends 页面，这里会显示了球员的能力值和潜力值的变化。
+再让我们看一下 Player trends 页面，这里会显示了球员的能力值和潜力值的变化。
 "Next is the Trends page, where you can see the changes in players' overall and potential."
 
-每个球员都会有
+这个页面按照球员的位置进行了分类，
+"This page is sorted by player positions.
 
-并且我想为你介绍一个小功能，这个功能是我最近加入的。
+可以让你直观的看到每个球员的成长趋势，
+It makes it super easy to see each player’s growth trend.
 
-And I’d like to share a little feature with you. This is something I recently added.
+尤其是你可以看到不同球员的成长空间的区别。
+You can really spot the differences in growth potential between players."
 
-如果球员的能力值、潜力值、弱脚能力或者花式技巧有变化，会在应用里面通知你。
+比如这里，这个球员现在拥有更高的能力值，但是他已经达到了潜力上限。
+"For example, here’s a player who currently has higher attributes, but he’s already hit his potential cap."
 
-If there are any changes to a player's overall, potential, weak foot skill, or flair, the app will notify you.
+而这个球员，他现在的能力值比较低，但是他的潜力值很高，这意味着他有很大的成长空间。
+"And this player has lower overall right now, but his potential is really high, which means he has a lot of room to grow."
+
+那么这个赛季，我可能会让B参加更多的比赛，让他更快的成长。
+"So, this season, I might give Player B more game time to help him grow faster."
+
+但是对于一些关键比赛，我可能会让A参加，因为他的能力值更高，他会有更稳定的发挥。
+"But for some key matches, I might choose Player A because his attributes are higher, and he'll perform more consistently."
+
+并且，因为我现在模拟的时间还是不够长，所以这里球员能力的增长还不是很明显。
+"And since the simulated time isn’t long enough yet, the players' attribute growth isn’t very noticeable here."
+
+如果你使用这个超过几个赛季，并且有一些你一直在培养的球员。
+"If you use this for several seasons and have some players you’ve been developing."
+
+你就会看到他们的成长趋势是非常明显的。
+"You’ll see their growth trends are very clear."
+
+就像我之前说的，从一个平平无奇的球员，成为一名世界级球员。
+"Just like I mentioned before, turning an average player into a world-class player."
+
+这真的很令人兴奋，让我成就感爆棚。
+"It's really exciting and gives me a huge sense of accomplishment."
+
+当你点击某个球员的名字或者头像的时候，
+"When you click on a player's name or avatar,"
+
+你可以跳转到球员的详情页面。
+"You can jump to the player's details page."
+
+当然，你也可以在Player list 页面中点击球员的名字来跳转到这个页面。
+"Of course, you can also click on a player's name in the Player list page to jump to this page."
+
+这里会有球员更详细的信息，包括了每一项能力的数值。
+"This page has more detailed information about the player, including the values of each attribute."
+
+以及下面有一个更大的图表，展示了球员的变化。
+"And below, there’s a larger chart showing the changes in the player."
+
+这确实是个很简单的页面，跟游戏里面没有什么区别。
+"It’s really a simple page, not much different from the game."
+
+有一点是我想到的但是我没有做的，就是记录球员每一项属性的变化。
+One thing I thought about but didn't implement is tracking the changes in every attribute of the players.
+
+我不确定你们是否需要这个功能，但是这个功能会比较占用存储空间。
+"I'm not sure if you need this feature, but it would take up more storage space."
+
+正如我们之前说的，我使用的是oracle的免费主机，所以存储空间是有限的。
+"As we mentioned before, I'm using Oracle's free hosting, so storage space is limited."
+
+如果你们觉得这个功能真的有必要，我会考虑添加这个功能。
+"If you think this feature is really necessary, I’ll consider adding it."
+
+说到这里，你还记得我们之前看到的通知吗？
+Speaking of which, do you remember the announcement we saw earlier?
+
+我使用 websocket 来实现了这个功能。
+I implemented this feature using WebSocket.
+
+当你的球员取得了一些进步的时候，
+Whenever your player makes some progress,
+
+能力值，潜力值，或者花式和逆足的星级成长，
+ovals, potential, or flair and weak foot ratings grow,
+
+当然也包括如果能力值的下降，比如某些大龄球员
+and of course, if the attributes decrease, like some older players.
+
+所有的这些变化，都会在这里发送一个通知。
+All of these changes will send a notification here.
+
+如果你错过了一些通知，
+If you missed someone,
+
+你也可以在这里看到所有的通知。
+you can also see all of them here.
 
 就像这个一样。你们喜欢这个功能吗。我是非常喜欢。
-
 Just like this. Do you like this feature? I really enjoy it!
 
-这就像一个助教一样，每周跑过来告诉你，“嗨，老板，你的球员又取得了一些进步，这是报告，请查看一下”
+我甚至认为这是这个应用中最有趣的功能。它赋予了这个应用灵魂。
+I even think it’s the most interesting feature of this application. It gives the app a soul.
 
-It’s like having an assistant who comes over every week to say, "Hey, boss, your players have made some progress! Here’s the report—take a look!"
+这就像一个助理教练一样，每周跑过来告诉你，
+It's like having an assistant coach who runs over to you every week and says,
+
+“嗨，老板，你的球员又取得了一些进步，这是报告，请查看一下”
+"Hey, boss, your players have made some progress! Here’s the report, take a look!"
+
+这真的非常有趣，并且一直给你一些正反馈，让你知道你的球员在不断的进步。
+It's really exciting to constantly get positive feedback, letting you know your players are making progress.
+
+甚至，我最期待的就是黑窗口弹出来。
+I’m especially looking forward to that black window popping up.
+
+我迫不及待的去看这个通知。看看我的球员取得了什么进步。
+I can't wait to check the notification and see what progress my players have made!
 
 当然如果你实在不喜欢这个功能，你可以在设置页面里面关闭它。
-
 Of course, if you really don’t like this feature, you can turn it off in the settings page.
 
-这里提供了多种选项，你只开启你想要的通知。
-
+这里提供了多种选项，你可以只开启你想要的通知。
 Here, you have various options. You can enable only the notifications you want.
 
-这里还有一个简单的详情页面，你可以看到球员更详细的属性信息，
+当然了，如果你不开启，那么你就不会收到任何通知。通知列表中也不会记录。
+Of course, if you don’t turn it on, you won’t receive any notifications, and nothing will be recorded in the notification list.
 
-There’s also a simple details page, you can see more detailed attributes of the player
+好了，这就是整个应用现在所有的内容了。
+Alright, that covers everything about the app for now.
 
-以及他的成长的趋势。
+实际上，这个应用已经上线了有一段时间了，
+Actually, this app has been live for a while now.
 
-and their growth trends.
+I previously shared it on Reddit,
+我之前在reddit上面分享过它。
 
-这就是整个应用现在所有的内容了。
+并且已经有了一些注册用户，大约有80多个。
+and we've already got some registered users, about 80 or so.
 
-That’s all the content of the application for now.
+我制作了这个视频以帮助你们更好的理解和使用这个应用。
+I created this video to help you better understand and use the app.
+
+我并不是一个英语母语者，所以制作这个视频对我来说也是一个挑战。
+I’m not a native English speaker, so making this video was also a challenge for me.
+
+我希望未来这个应用能达到每天有十个活跃用户。
+I hope this app can have ten active users every day in the future.
+
+这样我才会觉得这个应用是有意义的。
+Then I’ll feel like this app is meaningful.
+
+至少它帮助了一些人，让他们更好的享受这个游戏。
+At least it’s helped some people enjoy the game more.
 
 最后我想谈一谈这个应用的缺点和对未来的一些展望。
-
 Finally, I’d like to discuss some of the drawbacks of this application and my thoughts for the future.
 
 我认为这对一个开源的和想造福游戏玩家的项目来说很重要。
-
 I think this is important for an open-source project aimed at benefiting gamers.
 
 正如你看到的，这个项目依赖于Live Editor，那就意味着你只能在PC上使用这个应用。
-
 As you can see, this project relies on Live Editor, which means you can only use this application on a PC.
 
 对于其他平台的玩家，就很遗憾了。
-
 It’s unfortunate for players on other platforms.
 
 当然了，你可以说，那就加入一个手动导入数据的功能呗。
-
 Of course, you might suggest adding a manual data import feature.
 
 这是一种方案没错。
