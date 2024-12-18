@@ -1,6 +1,6 @@
-import Sequelize, { ModelAttributes, Model, Op } from 'sequelize';
-import { sequelize } from '../db-config-mysql';
-import { Defaultconfig } from '../db-config-mysql';
+import Sequelize, { Model, ModelAttributes, Op } from 'sequelize';
+import { Defaultconfig, sequelize } from '../db-config-mysql';
+import { doRawQuery } from '../index';
 
 /*
 CREATE TABLE `user` (
@@ -76,6 +76,31 @@ export class UserModel extends Model {
             where: { [Op.or]: [{ username: { [Op.iLike]: username } }, { email: { [Op.iLike]: email } }] },
         });
         return !!user;
+    }
+
+    /**
+     * Get daily new users count
+     *
+     * @param startDate - start date, format: 'YYYY-MM-DD'
+     * @param endDate - end date, format: 'YYYY-MM-DD'
+     *
+     */
+    static async getDailyNewUsersCount({
+        startDate,
+        endDate,
+    }: {
+        startDate: string;
+        endDate: string;
+    }): Promise<{ date: string; count: number }[]> {
+        const result: { date: string; count: number }[] = await doRawQuery(
+            `select count(*)                             as c,
+                    DATE_FORMAT(create_time, '%Y-%m-%d') as createDate
+             from user
+             where DATE_FORMAT(create_time, '%Y-%m-%d') between '${startDate}' and '${endDate}'
+             group by createDate
+             order by createDate`,
+        );
+        return result;
     }
 }
 
