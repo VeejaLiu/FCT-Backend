@@ -1,118 +1,95 @@
 大家好，欢迎来到我的频道。 我是Veeja，一个专注在编程、游戏、足球上的新人博主。
-
 Hello everyone, welcome to my channel! I'm Veeja, a new content creator focused on programming, gaming, and football.
 
 今天我要聊的事情就有关于这三件事~
-
 Today, I’m going to talk about these three things!~
 
 我是一个忠实的FIFA(也就是现在的FC)生涯模式玩家。
-
 I'm a dedicated FIFA (now FC) career mode player.
 
 我几乎完全不玩FUT模式。
-
 I hardly play FUT mode at all.
 
 因为我更喜欢经营一支自己的球队，看到球员的成长，然后和他们一起建立一个伟大的王朝。
-
 I prefer managing my own team, watching the players grow, and building a great dynasty with them.
 
 在生涯模式中，看到球员的成长，是非常令人开心的。
-
 In career mode, you can watch players grow, and it's really satisfying.
 
 尤其是那些你从青年队培养的球员，
-
 Especially those you’ve developed from the youth team.
 
 看到他们一步步的进步，然后成为一名世界级球员，这种感觉真的很棒。
-
 Watching them make progress bit by bit, growing into a world-class player, is such an amazing feeling.
 
 但是久久以来，一直有个问题一直困扰着我，那就是如何更好的观察和记录球员的成长。
-
 But for a long time, there’s been a problem that’s been bothering me: how to better observe and record a player’s growth.
 
 所以我非常需要一个工具来追踪这些数据。
-
 I really need a something to track this data.
 
 最早的时候，我把球员的数据写到纸上。
-
 In the early days, I wrote down player data on paper.
 
 我使用 Live Editor 和 Cheat Engine table 读取出来每个球员的年龄、能力值、潜力值，然后写下来。
-
 I used Live Editor and Cheat Engine to read the age, overall and potential of each player, and then wrote it down.
 
 并且我会把那些关键球员重点标记出来，比如那些潜力值很高的球员。
-
 I would also highlight the key players, especially those with high potential.
 
 我会重点培养他们，因为他们能达到更高的高度，这是我球队的未来。
-
 I would focus on developing them because they could reach greater heights, and they were the future of my team.
 
 然后每个赛季结束后，我都会更新这个数据。
-
 Then at the end of each season, I would update the data.
 
 将原有的数据划掉，然后写上新的数据。
-
 Cross out the old numbers and write in the new ones.
 
 写在纸上让我感觉很好，我像是一个真正的老式的教练。
-
 Writing it down on paper feels great; I feel like a real old-school coach.
 
 我根据他们数值的变化，来决定他们未来一个赛季的安排，甚至是未来的转会，这真的令人享受。
-
 I look at how their numbers change to decide their plans for the next season and even future transfers. I really enjoy it.
 
 但是，这样的方式也有很大的缺点。数据的更新和管理是一个非常繁琐的过程，而且很容易出错。
-
 But this approach has its downsides. Updating and managing the data is a really tedious process, and it’s easy to make mistakes.
 
 再后来，因为有了EA的反作弊引擎，PC上不得不使用Live editor。
-
 Later on, it became necessary to use Live Editor on the PC because of EA's anti-cheat engine.
 
 我发现他支持Lua脚本并且提供了相当丰富的API。
-
 And I discovered it supports Lua scripts and offers a pretty rich API.
 
 我写了一个简单的脚本，将数据导出成csv格式，然后导入到Notion或者Excel中。
-
 I wrote a simple script to export the data as a CSV file, and then I import it into Notion or Excel.
 
 但是在后面的更新数据中，比如球员的能力值发生了变化，或者你买入了新的球员，
-
 But when it comes to updating data later — like if a player’s overall change or you buy new players
 
 即便能通过脚本快捷的导出数据，
-
 even though the script can export the data quickly,
 
 但是还是需要手动的合并到原来的数据中，这个过程还是很繁琐。
-
 you still need to manually merge it into old data. That's also very tedious.
 
 并且因为Excel只会保留了最新的数据，所以失去了一个重大的优势，那就是历史数据的追踪。
-
 And because Excel only keeps the latest data, it loses a major advantage, which is tracking historical data.
 
 写在纸上的时候我还可以通过划掉的数字看到球员的成长轨迹，
-
 When it was written on paper, I could still see a player's growth by checking out the crossed-out numbers.
 
 但是表格中，你只保留了最新的数据。
-
 But in the table, you only keep the latest data.
 
 如果你要保留历史数据，那么你需要另外的表格或者一些高级的用法。
-
 If you want to keep historical data, you’ll need another table or some more advanced feature.
+
+并且效果可能不是特别好，但是却很繁琐。
+The results might not be very good, but the process can be quite cumbersome.
+
+并且这种方法很难推广出去，不够优雅也不够易用。
+Additionally, this method is hard to share with others; it’s not very elegant or user-friendly.
 
 所以，是时候做出一些改变了!
 So, it’s time to make some changes!
@@ -142,140 +119,108 @@ This is what I want to introduce to you today — a new application I created, I
 This application aims to address all the problems we talked about and make the entire process automated!
 
 并且尽可能多的提供各种维度的数据展示，
-
 and provide as many different dimensions of data display as possible.
 
 并且因为这是一个网页应用，所以你可以在任何地方使用它，比如手机、pad。
 And since it's a web app, you can use it anywhere, whether on your phone or pad.
 
 以及我还做了一些有意思的小功能，我会逐步的介绍给你们。
-
 I also added some interesting little features, I’ll share with you step by step.
 
 这个应用是免费的，因为我使用的是oracle的免费主机，所以我暂时没有任何付费的计划。
-
 This application is free because I'm using Oracle's free hosting, so I don't have any paid plans yet.
 
 另外这个项目是开源的！如果你有兴趣，欢迎你一起来参与这个项目的开发，或者提出你的建议。
-
 Also, this project is open source! If you're interested, feel free to join in the development or share your suggestions.
 
 好，接下来让我为你展示一些如何使用这个应用。
-
 Alright, let me show you how to use this application.
 
 首先前往应用网站，app.fccareer.top，
-
 First, go to this webpage and register for an account.
 
 当然你可以通过 www.fccareer.top 来访问我制作的一个简陋的官网，然后点击 Go to APP 前往应用界面。
-
 Of course, you can visit www.fccareer.top, the simple official website I made, and click Go to APP to go to the application interface.
 
 接下来让我们注册一个账号。
-
 And then let’s register an account.
 
 这里请注意，这里需要输入邮箱，但是我并没有添加邮箱验证，你可以输入任意的邮箱
-
 Note that you need to enter your email here. But I haven’t added email verification. So, you can use any email address.
 
 但是我还是推荐你使用你真实的邮箱
-
 But I still recommend using your real email.
 
 首先，对你来说比较容易记忆，
-
 Firstly, It’s easier to remember for you.
 
 并且如果你忘记了密码，或者后续我不得不添加邮箱验证，
-
 Plus, if you forget your password or if I have to add email verification later,
 
 那么这个邮箱会成为唯一且重要的凭证。
-
 that email will be your only important credential.
 
 注册之后，你可以登录到这个应用。
-
 After registering, you can log into the application.
 
 这里还没有任何的数据。
-
 There’s no data here yet.
 
 首先，我们先选择一下你的游戏版本。
-
 First, let’s select your game version.
 
 点击一下这里，选择你的游戏版本。
-
 Click here to choose your game version.
 
 你可以随时切换你的游戏版本，并且数据是独立的。
-
 You can switch your game version anytime, and the data will be independent for each version.
 
 但是很遗憾的是，目前只支持一个存档。
-
 Unfortunately, it only supports one save file right now.
 
 但是目前我的使用体验来看，这足够了，
-
 But from my experience, this is enough for now.
 
 如果你们确实需要多个存档，我会考虑添加这个功能。
-
 If you really need multiple save files, I’ll consider adding this feature.
 
 我会以FC 25为例，所以我就选择FC 25。
-
 OK, I'll use FC 25 as an example, so I'll select FC 25.
 
 接下来，让我们转到Get Started页面。
-
 Next, let’s go to the Get Started page.
 
 这里有简单的说明，你可以看到如何使用这个应用，以及这个应用的依赖项。
-
 "Here’s a quick guide where you can see how to use this app and what it depends on."
 
 让我们实际上操作一遍吧，这更简单。
-
 "Let’s actually walk through it together; it’ll be easier that way."
 
 让我们返回桌面，
-
 Let’s go back to the desktop.
 
 首先打开Live Editor，
-
 First, open Live Editor.
 
 然后打开游戏，
-
 Then launch the game.
 
 这可能需要点时间，让我们等待一会，
-
 This might take a moment, so let’s wait a bit.
 
 好了我们进入了游戏，
-
 Alright, we’re in the game now.
 
 为了方便演示，我这里会创建一个新的存档。
-
 To make it easier for the demo, I'll create a new manager career mode save.
 
 好了，我们现在来到了经理生涯模式中。
-
 "Okay, we’re now in the manager career mode."
 
-这个时候，我们就需要再次唤醒Live Editor, 我这里是F9。
+这个时候，我们就需要再次唤醒Live Editor, 按下F9。
+At this point, we need to reactivate the Live Editor, Press F9.
 
 然后，我们打开 Lua engine 功能。
-
 "Next, we’ll open the Lua engine features."
 
 这里呢，我们需要一段可以导出数据的脚本。
@@ -321,27 +266,21 @@ Please note that this code is generated based on your account and includes your 
 "And that’s how we complete a data collection."
 
 并且还使用了 Live Editor 提供的Event功能，
-
 "And it also uses the event feature provided by the Live Editor
 
 为游戏绑定了一个事件
-
 to bind an event to the game."
 
 当游戏中每经过一周，就会自动执行一遍这个过程
-
 "Every time a week passes in the game, this process will automatically run."
 
 这样就达到了我们说的自动化的目的。
-
 "This way, we achieve the goal of automation."
 
 好，让我们试一下。
-
 "Alright, let’s give it a try."
 
 粘贴代码后，点击运行按钮。
-
 past the code, then click Execute.
 
 可能你看到了一个黑窗口一闪而过，这就是发送你的数据到服务器的过程。
@@ -566,14 +505,14 @@ I created this video to help you better understand and use the app.
 我并不是一个英语母语者，所以制作这个视频对我来说也是一个挑战。
 I’m not a native English speaker, so making this video was also a challenge for me.
 
-我希望未来这个应用能达到每天有十个活跃用户。
-I hope this app can have ten active users every day in the future.
-
-这样我才会觉得这个应用是有意义的。
-Then I’ll feel like this app is meaningful.
+我希望这个应用在一年之内能达到每天有十个活跃用户。
+I hope this app can have ten active users every day in the next year.
 
 至少它帮助了一些人，让他们更好的享受这个游戏。
 At least it’s helped some people enjoy the game more.
+
+这样我才会觉得这个应用是有意义的。
+Then I’ll feel like this app is meaningful.
 
 最后我想谈一谈这个应用的缺点和对未来的一些展望。
 Finally, I’d like to discuss some of the drawbacks of this application and my thoughts for the future.
@@ -588,48 +527,41 @@ As you can see, this project relies on Live Editor, which means you can only use
 It’s unfortunate for players on other platforms.
 
 当然了，你可以说，那就加入一个手动导入数据的功能呗。
-Of course, you might suggest adding a manual data import feature.
+Of course, you could say, "Why not just add a manual data import feature?"
 
 这是一种方案没错。
+That’s one approach, no doubt.
 
-That’s one solution, no doubt.
+但是说真的，我非常的不想引入它。
+But honestly, I really don’t want to introduce that.
 
-但是说真的，我非常的不想引入它。在一件事情不能完全自动化之前，那就是在给人添麻烦。
-
-But honestly, I really don’t want to go that route. Until a process can be fully automated, it just adds more hassle.
+因为我坚信，在一件事情不能完全自动化之前，那就是在给人添麻烦。
+I firmly believe that if something can’t be fully automated, it just ends up creating more hassle for people.
 
 我的初衷永远是解放人，而不是让你重复性的劳动。
-
-My goal has always been to free people from repetitive tasks, not to make them do more of it.
+My intention has always been to free people from repetitive tasks, not to make them do more of it.
 
 但是让我讨论另一种可能性，就是基于OCR和LLM，这是一个非常有趣的方向。
-
+But let me discuss another possibility: leveraging OCR and LLMs. This is a very interesting direction to explore.
 But let me discuss another possibility, which is based on OCR and LLM. This is a very interesting direction.
 
 这样的话，你可以通过手机拍照，然后应用会自动识别出你的球员数据。
-
-In that case, you could take a photo with your phone, and the app would automatically recognize your player data.
+This way, you could take a photo with your phone or capture a screenshot and the app would automatically recognize your player data.
 
 这样起码不会让你重复的手动输入数据。
-
 At least this way, you wouldn’t have to manually enter the data repeatedly.
 
-但是这个中间会有很多障碍，让我们一步一步来完成。
+但是这个中间会有很多障碍，这个让我们留给未来去解决。
+But it’s easy to see that there will be many challenges along the way, so let’s save those for the future to tackle.
 
-But there will be many obstacles along the way, so let’s take it step by step.
-
-我希望这个应用能够帮助到你，让你更好的管理你的球队，让你更好的享受这个游戏。
-
-I hope this application can help you manage your team better and enhance your enjoyment of the game.
+好了，我希望这个应用能够帮助到你，让你更好的管理你的球队，让你更好的享受这个游戏。
+Alright, I hope this app helps you manage your team better and enhances your enjoyment of the game.
 
 并且请记得，这个项目是免费且开源的，如果你有什么好的想法或者建议，欢迎你来参与这个项目中。
-
 And please remember, this project is free and open source. If you have any great ideas or suggestions, feel free to get involved!
 
 这是我们的discord， 以及这是这个项目的github， 我都会放在简介里面。
-
-Here’s our Discord and the project’s GitHub link. I’ll put both in the video description.
+This is our Discord, and here’s the GitHub for the project. I’ll include both in the description.
 
 好了，这就是我今天要给你介绍的内容，希望你喜欢，我们下次再见~
-
-Alright, that’s all I wanted to share with you today. I hope you enjoyed it! See you next time!~
+Alright, that’s everything I wanted to share with you today. I hope you enjoyed it! See you next time!
