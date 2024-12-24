@@ -10,7 +10,7 @@ export async function getDailyNewUsersCount({ pastDays }: { pastDays: number }) 
         const startDate = endDate.clone().subtract(pastDays - 1, 'days');
 
         const users: {
-            date: string;
+            createDate: string;
             count: number;
         }[] = await UserModel.getDailyNewUsersCount({
             startDate: startDate.format('YYYY-MM-DD'),
@@ -20,7 +20,7 @@ export async function getDailyNewUsersCount({ pastDays }: { pastDays: number }) 
         const result = [];
         for (let i = 0; i <= pastDays - 1; i++) {
             const date = endDate.clone().subtract(i, 'days').format('YYYY-MM-DD');
-            const userCount = users.find((user: any) => user.date === date)?.count || 0;
+            const userCount = users.find((user) => user.createDate === date)?.count || 0;
             result.push({ date, count: userCount });
         }
 
