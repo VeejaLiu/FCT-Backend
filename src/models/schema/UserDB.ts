@@ -72,9 +72,10 @@ export class UserModel extends Model {
         username: string;
         email: string;
     }): Promise<boolean> {
-        const user = await UserModel.findOne({
-            where: { [Op.or]: [{ username: { [Op.iLike]: username } }, { email: { [Op.iLike]: email } }] },
-        });
+        const user = await doRawQuery(`
+            select * from user
+            where LOWER(username) = LOWER('${username}') or LOWER(email) = LOWER('${email}')
+        `);
         return !!user;
     }
 
