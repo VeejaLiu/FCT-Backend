@@ -76,7 +76,7 @@ export class UserModel extends Model {
             select * from user
             where LOWER(username) = LOWER('${username}') or LOWER(email) = LOWER('${email}')
         `);
-        return !!user;
+        return user.length > 0;
     }
 
     /**
