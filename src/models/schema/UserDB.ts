@@ -92,8 +92,8 @@ export class UserModel extends Model {
     }: {
         startDate: string;
         endDate: string;
-    }): Promise<{ date: string; count: number }[]> {
-        const result: { date: string; count: number }[] = await doRawQuery(
+    }): Promise<{ createDate: string; c: number }[]> {
+        const result: { createDate: string; c: number }[] = await doRawQuery(
             `select count(*)                             as c,
                     DATE_FORMAT(create_time, '%Y-%m-%d') as createDate
              from user
