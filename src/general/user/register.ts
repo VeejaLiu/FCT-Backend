@@ -89,7 +89,7 @@ export async function registerUser({
         logger.error(`[/user/register] ${e.message}`);
         return {
             success: false,
-            message: 'Something went wrong',
+            message: `Something went wrong with Error message: ${e.message}`,
         };
     }
 }

@@ -72,10 +72,10 @@ export class UserModel extends Model {
         username: string;
         email: string;
     }): Promise<boolean> {
-        const user = await doRawQuery(`
-            select * from user
-            where LOWER(username) = LOWER('${username}') or LOWER(email) = LOWER('${email}')
-        `);
+        const user = await doRawQuery({
+            query: `SELECT * FROM user WHERE LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)`,
+            params: [username, email],
+        });
         return user.length > 0;
     }
 
@@ -93,14 +93,18 @@ export class UserModel extends Model {
         startDate: string;
         endDate: string;
     }): Promise<{ createDate: string; c: number }[]> {
-        const result: { createDate: string; c: number }[] = await doRawQuery(
-            `select count(*)                             as c,
-                    DATE_FORMAT(create_time, '%Y-%m-%d') as createDate
-             from user
-             where DATE_FORMAT(create_time, '%Y-%m-%d') between '${startDate}' and '${endDate}'
-             group by createDate
-             order by createDate`,
-        );
+        const result: {
+            createDate: string;
+            c: number;
+        }[] = await doRawQuery({
+            query: `
+                SELECT COUNT(*) AS c, DATE_FORMAT(create_time, '%Y-%m-%d') AS createDate
+                FROM user
+                WHERE DATE_FORMAT(create_time, '%Y-%m-%d') BETWEEN ? AND ?
+                GROUP BY createDate
+                ORDER BY createDate DESC`,
+            params: [startDate, endDate],
+        });
         return result;
     }
 }
