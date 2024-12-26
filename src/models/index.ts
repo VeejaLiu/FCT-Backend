@@ -4,9 +4,16 @@ import { QueryTypes } from 'sequelize';
 
 const logger = new Logger(__filename);
 
-export async function doRawQuery(query: string): Promise<any> {
+/**
+ * Execute raw query
+ *
+ * @param query
+ * @param params
+ */
+export async function doRawQuery({ query, params = [] }: { query: string; params: any[] }): Promise<any> {
     try {
         const res = await sequelize.query(query.replace(/\s+/g, ' '), {
+            replacements: params,
             type: QueryTypes.SELECT,
             raw: true,
         });

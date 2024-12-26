@@ -22,19 +22,7 @@ const logger = new Logger(__filename);
  */
 router.post(
     '/register',
-    body('username')
-        .isString()
-        .withMessage('Username must be a string')
-        .isLength({ min: 1, max: 20 })
-        .withMessage('Username must be between 3 and 20 characters')
-        .matches(/^[a-zA-Z0-9]+$/)
-        .withMessage('Username must contain only letters and numbers'),
     body('email').isEmail().withMessage('Email must be a valid email'),
-    body('password')
-        .isString()
-        .withMessage('Password must be a string')
-        .isLength({ min: 6, max: 20 })
-        .withMessage('Password must be between 6 and 50 characters'),
     validateErrorCheck,
     async (req: any, res: any) => {
         const { username, email, password, rc } = req.body;
