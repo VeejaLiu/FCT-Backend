@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import { Logger } from '../../lib/logger';
 import { refreshSecretKey } from './refresh-secret-key';
 import { UserModel } from '../../models/schema/UserDB';
-import { Op } from 'sequelize';
 import AsyncLock from 'async-lock';
 
 const logger = new Logger(__filename);
@@ -41,6 +40,40 @@ export async function registerUser({
 }> {
     try {
         logger.info(`[/user/register] username: ${username}, email: ${email}`);
+
+        // Check if username, email, and password are valid
+        const usernamePattern = /^[a-zA-Z][a-zA-Z0-9_.]{5,19}$/;
+        if (!usernamePattern.test(username)) {
+            return {
+                success: false,
+                message:
+                    'Invalid username. It must start with a letter and be 6-20 characters long, containing only letters, numbers, underscores, and dots.',
+            };
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            return {
+                success: false,
+                message: 'Invalid email address.',
+            };
+        }
+
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const lengthValid = password.length >= 6;
+
+        const criteriaMet = [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean).length >= 3;
+
+        if (!lengthValid || !criteriaMet) {
+            return {
+                success: false,
+                message:
+                    'Password must be at least 6 characters long and include at least three of the following: uppercase letters, lowercase letters, numbers, or special characters.',
+            };
+        }
 
         /*
          * Check if user already exists (case insensitive)
