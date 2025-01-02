@@ -1,40 +1,28 @@
 import { UserNotificationModel } from '../../models/schema/UserNotificationDB';
 import { Logger } from '../../lib/logger';
-import { sequelize } from '../../models/db-config-mysql';
 import { PLAYER_PRIMARY_POS_NAME } from '../player/get-all-players';
+import { doRawQuery } from '../../models';
 
 const logger = new Logger(__filename);
 
 export async function getUserNotifications({
     userId,
     gameVersion,
+    filter,
     onlyUnread = false,
     page = 0,
     limit = 10,
 }: {
     gameVersion: number;
     userId: any;
+    filter: 'PlayerUpdate.Overall' | 'PlayerUpdate.SkillMove' | 'PlayerUpdate.WeakFoot' | 'all';
     onlyUnread: boolean;
     page: number;
     limit: number;
 }) {
     try {
-        const [results] = await sequelize.query(`
-            SELECT un.*,
-                   p.player_name,
-                   p.preferredposition1
-            FROM user_notification un RIGHT JOIN player as p
-            ON un.player_id = p.player_id
-            WHERE un.user_id = ${userId}
-              AND un.game_version = ${gameVersion}
-              AND p.user_id = ${userId}
-              AND p.game_version = ${gameVersion}
-              AND un.is_deleted = 0
-              ${onlyUnread ? 'AND un.is_read = 0' : ''}
-              AND p.is_archived = 0
-            ORDER BY un.in_game_date DESC,
-                un.id DESC
-            LIMIT ${(page - 1) * limit}, ${limit}`);
+        let filterSQL = '';
+
         const where = {
             user_id: userId,
             game_version: gameVersion,
@@ -43,7 +31,33 @@ export async function getUserNotifications({
         if (onlyUnread) {
             where['is_read'] = 0;
         }
+        if (['PlayerUpdate.Overall', 'PlayerUpdate.SkillMove', 'PlayerUpdate.WeakFoot'].includes(filter)) {
+            filterSQL = `AND un.message_subtype = '${filter}'`;
+            where['message_subtype'] = filter;
+        }
+
         const total = await UserNotificationModel.count({ where });
+
+        const results = await doRawQuery({
+            query: `
+                SELECT un.*,
+                       p.player_name,
+                       p.preferredposition1
+                FROM user_notification un
+                         RIGHT JOIN player as p
+                                    ON un.player_id = p.player_id
+                WHERE un.user_id = ?
+                  AND un.game_version = ?
+                    ${filterSQL}
+                  AND p.user_id = ?
+                  AND p.game_version = ?
+                  AND un.is_deleted = 0 
+                  ${onlyUnread ? 'AND un.is_read = 0' : ''}
+                  AND p.is_archived = 0
+                ORDER BY un.in_game_date DESC, un.id DESC
+                LIMIT ?, ?`,
+            params: [userId, gameVersion, userId, gameVersion, (page - 1) * limit, limit],
+        });
 
         return {
             total,

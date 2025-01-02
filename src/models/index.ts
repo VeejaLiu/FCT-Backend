@@ -10,7 +10,7 @@ const logger = new Logger(__filename);
  * @param query
  * @param params
  */
-export async function doRawQuery({ query, params = [] }: { query: string; params: any[] }): Promise<any> {
+export async function doRawQuery({ query, params = [] }: { query: string; params?: any[] }): Promise<any> {
     try {
         const res = await sequelize.query(query.replace(/\s+/g, ' '), {
             replacements: params,
@@ -19,7 +19,7 @@ export async function doRawQuery({ query, params = [] }: { query: string; params
         });
         return res;
     } catch (e) {
-        logger.error(`[doRawQuery] ${e}`);
+        logger.error(`[doRawQuery] query:[${query}] params:[${JSON.stringify(params)}] ${e}`);
         throw e;
     }
 }
