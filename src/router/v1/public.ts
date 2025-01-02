@@ -1,8 +1,8 @@
 import express from 'express';
-import { getAllPlayers } from '../../general/player/get-all-players';
 import { query } from 'express-validator';
 import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
 import { getDailyNewUsersCount } from '../../general/public/get-daily-new-users-count';
+import { getAllUsersCount } from '../../general/public/get-all-users-count';
 
 const router = express.Router();
 
@@ -21,5 +21,13 @@ router.get(
         return res.json(result);
     },
 );
+
+/**
+ * Get all registered user count
+ */
+router.get('/users-count', async (req: any, res) => {
+    const result: number = await getAllUsersCount();
+    return res.json({ count: result });
+});
 
 export default router;
