@@ -1,5 +1,5 @@
 import { Logger } from '../../lib/logger';
-import { PlayerModel } from '../../models/schema/PlayerDB';
+import { PlayerDB, PlayerModel } from '../../models/schema/PlayerDB';
 
 const logger = new Logger(__filename);
 
@@ -79,6 +79,8 @@ export interface PlayerOverall {
     imageUrl?: string;
     overallRanking?: number;
     potentialRanking?: number;
+    skillMoves: number;
+    weakFootAbilityTypeCode: number;
 }
 
 export async function getAllPlayers({
@@ -91,7 +93,7 @@ export async function getAllPlayers({
     try {
         logger.info(`[API_LOGS][getAllPlayers] [userId=${userId}] Get all players`);
 
-        const sqlRes: PlayerModel[] = await PlayerModel.findAll({
+        const sqlRes: PlayerDB[] = await PlayerModel.findAll({
             attributes: [
                 'player_id',
                 'player_name',
@@ -103,6 +105,8 @@ export async function getAllPlayers({
                 'preferredposition2',
                 'preferredposition3',
                 'preferredposition4',
+                'skillmoves',
+                'weakfootabilitytypecode',
             ],
             where: {
                 is_archived: 0,
@@ -128,6 +132,8 @@ export async function getAllPlayers({
                 position2: PLAYER_PRIMARY_POS_NAME[player.preferredposition2],
                 position3: PLAYER_PRIMARY_POS_NAME[player.preferredposition3],
                 position4: PLAYER_PRIMARY_POS_NAME[player.preferredposition4],
+                skillMoves: player.skillmoves,
+                weakFootAbilityTypeCode: player.weakfootabilitytypecode,
             });
         }
 

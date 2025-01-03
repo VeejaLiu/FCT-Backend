@@ -257,7 +257,70 @@ const PlayerSchema: ModelAttributes = {
     },
 };
 
-export class PlayerModel extends Model {
+export interface PlayerDB {
+    id?: number;
+    game_version?: number;
+    user_id?: number;
+    save_id?: number | null;
+    player_id?: number | null;
+    player_name?: string | null;
+    birthdate?: number | null;
+    age?: number | null;
+    overallrating?: number | null;
+    potential?: number | null;
+    nationality?: string | null;
+    height?: number | null;
+    weight?: number | null;
+    preferredfoot?: string | null;
+    preferredposition1?: string | null;
+    preferredposition2?: string | null;
+    preferredposition3?: string | null;
+    preferredposition4?: string | null;
+    skillmoves?: number | null;
+    weakfootabilitytypecode?: number | null;
+    attackingworkrate?: string | null;
+    defensiveworkrate?: string | null;
+    acceleration?: number | null;
+    sprintspeed?: number | null;
+    positioning?: number | null;
+    finishing?: number | null;
+    shotpower?: number | null;
+    longshots?: number | null;
+    volleys?: number | null;
+    penalties?: number | null;
+    vision?: number | null;
+    crossing?: number | null;
+    freekickaccuracy?: number | null;
+    shortpassing?: number | null;
+    longpassing?: number | null;
+    curve?: number | null;
+    agility?: number | null;
+    balance?: number | null;
+    reactions?: number | null;
+    ballcontrol?: number | null;
+    dribbling?: number | null;
+    composure?: number | null;
+    interceptions?: number | null;
+    headingaccuracy?: number | null;
+    defensiveawareness?: number | null;
+    standingtackle?: number | null;
+    slidingtackle?: number | null;
+    jumping?: number | null;
+    stamina?: number | null;
+    strength?: number | null;
+    aggression?: number | null;
+    gkdiving?: number | null;
+    gkhandling?: number | null;
+    gkkicking?: number | null;
+    gkpositioning?: number | null;
+    gkreflexes?: number | null;
+    is_archived?: number;
+    is_deleted?: boolean;
+    create_time?: Date;
+    update_time?: Date;
+}
+
+export class PlayerModel extends Model<PlayerDB> {
     public id!: number;
     public game_version!: number;
     public user_id!: number;
