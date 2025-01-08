@@ -200,5 +200,6 @@ CREATE TABLE `user_notification`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
 
+# 2025-01-08
 ALTER TABLE player
 ADD play_styles VARCHAR(2000) NULL AFTER gkreflexes;
