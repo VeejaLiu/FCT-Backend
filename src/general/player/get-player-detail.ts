@@ -1,4 +1,4 @@
-import { PlayerModel } from '../../models/schema/PlayerDB';
+import { PlayerDB, PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 import { Logger } from '../../lib/logger';
 import { PlayerTrend } from './get-all-player-trends';
@@ -6,7 +6,7 @@ import { PlayerTrend } from './get-all-player-trends';
 const logger = new Logger(__filename);
 
 interface PlayerDetail {
-    thisPlayer: PlayerModel;
+    thisPlayer: PlayerDB;
     trends: PlayerTrend[];
 }
 
@@ -22,12 +22,8 @@ export async function getPlayerDetail({
     try {
         logger.info(`[getPlayerDetail] userId: ${userId}, playerID: ${playerID}`);
 
-        let player = await PlayerModel.findOne({
-            where: {
-                user_id: userId,
-                game_version: gameVersion,
-                player_id: playerID,
-            },
+        let player: PlayerDB = await PlayerModel.findOne({
+            where: { user_id: userId, game_version: gameVersion, player_id: playerID },
             raw: true,
         });
 
@@ -38,11 +34,7 @@ export async function getPlayerDetail({
             potential: number;
         }[] = await PlayerStatusHistoryModel.findAll({
             attributes: ['player_id', 'in_game_date', 'overallrating', 'potential'],
-            where: {
-                user_id: userId,
-                game_version: gameVersion,
-                player_id: playerID,
-            },
+            where: { user_id: userId, game_version: gameVersion, player_id: playerID },
             order: [['in_game_date', 'DESC']],
             raw: true,
         });

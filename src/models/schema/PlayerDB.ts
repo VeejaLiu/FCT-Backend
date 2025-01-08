@@ -60,6 +60,7 @@ CREATE TABLE `player` (
   `gkkicking` int DEFAULT NULL,
   `gkpositioning` int DEFAULT NULL,
   `gkreflexes` int DEFAULT NULL,
+  `play_styles` varchar(2000) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `is_archived` int DEFAULT '0',
   `is_deleted` tinyint(1) DEFAULT '0',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -241,6 +242,9 @@ const PlayerSchema: ModelAttributes = {
     gkreflexes: {
         type: Sequelize.INTEGER,
     },
+    play_styles: {
+        type: Sequelize.STRING,
+    },
     is_archived: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
@@ -314,6 +318,7 @@ export interface PlayerDB {
     gkkicking?: number | null;
     gkpositioning?: number | null;
     gkreflexes?: number | null;
+    play_styles?: string | null;
     is_archived?: number;
     is_deleted?: boolean;
     create_time?: Date;
@@ -377,6 +382,7 @@ export class PlayerModel extends Model<PlayerDB> {
     public gkkicking!: number | null;
     public gkpositioning!: number | null;
     public gkreflexes!: number | null;
+    public play_styles!: string | null;
     public is_archived!: number;
     public is_deleted!: boolean;
     public create_time!: Date;

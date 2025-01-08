@@ -856,7 +856,6 @@ export async function bulkUpdatePlayer({
 
         switch (gameVersion) {
             case 24:
-                // do something
                 await bulkUpdatePlayer24({ userId, players });
                 break;
             case 25:
