@@ -199,3 +199,6 @@ CREATE TABLE `user_notification`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
+
+ALTER TABLE player
+ADD play_styles VARCHAR(2000) NULL AFTER gkreflexes;
