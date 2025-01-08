@@ -2,11 +2,14 @@ import { PlayerDB, PlayerModel } from '../../models/schema/PlayerDB';
 import { PlayerStatusHistoryModel } from '../../models/schema/PlayerStatusHistoryDB';
 import { Logger } from '../../lib/logger';
 import { PlayerTrend } from './get-all-player-trends';
+import { parseJson } from '../../utils/json-utils';
 
 const logger = new Logger(__filename);
 
 interface PlayerDetail {
-    thisPlayer: PlayerDB;
+    thisPlayer: PlayerDB & {
+        playStylesList: string[];
+    };
     trends: PlayerTrend[];
 }
 
@@ -51,7 +54,10 @@ export async function getPlayerDetail({
             });
 
         return {
-            thisPlayer: player,
+            thisPlayer: {
+                ...player,
+                playStylesList: parseJson(player?.play_styles),
+            },
             trends: trends,
         };
     } catch (e) {
