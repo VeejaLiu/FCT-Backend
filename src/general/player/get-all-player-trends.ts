@@ -90,6 +90,7 @@ export async function getAllPlayerTrends({
                 user_id: userId,
                 game_version: gameVersion,
                 is_archived: false,
+                is_deleted: false,
             },
             raw: true,
         });
