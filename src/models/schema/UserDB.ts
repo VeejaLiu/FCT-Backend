@@ -8,6 +8,7 @@ CREATE TABLE `user` (
   `username` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `is_email_verified` tinyint(1) DEFAULT '0',
+  `last_send_email_time` datetime DEFAULT NULL,
   `password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `token` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `is_deleted` tinyint(1) DEFAULT '0',
@@ -31,6 +32,9 @@ const UserSchema: ModelAttributes = {
     is_email_verified: {
         type: Sequelize.BOOLEAN,
     },
+    last_send_email_time: {
+        type: Sequelize.DATE,
+    },
     password: {
         type: Sequelize.TEXT,
     },
@@ -53,6 +57,7 @@ export interface UserDb {
     username: string;
     email: string;
     is_email_verified: boolean;
+    last_send_email_time: Date;
     password: string;
     token: string;
     is_deleted: boolean;
@@ -65,6 +70,7 @@ export class UserModel extends Model<UserDb> {
     public username!: string;
     public email!: string;
     public is_email_verified!: boolean;
+    public last_send_email_time!: Date;
     public password!: string;
     public token!: string;
     public is_deleted!: boolean;

@@ -63,6 +63,13 @@ export async function sendEmailVerification({ userId }: { userId: number }): Pro
             return;
         }
 
+        // 10 分钟内只能发送一次
+        const lastSendEmailTime = user.last_send_email_time;
+        if (lastSendEmailTime && new Date().getTime() - lastSendEmailTime.getTime() < 10 * 60 * 1000) {
+            logger.error(`[sendEmailVerification] Email sent too frequently, userId: ${userId}`);
+            return;
+        }
+
         const email = user.email;
         const username = user.username;
 
@@ -76,6 +83,14 @@ export async function sendEmailVerification({ userId }: { userId: number }): Pro
         logger.info(`[sendEmailVerification] Verification link: ${verificationLink}`);
 
         await sendVerificationLinkEmail({ email, username, verificationLink });
+
+        // update last_send_email_time
+        await UserModel.update(
+            {
+                last_send_email_time: new Date(),
+            },
+            { where: { id: userId } },
+        );
         logger.info(`[sendEmailVerification] Email sent successfully`);
     } catch (e) {
         console.error(`[sendEmailVerification] ${e.message}`);
