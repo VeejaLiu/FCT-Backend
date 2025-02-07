@@ -203,3 +203,7 @@ CREATE TABLE `user_notification`
 # 2025-01-08
 ALTER TABLE player
 ADD play_styles VARCHAR(2000) NULL AFTER gkreflexes;
+
+# 2025-02-07
+alter table user
+add column `is_email_verified` tinyint(1) default 0 after email;

@@ -38,6 +38,7 @@
         "mysql2": "3.11.0",
         "node-fetch": "2.7.0",
         "nodemon": "3.0.1",
+        "resend": "^4.1.2",
         "sequelize": "^6.33.0",
         "sqlite3": "^5.1.7",
         "uuid": "9.0.1",
