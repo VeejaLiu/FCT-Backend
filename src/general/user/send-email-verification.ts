@@ -58,6 +58,11 @@ export async function generateVerificationLink({
 export async function sendEmailVerification({ userId }: { userId: number }): Promise<void> {
     try {
         const user = await UserModel.getRawByID({ id: userId });
+        if (!user || user.is_email_verified) {
+            logger.error(`[sendEmailVerification] User not found or email already verified, userId: ${userId}`);
+            return;
+        }
+
         const email = user.email;
         const username = user.username;
 
