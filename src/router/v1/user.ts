@@ -12,7 +12,7 @@ import { getUserInfo } from '../../general/user/get-user-info';
 import { body } from 'express-validator';
 import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
 import { changePassword } from '../../general/user/change-password';
-import { sendEmailVerification } from '../../general/user/send-email-verification';
+import { sendEmailVerification, sendEmailVerificationWithLock } from '../../general/user/send-email-verification';
 
 const router = express.Router();
 
@@ -159,7 +159,8 @@ router.post('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
  */
 router.post('/email/verify', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
-    await sendEmailVerification({ userId: userId });
+    await sendEmailVerificationWithLock({ userId: userId });
+    res.status(200).send({ success: true, message: 'Verification email sent' });
 });
 
 export default router;

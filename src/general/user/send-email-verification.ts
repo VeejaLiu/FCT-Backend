@@ -4,11 +4,13 @@ import { sendVerificationLinkEmail } from '../../lib/resend/send-email';
 import jwt from 'jsonwebtoken';
 import { env } from '../../env';
 import { Logger } from '../../lib/logger';
+import AsyncLock from 'async-lock';
 
 const logger = new Logger(__filename);
 
 const VERIFICATION_EXPIRES_IN = '24h'; // Token 有效期
 const BASE_URL = env.app.backend_url; // 后端地址
+const lock = new AsyncLock();
 
 // 用于生成验证令牌的接口
 export interface VerificationPayload {
@@ -95,4 +97,10 @@ export async function sendEmailVerification({ userId }: { userId: number }): Pro
     } catch (e) {
         console.error(`[sendEmailVerification] ${e.message}`);
     }
+}
+
+export async function sendEmailVerificationWithLock({ userId }: { userId: number }): Promise<void> {
+    return lock.acquire('sendEmailVerification', async () => {
+        return sendEmailVerification({ userId });
+    });
 }

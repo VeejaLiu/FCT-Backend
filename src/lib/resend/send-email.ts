@@ -162,7 +162,7 @@ export async function sendVerificationLinkEmail({
                           </tr>
                           <tr>
                             <td style="padding: 20px 0;">
-                              <p style="margin: 0; font-size: 16px; line-height: 24px; color: #3f3f46;">This verification link will expire in 24 hours for security reasons. If you didn't create an account with FC Career, you can safely ignore this email.</p>
+                              <p style="margin: 0; font-size: 16px; line-height: 24px; color: #3f3f46;">This verification link will expire in 24 hours for security reasons. If you didn't create an account with FC Career Top, you can safely ignore this email.</p>
                             </td>
                           </tr>
                         </table>
@@ -175,7 +175,7 @@ export async function sendVerificationLinkEmail({
                                 If you have any questions, please don't hesitate to contact our support team.
                               </p>
                               <p style="margin: 0; font-size: 14px; line-height: 20px; color: #71717a; text-align: center;">
-                                © 2025 FC Career. All rights reserved.
+                                © 2025 FC Career Top. All rights reserved.
                               </p>
                             </td>
                           </tr>

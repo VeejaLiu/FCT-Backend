@@ -11,6 +11,7 @@ export async function getUserInfo({ userId }: { userId: string }): Promise<{
         username: string;
         email: string;
         isEmailVerified: boolean;
+        lastSendEmailTime: number;
     };
 }> {
     try {
@@ -24,6 +25,7 @@ export async function getUserInfo({ userId }: { userId: string }): Promise<{
                 username: user.username,
                 email: user.email,
                 isEmailVerified: user.is_email_verified,
+                lastSendEmailTime: new Date(user.last_send_email_time).valueOf(),
             },
         };
     } catch (e) {
