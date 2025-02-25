@@ -13,6 +13,7 @@ import { body } from 'express-validator';
 import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
 import { changePassword } from '../../general/user/change-password';
 import { sendEmailVerification, sendEmailVerificationWithLock } from '../../general/user/send-email-verification';
+import { changeUserEmail } from '../../general/user/change-user-email';
 
 const router = express.Router();
 
@@ -162,5 +163,24 @@ router.post('/email/verify', verifyTokenMiddleware, async (req: any, res: any) =
     await sendEmailVerificationWithLock({ userId: userId });
     res.status(200).send({ success: true, message: 'Verification email sent' });
 });
+
+/**
+ * Change the email
+ */
+router.post(
+    '/email/change',
+    body('newEmail').isEmail().withMessage('Email must be a valid email'),
+    validateErrorCheck,
+    verifyTokenMiddleware,
+    async (req: any, res: any) => {
+        const { userId } = req.user;
+        const { newEmail } = req.body;
+        const result = await changeUserEmail({
+            userId: userId,
+            newEmail: newEmail,
+        });
+        res.status(200).send(result);
+    },
+);
 
 export default router;
