@@ -109,6 +109,7 @@ export async function getAllPlayers({
                 'weakfootabilitytypecode',
             ],
             where: {
+                is_deleted: 0,
                 is_archived: 0,
                 user_id: userId,
                 game_version: gameVersion,
