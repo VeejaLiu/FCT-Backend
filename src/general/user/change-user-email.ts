@@ -15,6 +15,12 @@ const EMAIL_SAME_AS_OLD = {
     code: 'EMAIL_UPDATE_REDUNDANT_VALUE',
 };
 
+const EMAIL_DUPLICATE = {
+    success: false,
+    message: 'New email is already in use',
+    code: 'EMAIL_UPDATE_DUPLICATE',
+};
+
 const EMAIL_UPDATED = {
     success: true,
     message: 'Email updated',
@@ -42,11 +48,21 @@ export async function changeUserEmail({ userId, newEmail }: { userId: number; ne
             return USER_NOT_FOUND;
         }
 
+        // Check if the new email is the same as the old one
         if (user.email === newEmail) {
             logger.info(
                 `Email change attempt for user ID: ${userId} - New email is the same as the current email - Code: ${EMAIL_SAME_AS_OLD.code}`,
             );
             return EMAIL_SAME_AS_OLD;
+        }
+
+        // Check if the new email is duplicate
+        const duplicateUser = await UserModel.findOne({ where: { email: newEmail } });
+        if (duplicateUser) {
+            logger.info(
+                `Email change attempt for user ID: ${userId} - New email is already in use - Code: ${EMAIL_SAME_AS_OLD.code}`,
+            );
+            return EMAIL_DUPLICATE;
         }
 
         logger.info(`Updating email for user ID: ${userId} from: ${user.email} to: ${newEmail}`);
