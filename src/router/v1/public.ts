@@ -4,6 +4,8 @@ import { validateErrorCheck } from '../../lib/express-validator/express-validato
 import { getDailyNewUsersCount } from '../../general/public/get-daily-new-users-count';
 import { getAllUsersCount } from '../../general/public/get-all-users-count';
 import { verifyEmailVerification } from '../../general/user/verify-email-verification';
+import fs from 'fs';
+import path from 'path';
 
 const router = express.Router();
 
@@ -34,13 +36,23 @@ router.get('/users-count', async (req: any, res) => {
 /**
  * Verify user email
  */
-router.get('/verify-email', async (req: any, res) => {
-    const { token } = req.query;
-    await verifyEmailVerification({ token });
-    return res.json({
-        success: true,
-        message: 'Email verification success. 邮箱验证成功.',
-    });
-});
+router.get(
+    '/verify-email',
+    query('token').isString().notEmpty().withMessage('Token is required'),
+    validateErrorCheck,
+    async (req: any, res) => {
+        const { token } = req.query;
+
+        const verificationResult = await verifyEmailVerification({ token });
+
+        if (verificationResult.success) {
+            res.setHeader('Content-Type', 'text/html');
+            return res.send(verificationResult.html);
+        }
+        res.status(400);
+        res.setHeader('Content-Type', 'text/html');
+        return res.send(verificationResult.html);
+    },
+);
 
 export default router;
