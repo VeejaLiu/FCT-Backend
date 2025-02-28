@@ -14,14 +14,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/VeejaLiu/FIFA-Career-Dashboard.git"
+        "url": "git+https://github.com/VeejaLiu/FCT-Backend.git"
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/VeejaLiu/FIFA-Career-Dashboard/issues"
+        "url": "https://github.com/VeejaLiu/FCT-Backend/issues"
     },
-    "homepage": "https://github.com/VeejaLiu/FIFA-Career-Dashboard#readme",
+    "homepage": "https://github.com/VeejaLiu/FCT-Backend#readme",
     "dependencies": {
         "@sequelize/sqlite3": "7.0.0-alpha.45",
         "async-lock": "^1.4.1",
