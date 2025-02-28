@@ -1,6 +1,6 @@
-# FIFA-Career-Dashboard
+# FCT-Backend
 
-Backend API for FIFA Career Dashboard. Built with Node.js, Express.js.
+Backend API for FIFA Career Top. Built with Node.js, Express.js.
 
 ## Dependencies:
 
