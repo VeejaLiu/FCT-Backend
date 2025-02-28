@@ -12,7 +12,7 @@ import { getUserInfo } from '../../general/user/get-user-info';
 import { body } from 'express-validator';
 import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
 import { changePassword } from '../../general/user/change-password';
-import { sendEmailVerification, sendEmailVerificationWithLock } from '../../general/user/send-email-verification';
+import { sendEmailVerificationWithLock } from '../../general/user/send-email-verification';
 import { changeUserEmail } from '../../general/user/change-user-email';
 
 const router = express.Router();

@@ -4,8 +4,6 @@ import { validateErrorCheck } from '../../lib/express-validator/express-validato
 import { getDailyNewUsersCount } from '../../general/public/get-daily-new-users-count';
 import { getAllUsersCount } from '../../general/public/get-all-users-count';
 import { verifyEmailVerification } from '../../general/user/verify-email-verification';
-import fs from 'fs';
-import path from 'path';
 
 const router = express.Router();
 
@@ -16,7 +14,7 @@ router.get(
     '/daily-new-users-count',
     query('pastDays').isInt({ min: 1, max: 90 }).withMessage('Past days must be between 1 and 90'),
     validateErrorCheck,
-    async (req: any, res) => {
+    async (req: any, res: any) => {
         const { pastDays } = req.query;
         const result = await getDailyNewUsersCount({
             pastDays: parseInt(pastDays),
@@ -28,7 +26,7 @@ router.get(
 /**
  * Get all registered user count
  */
-router.get('/users-count', async (req: any, res) => {
+router.get('/users-count', async (req: any, res: any) => {
     const result: number = await getAllUsersCount();
     return res.json({ count: result });
 });
@@ -40,7 +38,7 @@ router.get(
     '/verify-email',
     query('token').isString().notEmpty().withMessage('Token is required'),
     validateErrorCheck,
-    async (req: any, res) => {
+    async (req: any, res: any) => {
         const { token } = req.query;
 
         const verificationResult = await verifyEmailVerification({ token });
