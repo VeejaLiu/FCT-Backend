@@ -20,12 +20,15 @@ CREATE TABLE `user_notification` (
   `skillmoves` int DEFAULT NULL,
   `old_weakfoot` int DEFAULT NULL,
   `weakfoot` int DEFAULT NULL,
+  `old_play_styles` text COLLATE utf8mb4_general_ci,
+  `play_styles` text COLLATE utf8mb4_general_ci,
   `is_read` tinyint(1) DEFAULT '0',
   `is_deleted` tinyint(1) DEFAULT '0',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `idx_user_id` (`user_id`)
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_in_game_date` (`in_game_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
  */
 const UserNotificationSchema: ModelAttributes = {
@@ -84,6 +87,14 @@ const UserNotificationSchema: ModelAttributes = {
         type: Sequelize.INTEGER,
         allowNull: true,
     },
+    old_play_styles: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+    },
+    play_styles: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+    },
     is_read: {
         type: Sequelize.TINYINT,
         defaultValue: 0,
@@ -116,6 +127,8 @@ export interface UserNotificationDb {
     skillmoves?: number;
     old_weakfoot?: number;
     weakfoot?: number;
+    old_play_styles?: string;
+    play_styles?: string;
     is_read?: number;
     is_deleted?: number;
     create_time?: Date;
@@ -138,6 +151,8 @@ export class UserNotificationModel extends Model<UserNotificationDb> {
     public skillmoves!: number | null;
     public old_weakfoot!: number | null;
     public weakfoot!: number | null;
+    public old_play_styles!: string | null;
+    public play_styles!: string | null;
     public is_read!: number;
     public is_deleted!: number;
     public create_time!: Date;

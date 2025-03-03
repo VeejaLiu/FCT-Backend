@@ -209,3 +209,8 @@ alter table user
 add column `is_email_verified` tinyint(1) default 0 after email;
 alter table user
 add column `last_send_email_time` datetime after is_email_verified;
+
+# 2025-03-03
+# Add old_play_styles and play_styles columns to user_notification table
+alter table user_notification add column old_play_styles text after weakfoot;
+alter table user_notification add column play_styles text after old_play_styles;
