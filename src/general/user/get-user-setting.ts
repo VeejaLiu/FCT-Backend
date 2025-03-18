@@ -7,6 +7,7 @@ export const NOTIFICATION_ITEMS = {
     PlayerUpdate_Overall: 'PlayerUpdate.Overall',
     PlayerUpdate_SkillMove: 'PlayerUpdate.SkillMove',
     PlayerUpdate_WeakFoot: 'PlayerUpdate.WeakFoot',
+    PlayerUpdate_PlayStyles: 'PlayerUpdate.PlayStyles',
 };
 
 const DEFAULT_USER_SETTING = {
@@ -15,6 +16,7 @@ const DEFAULT_USER_SETTING = {
         NOTIFICATION_ITEMS.PlayerUpdate_Overall,
         NOTIFICATION_ITEMS.PlayerUpdate_SkillMove,
         NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
+        NOTIFICATION_ITEMS.PlayerUpdate_PlayStyles,
     ],
 };
 
@@ -38,6 +40,7 @@ export async function getUserSetting({ userId }: { userId: number | string }): P
             PlayerUpdate_Overall: boolean;
             PlayerUpdate_SkillMove: boolean;
             PlayerUpdate_WeakFoot: boolean;
+            PlayerUpdate_PlayStyles: boolean;
         };
     };
 }> {
@@ -67,6 +70,9 @@ export async function getUserSetting({ userId }: { userId: number | string }): P
                     ),
                     PlayerUpdate_WeakFoot: userSetting.notification_items.includes(
                         NOTIFICATION_ITEMS.PlayerUpdate_WeakFoot,
+                    ),
+                    PlayerUpdate_PlayStyles: userSetting.notification_items.includes(
+                        NOTIFICATION_ITEMS.PlayerUpdate_PlayStyles,
                     ),
                 },
             },
