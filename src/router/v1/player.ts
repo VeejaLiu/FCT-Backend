@@ -13,9 +13,10 @@ const router = express.Router();
 
 /**
  * Get all players
+ * GET /api/v1/player/
  */
 router.get(
-    '',
+    '/',
     verifyTokenMiddleware,
     query('gameVersion')
         .isInt({ min: 24, max: 25 }) // only 24/25
@@ -34,6 +35,7 @@ router.get(
 
 /**
  * Get player details by id
+ * GET /api/v1/player/detail/:playerID
  */
 router.get(
     '/detail/:playerID',
@@ -58,6 +60,7 @@ router.get(
 
 /**
  * Get player count
+ * GET /api/v1/player/count
  */
 router.get(
     '/count',
@@ -79,6 +82,7 @@ router.get(
 
 /**
  * Get player trends
+ * GET /api/v1/player/trends
  */
 router.get(
     '/trends',
@@ -100,6 +104,7 @@ router.get(
 
 /**
  * Create or update players in bulk
+ * POST /api/v1/player/bulk
  */
 router.post(
     '/bulk',

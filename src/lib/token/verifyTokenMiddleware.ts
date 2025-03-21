@@ -11,7 +11,7 @@ const logger = new Logger(__filename);
 export async function verifyToken(token: string): Promise<{ success: boolean; data?: { id: number } }> {
     try {
         const decodeRes: any = jwt.verify(token, JWT_SECRET);
-        logger.info(`[verifyToken] decodeRes: ${JSON.stringify(decodeRes)}`);
+        // logger.info(`[verifyToken] decodeRes: ${JSON.stringify(decodeRes)}`);
         const { id, iat, exp } = decodeRes;
         if (Date.now() > exp * 1000) {
             logger.error(`[verifyToken] token expired`);

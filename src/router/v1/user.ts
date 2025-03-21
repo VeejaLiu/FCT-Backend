@@ -12,6 +12,8 @@ import { getUserInfo } from '../../general/user/get-user-info';
 import { body } from 'express-validator';
 import { validateErrorCheck } from '../../lib/express-validator/express-validator-middleware';
 import { changePassword } from '../../general/user/change-password';
+import { sendEmailVerificationWithLock } from '../../general/user/send-email-verification';
+import { changeUserEmail } from '../../general/user/change-user-email';
 
 const router = express.Router();
 
@@ -19,6 +21,7 @@ const logger = new Logger(__filename);
 
 /**
  * User registration
+ * POST {{backend-url}}/api/v1/user/register
  */
 router.post(
     '/register',
@@ -37,6 +40,7 @@ router.post(
 
 /**
  * User login
+ * POST {{backend-url}}/api/v1/user/login
  */
 router.post(
     '/login',
@@ -55,6 +59,7 @@ router.post(
 
 /**
  * Get user's info
+ * GET {{backend-url}}/api/v1/user/info
  */
 router.get('/info', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
@@ -66,6 +71,7 @@ router.get('/info', verifyTokenMiddleware, async (req: any, res: any) => {
 
 /**
  * Verify user token
+ * POST {{backend-url}}/api/v1/user/verify-token
  */
 router.post('/verify-token', verifyTokenMiddleware, async (req: any, res: any) => {
     res.status(200).send({ success: true, message: 'Token is valid' });
@@ -73,6 +79,7 @@ router.post('/verify-token', verifyTokenMiddleware, async (req: any, res: any) =
 
 /**
  * Change user password
+ * POST {{backend-url}}/api/v1/user/password
  */
 router.post(
     '/password',
@@ -96,6 +103,7 @@ router.post(
 
 /**
  * User logout
+ * POST {{backend-url}}/api/v1/user/logout
  */
 router.post('/logout', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
@@ -107,6 +115,7 @@ router.post('/logout', verifyTokenMiddleware, async (req: any, res: any) => {
 
 /**
  * Get user's secret key
+ * GET {{backend-url}}/api/v1/user/secret
  */
 router.get('/secret', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
@@ -118,6 +127,7 @@ router.get('/secret', verifyTokenMiddleware, async (req: any, res: any) => {
 
 /**
  * Refresh user's secret key
+ * POST {{backend-url}}/api/v1/user/secret/refresh
  */
 router.post('/secret/refresh', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
@@ -129,6 +139,7 @@ router.post('/secret/refresh', verifyTokenMiddleware, async (req: any, res: any)
 
 /**
  * Get user setting
+ * GET {{backend-url}}/api/v1/user/setting
  */
 router.get('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
@@ -140,6 +151,7 @@ router.get('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
 
 /**
  * Update user setting
+ * POST {{backend-url}}/api/v1/user/setting
  */
 router.post('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
     const { userId } = req.user;
@@ -152,5 +164,35 @@ router.post('/setting', verifyTokenMiddleware, async (req: any, res: any) => {
     });
     res.status(200).send(result);
 });
+
+/**
+ * Verify user email
+ * POST {{backend-url}}/api/v1/user/email/verify
+ */
+router.post('/email/verify', verifyTokenMiddleware, async (req: any, res: any) => {
+    const { userId } = req.user;
+    await sendEmailVerificationWithLock({ userId: userId });
+    res.status(200).send({ success: true, message: 'Verification email sent' });
+});
+
+/**
+ * Change the email
+ * POST {{backend-url}}/api/v1/user/email/change
+ */
+router.post(
+    '/email/change',
+    body('newEmail').isEmail().withMessage('Email must be a valid email'),
+    validateErrorCheck,
+    verifyTokenMiddleware,
+    async (req: any, res: any) => {
+        const { userId } = req.user;
+        const { newEmail } = req.body;
+        const result = await changeUserEmail({
+            userId: userId,
+            newEmail: newEmail,
+        });
+        res.status(200).send(result);
+    },
+);
 
 export default router;

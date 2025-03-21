@@ -19,6 +19,7 @@ async function sendPlayerUpdateNotification({
     potential,
     skillmoves,
     weakfootabilitytypecode,
+    playerStyles,
 }: {
     userId: number;
     gameVersion: number;
@@ -30,6 +31,7 @@ async function sendPlayerUpdateNotification({
     potential: number;
     skillmoves: number;
     weakfootabilitytypecode: number;
+    playerStyles: string;
 }) {
     try {
         const userSettingRes = await getUserSetting({ userId });
@@ -158,6 +160,36 @@ async function sendPlayerUpdateNotification({
                 },
             });
         }
+
+        /*
+         * Check if player's PlayerStyle has changed
+         */
+        if (existingPlayer.play_styles !== playerStyles && userSetting.notificationItems.PlayerUpdate_PlayStyles) {
+            const notification = await UserNotificationModel.create({
+                user_id: userId,
+                game_version: gameVersion,
+                in_game_date: dateStr,
+                message_type: 'PlayerUpdate',
+                message_subtype: NOTIFICATION_ITEMS.PlayerUpdate_PlayStyles,
+                player_id: playerID,
+                old_play_styles: existingPlayer.play_styles,
+                play_styles: playerStyles,
+                is_read: 0,
+            });
+            sendMessageToUser({
+                userId: userId,
+                message: {
+                    type: NOTIFICATION_ITEMS.PlayerUpdate_PlayStyles,
+                    payload: {
+                        playerID: playerID,
+                        playerName: playerName,
+                        oldPlayStyles: existingPlayer.play_styles,
+                        playStyles: playerStyles,
+                        userNotificationID: notification.id,
+                    },
+                },
+            });
+        }
     } catch (e) {
         logger.error(`[sendPlayerUpdateNotification][userID=${userId}] error: ${e}`);
     }
@@ -205,6 +237,8 @@ async function bulkUpdatePlayer24({ userId, players }: { players: any[]; userId:
             weakfootabilitytypecode,
             attackingworkrate,
             defensiveworkrate,
+            // -- Player Styles
+            playerStyles,
             // -- pace
             acceleration,
             sprintspeed,
@@ -360,6 +394,7 @@ async function bulkUpdatePlayer24({ userId, players }: { players: any[]; userId:
                 potential,
                 skillmoves,
                 weakfootabilitytypecode,
+                playerStyles,
             }).then();
             const result = await PlayerModel.update(
                 {
@@ -540,6 +575,8 @@ async function bulkUpdatePlayer25({ userId, players }: { players: any[]; userId:
             weakfootabilitytypecode,
             // attackingworkrate, // not in FC 25
             // defensiveworkrate, // not in FC 25
+            // -- Player Styles
+            playerStyles,
             // -- pace
             acceleration,
             sprintspeed,
@@ -695,6 +732,7 @@ async function bulkUpdatePlayer25({ userId, players }: { players: any[]; userId:
                 potential,
                 skillmoves,
                 weakfootabilitytypecode,
+                playerStyles,
             }).then();
             const result = await PlayerModel.update(
                 {
@@ -847,8 +885,14 @@ export async function bulkUpdatePlayer({
             `[bulkUpdatePlayer][userId=${userId}][gameVersion=${gameVersion}] players.length=${players.length}`,
         );
         if (!players || players.length === 0) {
+            logger.warn(`[bulkUpdatePlayer][userId=${userId}] empty players`);
             return;
         }
+        if (players.length > 200) {
+            logger.error(`[bulkUpdatePlayer][userId=${userId}] too many players: ${players.length}`);
+            return;
+        }
+
         if (gameVersion !== 24 && gameVersion !== 25) {
             logger.error(`[bulkUpdatePlayer][userId=${userId}] unsupported game version: ${gameVersion}`);
             return;
@@ -856,11 +900,13 @@ export async function bulkUpdatePlayer({
 
         switch (gameVersion) {
             case 24:
-                // do something
                 await bulkUpdatePlayer24({ userId, players });
                 break;
             case 25:
                 await bulkUpdatePlayer25({ userId, players });
+                break;
+            default:
+                logger.error(`[bulkUpdatePlayer][userId=${userId}] unsupported game version: ${gameVersion}`);
                 break;
         }
     } catch (e) {

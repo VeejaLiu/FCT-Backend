@@ -29,6 +29,7 @@ export const env = {
         port: normalizePort(process.env.PORT || getOsEnv('APP_PORT')),
         banner: toBool(getOsEnv('APP_BANNER')),
         env: getOsEnv('APP_ENV'),
+        backend_url: getOsEnv('APP_BACKEND_URL'),
     },
     log: {
         level: getOsEnv('LOG_LEVEL'),
@@ -51,5 +52,8 @@ export const env = {
         username: getOsEnv('MYSQL_USERNAME'),
         password: getOsEnv('MYSQL_PASSWORD'),
         logging: toBool(getOsEnv('MYSQL_LOGGING')),
+    },
+    resend: {
+        API_KEY: getOsEnv('RESEND_API_KEY'),
     },
 };

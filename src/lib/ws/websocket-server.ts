@@ -16,7 +16,7 @@ export function startWebSocketServer(httpServer) {
     wss.on('connection', async (socket, request) => {
         const token = request.headers['sec-websocket-protocol'];
         const verifyRes = await verifyToken(token);
-        logger.info('[ws.on_connection] verifyRes:', verifyRes);
+        // logger.info('[ws.on_connection] verifyRes:', verifyRes);
 
         if (verifyRes.success) {
             const userId = verifyRes.data.id;
@@ -44,7 +44,7 @@ export function startWebSocketServer(httpServer) {
                 }
             });
 
-            logger.info('[ws.on_connection] Protocol accepted');
+            // logger.info('[ws.on_connection] Protocol accepted');
             socket.send('Protocol accepted');
         } else {
             logger.error('[ws.on_connection] Protocol not supported');
