@@ -885,8 +885,14 @@ export async function bulkUpdatePlayer({
             `[bulkUpdatePlayer][userId=${userId}][gameVersion=${gameVersion}] players.length=${players.length}`,
         );
         if (!players || players.length === 0) {
+            logger.warn(`[bulkUpdatePlayer][userId=${userId}] empty players`);
             return;
         }
+        if (players.length > 200) {
+            logger.error(`[bulkUpdatePlayer][userId=${userId}] too many players: ${players.length}`);
+            return;
+        }
+
         if (gameVersion !== 24 && gameVersion !== 25) {
             logger.error(`[bulkUpdatePlayer][userId=${userId}] unsupported game version: ${gameVersion}`);
             return;
@@ -898,6 +904,9 @@ export async function bulkUpdatePlayer({
                 break;
             case 25:
                 await bulkUpdatePlayer25({ userId, players });
+                break;
+            default:
+                logger.error(`[bulkUpdatePlayer][userId=${userId}] unsupported game version: ${gameVersion}`);
                 break;
         }
     } catch (e) {

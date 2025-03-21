@@ -94,9 +94,9 @@ export async function getAllPlayerTrends({
             },
             raw: true,
         });
-        logger.info(
-            `[getAllPlayerTrends] ${players?.length} players found, playerIDs: ${players?.map((p) => p.player_id)}`,
-        );
+        // logger.info(
+        //     `[getAllPlayerTrends] ${players?.length} players found, playerIDs: ${players?.map((p) => p.player_id)}`,
+        // );
         if (!players || players.length === 0) {
             logger.info(`[getAllPlayerTrends] No players found`);
             return [];
@@ -115,7 +115,7 @@ export async function getAllPlayerTrends({
             );
         }
         const result = (await Promise.all(promises)).filter((r) => r);
-        logger.info(`[getAllPlayerTrends] ${result?.length} player trends(not null) found`);
+        // logger.info(`[getAllPlayerTrends] ${result?.length} player trends(not null) found`);
         return result;
     } catch (e) {
         logger.error(`[getAllPlayerTrends] ${e.stack}`);
