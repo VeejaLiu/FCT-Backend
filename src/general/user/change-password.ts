@@ -59,12 +59,14 @@ export async function changePassword({
 
     try {
         if (newPassword !== confirmNewPassword) {
-            logger.info(`Password change attempt for user ID: ${userId} - New passwords don't match - Code: ${PASSWORD_MISMATCH.code}`);
+            logger.info(
+                `Password change attempt for user ID: ${userId} - New passwords don't match - Code: ${PASSWORD_MISMATCH.code}`,
+            );
             return PASSWORD_MISMATCH;
         }
 
         const user = await UserModel.findOne({ where: { id: userId } });
-        
+
         if (!user) {
             logger.warn(`User not found for ID: ${userId} - Code: ${USER_NOT_FOUND.code}`);
             return USER_NOT_FOUND;
@@ -73,14 +75,18 @@ export async function changePassword({
         // Check if old password matches
         const isPasswordMatched = await bcrypt.compare(oldPassword, user.password);
         if (!isPasswordMatched) {
-            logger.info(`Password change attempt for user ID: ${userId} - Old password incorrect - Code: ${OLD_PASSWORD_INCORRECT.code}`);
+            logger.info(
+                `Password change attempt for user ID: ${userId} - Old password incorrect - Code: ${OLD_PASSWORD_INCORRECT.code}`,
+            );
             return OLD_PASSWORD_INCORRECT;
         }
 
         // Check if new password is same as old password
         const isNewPasswordSameAsOld = await bcrypt.compare(newPassword, user.password);
         if (isNewPasswordSameAsOld) {
-            logger.info(`Password change attempt for user ID: ${userId} - New password is same as old password - Code: ${PASSWORD_MISMATCH.code}`);
+            logger.info(
+                `Password change attempt for user ID: ${userId} - New password is same as old password - Code: ${PASSWORD_MISMATCH.code}`,
+            );
             return PASSWORD_SAME_AS_OLD;
         }
 
@@ -93,7 +99,7 @@ export async function changePassword({
     } catch (error) {
         logger.error(
             `Error updating password for user ID: ${userId} - ${error.message} - Code: ${PASSWORD_UPDATE_ERROR.code}`,
-            error
+            error,
         );
         return PASSWORD_UPDATE_ERROR;
     }

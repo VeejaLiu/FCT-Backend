@@ -91,7 +91,10 @@ export async function getAllPlayers({
     gameVersion: number;
 }): Promise<PlayerOverall[]> {
     try {
-        logger.info(`[API_LOGS][getAllPlayers] [userId=${userId}] Get all players`);
+        if (!userId || !gameVersion) {
+            logger.error(`[getAllPlayers] Invalid userId[${userId}] or gameVersion[${gameVersion}]`);
+            return [];
+        }
 
         const sqlRes: PlayerDB[] = await PlayerModel.findAll({
             attributes: [
@@ -117,7 +120,10 @@ export async function getAllPlayers({
             raw: true,
         });
 
-        logger.info(`[API_LOGS][getAllPlayers] ${sqlRes.length} players found`);
+        if (sqlRes.length === 0) {
+            logger.info(`[getAllPlayers] No players found for userId: ${userId}`);
+            return [];
+        }
 
         const result: PlayerOverall[] = [];
         for (let i = 0; i < sqlRes.length; i++) {
@@ -156,7 +162,7 @@ export async function getAllPlayers({
 
         return result;
     } catch (e) {
-        logger.error(`[API_LOGS][getAllPlayers] Get all players failed: ${e.message}`);
+        logger.error(`[getAllPlayers] Error: ${e.message}`);
         return [];
     }
 }
